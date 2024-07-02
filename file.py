@@ -1,9 +1,9 @@
-import math
+import csv
 import random
-import bcrypt
 
 
-def password_generation():
+
+def password_generation(name):
     password = ""
     ascii_characters = [
         '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',
@@ -15,11 +15,25 @@ def password_generation():
         '{', '|', '}', '~'
     ]
     
+
+
     while len(password) <= 11:
         password += random.choice(ascii_characters)
-    
+       
+
+    ### Storing Passwords ##
+    stored_passwords=[]
+    stored_passwords.append({"Name" : name , "Password" : password})
+
+    file_name = "password_records.csv"
+    fields= ["Name" , "Password"]
+
+    with open(file_name , "w" , newline="") as csvfile:
+        scribe = csv.DictWriter(csvfile , fieldnames = fields )
+
+        scribe.writeheader()
+        scribe.writerows(stored_passwords)
 
     return password
 
-z= password_generation()
-print(z)
+
