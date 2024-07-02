@@ -2,7 +2,21 @@ import csv
 import random
 
 
-
+### Initialization ###
+class DataValidation:
+    def __init__(self, User_name , User_surname):
+        self.Name = User_name
+        self.Surname = User_surname
+        
+        
+    def Account_existence(self):
+        Existence = False
+        try:
+            with open("password_records.csv") as x:
+                file = x.readlines()
+                for line in file :
+                    if  User_name
+        except:
 def password_generation(name):
     password = ""
     ascii_characters = [
@@ -39,4 +53,5 @@ def password_generation(name):
 
     return password
 
-password_generation("Test")
+
+
