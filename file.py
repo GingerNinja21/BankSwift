@@ -28,12 +28,15 @@ def password_generation(name):
     file_name = "password_records.csv"
     fields= ["Name" , "Password"]
 
-    with open(file_name , "w" , newline="") as csvfile:
+    with open(file_name , "a" , newline="") as csvfile:
         scribe = csv.DictWriter(csvfile , fieldnames = fields )
+        
+        ### Checks if file is empty ###
+        if csvfile.tell () == 0:
+            scribe.writeheader()
 
-        scribe.writeheader()
         scribe.writerows(stored_passwords)
 
     return password
 
-
+# password_generation("tester")
