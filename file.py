@@ -39,4 +39,4 @@ def password_generation(name):
 
     return password
 
-# password_generation("tester")
+password_generation("Test")
