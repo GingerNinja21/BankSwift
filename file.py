@@ -19,7 +19,7 @@ class DataValidation:
      Usersurname = User_surname.strip()
      error_message=""
      special_char= ["-" ,"^"]
-     Valid_input = True
+    
 
      for char in Username:
         if not (char.isalpha() or char in special_char):
@@ -70,11 +70,9 @@ def password_generation(name):
         '{', '|', '}', '~'
     ]
     
-
-
     while len(password) <= 11:
         password += random.choice(ascii_characters)
-       
+
 
     ### Storing Passwords ##
     stored_passwords=[]
@@ -93,10 +91,36 @@ def password_generation(name):
         scribe.writerows(stored_passwords)
 
     return password
+
+
+
+class Accounts():
+
+    def __init__(self,UID):
+        self.UserID = UID
+
+    def acc_no_generator(UID):
+        unique_no = True
+        with open("accounts.csv") as x:
+            file = x.readlines()
+            for line in file:
+                if UID in line :
+                    current_line = line
+                    selected_line = current_line.split(sep=",") 
+                    if len(selected_line) >= 0:
+                        account_no = selected_line[3]
+                        if account_no == "" :
+                            account_no = random.randint(100000000, 999999999)
+                            
+
+
+
+
+
 ### Testing area ###
 x= DataValidation.__init__("","john" ,"doe")
 y= DataValidation.Account_existence(self=DataValidation)
 z=DataValidation.get_error_message(self=DataValidation)
-
-print("Init:", x ,"\nAccount existence:",y ,"\n error message",z)
+v= Accounts.acc_no_generator("0001")
+# print("Init:", x ,"\nAccount existence:",y ,"\n error message",z)
 
