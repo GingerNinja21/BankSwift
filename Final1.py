@@ -13,10 +13,12 @@ class WelcomeWindow:
         self.root.title("Welcome to BankSwift App")
         self.style = ttk.Style(self)
 
+        self.canvas = Tk.Canvas(root, width=500, height=250)
+        self.canvas.pack()
         self.style.theme_use('clam')
         #self.root.configure(bg=BG_COLOR)
    
-        self.label = Tk.Label(root, text="Welcome to BankSwift", font=("Helvetica", 16))
+        self.label = Tk.Label(root, text="Welcome to BankSwift", font=("Roboto", 16))
         self.label.pack(pady=20)
 
         # Frame to hold buttons horizontally
@@ -41,11 +43,14 @@ class CreateAccountWindow:
     def __init__(self):
         self.root = Tk.Tk()
         self.root.title("Create Account")
+
+        self.canvas = Tk.Canvas(root, width=500, height=250)
+        self.canvas.pack()
         
-        self.label = Tk.Label(self.root, text="Create Account", font=("Helvetica", 14))
+        self.label = Tk.Label(self.root, text="Create Account", font=("Roboto", 14))
         self.label.grid(row=0, column=0, columnspan=2, pady=10)
 
-        self.username_label = Tk.Label(self.root, text="Username:")
+        self.username_label = Tk.Label(self.root, text="Username: ")
         self.username_label.grid(row=1, column=0, sticky=Tk.E, padx=10, pady=5)
         self.username_entry = Tk.Entry(self.root)
         self.username_entry.grid(row=1, column=1, padx=10, pady=5)
@@ -102,7 +107,10 @@ class LoginWindow:
         self.root = Tk.Tk()
         self.root.title("Login")
 
-        self.label = Tk.Label(self.root, text="Login", font=("Helvetica", 14))
+        self.canvas = Tk.Canvas(root, width=500, height=250)
+        self.canvas.pack()
+
+        self.label = Tk.Label(self.root, text="Login", font=("Roboto", 14))
         self.label.grid(row=0, column=0, columnspan=2, pady=10)
 
         self.username_label = Tk.Label(self.root, text="Username:")
@@ -150,7 +158,7 @@ class DashboardWindow:
         self.username = username
         self.balance = 1000.0  # Initialize balance (for simplicity)
 
-        self.balance_label = Tk.Label(self.root, text=f"Welcome, {self.username} | Balance: R{self.balance}", font=("Helvetica", 12))
+        self.balance_label = Tk.Label(self.root, text=f"Welcome, {self.username} | Balance: R{self.balance}", font=("Roboto", 12))
         self.balance_label.pack(pady=20)
 
         # Frame to hold buttons horizontally
