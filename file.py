@@ -119,21 +119,27 @@ class Accounts():
             error_message="Error!\nSomething went wrong while generating your account number!\nContact Aministrator!"
             return error_message
     
-    def acc_creation(Name, Surname):
-      try:
-        if DataValidation.Account_existence(Name,Surname) == True :
-            print("test works")
-        else:
-            print("shit dont work")
-      except:      
-            print()
+    #Work in Progress
+    # def acc_creation(Name, Surname):
+    #   try:
+    #     validator= DataValidation()
+    #     account_exists = validator.Account_existence(Name, Surname)
+    #     if account_exists:
+    #         result = "Account creation successful"
+    #     else:
+    #         result = "Account already exists"
+    #     return result
+      
+    #   except Exception as e:
+    #         print(f"Error occurred: {e}")
+    #         return "Error: Account creation failed"
 
 ### Testing area ###
 x= DataValidation.__init__("","john" ,"doe")
 y= DataValidation.Account_existence(self=DataValidation)
 z=DataValidation.get_error_message(self=DataValidation)
 v= Accounts.acc_no_generator("0001")
-r= Accounts.acc_creation("john" , "doe")
-print(r````)
-# print("Init:", x ,"\nAccount existence:",y ,"\n error message",z)
+# r= Accounts.acc_creation("john" , "doe")
+# print(r)
+print("Init:", x ,"\nAccount existence:",y ,"\n error message",z)
 
