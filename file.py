@@ -13,16 +13,18 @@ class DataValidation:
      global Usersurname
      global special_char
      global error_message
+     global Valid_input
 
      Username = User_name.strip()
      Usersurname = User_surname.strip()
      error_message=""
      special_char= ["-" ,"^"]
+     Valid_input = True
 
      for char in Username:
-        if not (Username.isalpha() or char in special_char):
-        
+        if not (char.isalpha() or char in special_char):
             error_message = "\nPlease remove any Special Characters or Numbers when entering your details!"
+            break
    
     def get_error_message(self):
         return error_message
@@ -91,7 +93,7 @@ def password_generation(name):
         scribe.writerows(stored_passwords)
 
     return password
-
+### Testing area ###
 x= DataValidation.__init__("","john" ,"doe")
 y= DataValidation.Account_existence(self=DataValidation)
 z=DataValidation.get_error_message(self=DataValidation)
