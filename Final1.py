@@ -91,7 +91,7 @@ class CreateAccountWindow:
 
     def go_back(self):
         self.root.destroy()
-        WelcomeWindow(ttk.ttk())
+        WelcomeWindow(ttk.tk())
 
 
 class LoginWindow:
