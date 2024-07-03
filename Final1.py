@@ -1,4 +1,5 @@
 import tkinter as Tk
+from tkinter import ttk
 from tkinter import messagebox
 import random
 import string
@@ -10,6 +11,9 @@ class WelcomeWindow:
     def __init__(self, root):
         self.root = root
         self.root.title("Welcome to BankSwift App")
+        self.style = ttk.Style(self)
+
+        self.style.theme_use('clam')
         #self.root.configure(bg=BG_COLOR)
    
         self.label = Tk.Label(root, text="Welcome to BankSwift", font=("Helvetica", 16))
