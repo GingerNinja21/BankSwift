@@ -100,32 +100,40 @@ class Accounts():
         self.UserID = UID
 
     def acc_no_generator(UID):
-        unique_no = False
-        with open("accounts.csv", "r") as file:
-            for line in file:
-                if  UID in line :
-                    error_message = "Account already exists! \n Please contact our nearest branch if you would like to open another account."
-                    return error_message
-               
-            while True:
-                account_no = random.randint(100000000, 999999999)
-    
-                with open("accounts.csv", "r") as file:
-                    unique_no = any(str(account_no) in line for line in file)
-                if not unique_no:
-                    return account_no
-
-    
-    def acc_creation():
+        try:
+            unique_no = False
+            with open("accounts.csv", "r") as file:
+                for line in file:
+                    if  UID in line :
+                        error_message = "Account already exists! \nPlease contact our nearest branch if you would like to open another account."
+                        return error_message
+                
+                while True:
+                    account_no = random.randint(100000000, 999999999)
         
-
-
+                    with open("accounts.csv", "r") as file:
+                        unique_no = any(str(account_no) in line for line in file)
+                    if not unique_no:
+                        return account_no
+        except:
+            error_message="Error!\nSomething went wrong while generating your account number!\nContact Aministrator!"
+            return error_message
+    
+    def acc_creation(Name, Surname):
+      try:
+        if DataValidation.Account_existence(Name,Surname) == True :
+            print("test works")
+        else:
+            print("shit dont work")
+      except:      
+            print()
 
 ### Testing area ###
 x= DataValidation.__init__("","john" ,"doe")
 y= DataValidation.Account_existence(self=DataValidation)
 z=DataValidation.get_error_message(self=DataValidation)
-v= Accounts.acc_no_generator("0005")
-print(v)
+v= Accounts.acc_no_generator("0001")
+r= Accounts.acc_creation("john" , "doe")
+print(r````)
 # print("Init:", x ,"\nAccount existence:",y ,"\n error message",z)
 
