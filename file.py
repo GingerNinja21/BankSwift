@@ -96,24 +96,28 @@ def password_generation(name):
 
 class Accounts():
 
-    def __init__(self,UID):
+    def __init__(self, UID):
         self.UserID = UID
 
     def acc_no_generator(UID):
-        unique_no = True
-        with open("accounts.csv") as x:
-            file = x.readlines()
+        unique_no = False
+        with open("accounts.csv", "r") as file:
             for line in file:
-                if UID in line :
-                    current_line = line
-                    selected_line = current_line.split(sep=",") 
-                    if len(selected_line) >= 0:
-                        account_no = selected_line[3]
-                        if account_no == "" :
-                            account_no = random.randint(100000000, 999999999)
-                            
+                if  UID in line :
+                    error_message = "Account already exists! \n Please contact our nearest branch if you would like to open another account."
+                    return error_message
+               
+            while True:
+                account_no = random.randint(100000000, 999999999)
+    
+                with open("accounts.csv", "r") as file:
+                    unique_no = any(str(account_no) in line for line in file)
+                if not unique_no:
+                    return account_no
 
-
+    
+    def acc_creation():
+        
 
 
 
@@ -121,6 +125,7 @@ class Accounts():
 x= DataValidation.__init__("","john" ,"doe")
 y= DataValidation.Account_existence(self=DataValidation)
 z=DataValidation.get_error_message(self=DataValidation)
-v= Accounts.acc_no_generator("0001")
+v= Accounts.acc_no_generator("0005")
+print(v)
 # print("Init:", x ,"\nAccount existence:",y ,"\n error message",z)
 
