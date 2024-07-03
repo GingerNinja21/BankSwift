@@ -19,7 +19,6 @@ class WelcomeWindow:
         self.label = Tk.Label(root, text="Welcome to BankSwift", font=("Helvetica", 16))
         self.label.pack(pady=20)
 
-
         # Frame to hold buttons horizontally
         button_frame = Tk.Frame(root)
         button_frame.pack()
