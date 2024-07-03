@@ -13,7 +13,7 @@ class DataValidation:
      global Usersurname
      global special_char
      global error_message
-     global Valid_input
+     
 
      Username = User_name.strip()
      Usersurname = User_surname.strip()
