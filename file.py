@@ -13,16 +13,15 @@ class DataValidation:
      global Usersurname
      global special_char
      global error_message
-     global error_state
 
      Username = User_name.strip()
      Usersurname = User_surname.strip()
-     error_state = False 
-     error_message= ""
+     error_message=""
      special_char= ["-" ,"^"]
 
      for char in Username:
         if not (Username.isalpha() or char in special_char):
+        
             error_message = "\nPlease remove any Special Characters or Numbers when entering your details!"
    
     def get_error_message(self):
@@ -30,34 +29,32 @@ class DataValidation:
     
     def Account_existence(self):
         Existence = False
-        # if error_state == False:
+
         try:
 
-                with open("accounts.csv") as x:
-                    file = x.readlines()
-                    for line in file :
-                        if  Username.lower() in line and Usersurname.lower() in line : 
-                            Existence = True
-                            break
-                    
-                    if not Existence:
-                        error_message= "\nAccount does not exist or Incorrect Credentials. \nCheck the spelling and try again."
-                        return error_message
-                        
-                    else:
-                        return Existence
-
+            with open("accounts.csv") as x:
+                file = x.readlines()
+                for line in file :
+                    if  Username.lower() in line and Usersurname.lower() in line : 
+                        Existence = True
+                        break
                 
+                if not Existence:
+                    error_message= "\nAccount does not exist or Incorrect Credentials. \nCheck the spelling and try again."
+                    return error_message
+                    
+                else:
+                    return Existence
+
+            
         except (ValueError, AttributeError, TypeError ):
-                self.error_message="\nAccount does not exist or Incorrect Credentials. \nCheck the spelling and try again."
-                return error_message
+            error_message="\nAccount does not exist or Incorrect Credentials. \nCheck the spelling and try again."
+            return error_message
 
         except:
-                error_message="Something went wrong. Contact Administration!"
-                return error_message
+             error_message="Something went wrong. Contact Administration!"
+             return error_message
         
-        # else:
-        #     return error_message 
 
 def password_generation(name):
     password = ""
@@ -95,10 +92,9 @@ def password_generation(name):
 
     return password
 
-x= DataValidation.__init__("","5" ,"6")
+x= DataValidation.__init__("","john" ,"doe")
 y= DataValidation.Account_existence(self=DataValidation)
 z=DataValidation.get_error_message(self=DataValidation)
 
-# print(y)
-print("Init:" ,x ,"\nAccount existence:",y ,"\n error message",z)
+print("Init:", x ,"\nAccount existence:",y ,"\n error message",z)
 
