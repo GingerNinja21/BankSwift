@@ -1,2 +1,4 @@
-2024-07-03 09:24:06 - Deposit: R500000.00
-2024-07-03 09:24:22 - Withdraw: R3000.00
+2024-07-03 15:18:03 - Deposit: R1000.00 - From: Unknown Account (Savings Acc)
+2024-07-03 15:18:08 - Withdraw: R200.00 - From: Unknown Account (Savings Acc)
+2024-07-03 15:18:27 - Transfer: R200.00 - From: Unknown Account (Savings Acc) - To: alexa
+2024-07-03 15:34:22 - Deposit: R4.00 - From: User (Savings Acc)
