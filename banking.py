@@ -2,7 +2,7 @@ import datetime
 import csv
 import pandas as pd
 
-balance = float()
+balance = 0.0
 account_type = "Savings Acc"
 account_name = "User"
 recipient_name = input("Enter recipient account name: ")
@@ -32,20 +32,7 @@ def get_account_name(account_number):
             if parts[3] == account_number:
                 return parts[1]
     return "User"
-
-def deposit():
-    global balance
-    try:
-        deposit_no = float(get_input("Enter amount to deposit: "))
-        if deposit_no <= 0:
-            print("Amount must be greater than zero.")
-        else:
-            balance += deposit_no
-            print(f'R{deposit_no:.2f} successfully deposited into account.')
-            write_transaction("Deposit", deposit_no, account_type, account_name)
-    except ValueError:
-        print("Please enter a valid number.")
-
+    
 def withdraw():
     global balance
     try:
@@ -54,10 +41,12 @@ def withdraw():
             print("Amount must be greater than zero.")
         elif withdraw_no > balance:
             print("Insufficient funds.")
+
         else:
-            balance -= withdraw_no
-            print(f'R{withdraw_no:.2f} successfully withdrawn.')
+            update_balance(withdraw_no)
             write_transaction("Withdraw", withdraw_no, account_type, account_name)
+            print(f'R{withdraw_no:.2f} successfully withdrawn.')
+
     except ValueError:
         print("Please enter a valid number.")
 
@@ -107,51 +96,72 @@ def transfer():
         elif transfer_no > balance:
             print("Insufficient funds.")
         else:
-            balance -= transfer_no
+            update_balance(transfer_no)
             write_transaction("Transfer", transfer_no, account_type, account_name, recipient_account_no)
             print(f'R{transfer_no:.2f} successfully transferred to {recipient_name}')
     except ValueError:
         print("Please enter a valid number.")
 
-def view_balance():
-    global balance
-    print(f"Your current balance is: R{balance:.2f}")
-
-def update_balance():
+            
+def update_balance(amount):
     global balance
     global recipient_name
 
-    with open("accounts.csv", "r") as file:
-        specific_balance = float()
-        
-        for line in file:
-            if recipient_name in line:
-                Current_line = line
-                selected_line = Current_line.split(",")
-                if len(selected_line) >= 3 :
-                    specific_balance = float(selected_line[4])
+    try:
+        df = pd.read_csv("accounts.csv")
+    except FileNotFoundError:
+        print("Error: accounts.csv not found.")
+        return
 
-                balance = specific_balance + balance                  
-                return balance
+    mask = df['name'].str.lower() == recipient_name.lower()
     
+    if mask.any():  
+        index = df.index[mask].tolist()[0]
+        
+        df.loc[index, 'balance'] -= amount
+        balance = df.loc[index, 'balance']
+        
+        print(f"Your current balance is: R{balance:.2f}")  # Print the updated balance
+    else:
+        print(f"Recipient '{recipient_name}' not found in the accounts.")
+
+    df.to_csv("accounts.csv", index=False)
+def view_balance():
+    global balance
+    global recipient_name
+
+    try:
+        df = pd.read_csv("accounts.csv")
+    except FileNotFoundError:
+        print("Error: accounts.csv not found.")
+        return
+
+    value = df['name'].str.lower() == recipient_name.lower()
+    
+    if value.any():  
+        index = df.index[value].tolist()[0]
+        
+        balance = df.loc[index, 'balance']
+        
+        print(f"Your current balance is: R{balance:.2f}")  
+
+    else:
+        print(f"Recipient '{recipient_name}' not found in the accounts.")
+
+    df.to_csv("accounts.csv", index=False)
 
 while True:
-    x= update_balance()
-    print(x, "balance")
 
-
-    print(" 1 - Deposit\n 2 - Withdraw\n 3 - View Balance\n 4 - Transfer\n 5 - Exit")
+    print(" 1- Withdraw\n 2 - View Balance\n 3 - Transfer\n 4 - Exit")
     option = get_input("Please choose an option: ")
 
     if option == '1':
-        deposit()
-    elif option == '2':
         withdraw()
-    elif option == '3':
+    elif option == '2':
         view_balance()
-    elif option == '4':
+    elif option == '3':
         transfer()
-    elif option == '5':
+    elif option == '4':
         print("Thank you for using BankSwift")
         break
     else:
