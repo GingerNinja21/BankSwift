@@ -6,25 +6,28 @@ from io import StringIO
 
 ### Initialization ###
 class DataValidation:
-   
-    def __init__(self,User_name , User_surname):
+
+    def __init__(self, User_name , User_surname):
+        self.Name = User_name
+        self.Surname = User_surname
+
      
-     global Username
-     global Usersurname
-     global special_char
-     global error_message
+        global Username
+        global Usersurname
+        global special_char
+        global error_message
      
 
-     Username = User_name.strip()
-     Usersurname = User_surname.strip()
-     error_message=""
-     special_char= ["-" ,"^"]
+        Username = User_name.strip()
+        Usersurname = User_surname.strip()
+        error_message=""
+        special_char= ["-" ,"^"]
     
 
-     for char in Username:
-        if not (char.isalpha() or char in special_char):
-            error_message = "\nPlease remove any Special Characters or Numbers when entering your details!"
-            break
+        for char in Username:
+            if not (char.isalpha() or char in special_char):
+                error_message = "\nPlease remove any Special Characters or Numbers when entering your details!"
+                break
    
     def get_error_message(self):
         return error_message
@@ -57,6 +60,7 @@ class DataValidation:
              error_message="Something went wrong. Contact Administration!"
              return error_message
         
+
 
 def password_generation(name):
     password = ""
@@ -92,9 +96,11 @@ def password_generation(name):
 
     return password
 
+x= password_generation(input("enter name:"))
 
 
 class Accounts():
+
 
     def __init__(self, UID):
         self.UserID = UID
@@ -120,26 +126,27 @@ class Accounts():
             return error_message
     
     #Work in Progress
-    # def acc_creation(Name, Surname):
-    #   try:
-    #     validator= DataValidation()
-    #     account_exists = validator.Account_existence(Name, Surname)
-    #     if account_exists:
-    #         result = "Account creation successful"
-    #     else:
-    #         result = "Account already exists"
-    #     return result
+    def acc_creation(Name, Surname):
+      try:
+        validator= DataValidation()
+        account_exists = validator.Account_existence(Name, Surname)
+        if account_exists:
+            result = "Account creation successful"
+        else:
+            result = "Account already exists"
+        return result
       
-    #   except Exception as e:
-    #         print(f"Error occurred: {e}")
-    #         return "Error: Account creation failed"
+      except Exception as e:
+            print(f"Error occurred: {e}")
+            return "Error: Account creation failed"
 
 ### Testing area ###
 x= DataValidation.__init__("","john" ,"doe")
 y= DataValidation.Account_existence(self=DataValidation)
 z=DataValidation.get_error_message(self=DataValidation)
+f= Accounts.acc_creation(self=DataValidation.__init__)
 v= Accounts.acc_no_generator("0001")
-# r= Accounts.acc_creation("john" , "doe")
-# print(r)
-print("Init:", x ,"\nAccount existence:",y ,"\n error message",z)
+print(f)
+# print("Init:", x ,"\nAccount existence:",y ,"\n error message",z)
+
 
