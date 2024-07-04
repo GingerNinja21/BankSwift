@@ -1,18 +1,22 @@
 import datetime
+import csv
+import pandas as pd
 
-balance = 0
+balance = float()
 account_type = "Savings Acc"
 account_name = "User"
+recipient_name = input("Enter recipient account name: ")
+
 
 def write_transaction(transaction_type, amount, account_type, account_name, to_account=None):
     transaction_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if to_account:
         from_account_name = get_account_name(account_name)
         to_account_name = get_account_name(to_account)
-        transaction_details = f"{transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({account_type}) - To: {to_account_name}\n"
+        transaction_details = f"{transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({account_type}) - To: {to_account_name}\n" #withdraw & deposit
     else:
         from_account_name = get_account_name(account_name)
-        transaction_details = f"{transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({account_type})\n"
+        transaction_details = f"{transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({account_type})\n" #transfers
 
     with open("transactionslog.txt", "a") as file:
         file.write(transaction_details)
@@ -88,6 +92,8 @@ def transfer():
             if create_new == 'yes':
                 recipient_account_no = get_input("Enter new account number for recipient: ")
                 new_account_uid = len(lines) 
+
+                #writes into file
                 with open("accounts.txt", "a") as file:
                     file.write(f"{new_account_uid},{recipient_name},unknown,{recipient_account_no}\n")
                 print(f'New account created for {recipient_name} with account number {recipient_account_no}')
@@ -111,7 +117,29 @@ def view_balance():
     global balance
     print(f"Your current balance is: R{balance:.2f}")
 
+def update_balance():
+    global balance
+    global recipient_name
+
+    with open("accounts.csv", "r") as file:
+        specific_balance = float()
+        
+        for line in file:
+            if recipient_name in line:
+                Current_line = line
+                selected_line = Current_line.split(",")
+                if len(selected_line) >= 3 :
+                    specific_balance = float(selected_line[4])
+
+                balance = specific_balance + balance                  
+                return balance
+    
+
 while True:
+    x= update_balance()
+    print(x, "balance")
+
+
     print(" 1 - Deposit\n 2 - Withdraw\n 3 - View Balance\n 4 - Transfer\n 5 - Exit")
     option = get_input("Please choose an option: ")
 
