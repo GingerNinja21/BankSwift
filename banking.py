@@ -31,7 +31,25 @@ def get_account_name(account_number):
             parts = line.strip().split(',')
             if parts[3] == account_number:
                 return parts[1]
-    return "User"
+            print(parts , "parts")
+
+    return recipient_name
+    
+
+def get_account_type():
+
+    option = ['Savings', 'Cheque', 'Other']
+    user_input = ''
+    input_message = "Pick an option:\n"
+
+    for index, item in enumerate(option):
+        input_message += f'{index+1}) {item}\n'
+
+    input_message += 'Your choice: '
+
+    while user_input.lower() not in option:
+        user_input = input(input_message)
+
     
 def withdraw():
     global balance
@@ -119,13 +137,13 @@ def update_balance(amount):
         index = df.index[mask].tolist()[0]
         
         df.loc[index, 'balance'] -= amount
-        balance = df.loc[index, 'balance']
-        
+        balance = df.loc[index, 'balance']      
         print(f"Your current balance is: R{balance:.2f}")  # Print the updated balance
     else:
         print(f"Recipient '{recipient_name}' not found in the accounts.")
 
     df.to_csv("accounts.csv", index=False)
+
 def view_balance():
     global balance
     global recipient_name
@@ -150,9 +168,16 @@ def view_balance():
 
     df.to_csv("accounts.csv", index=False)
 
+def linked_accounts():
+    global balance
+
+
+
+
+
 while True:
 
-    print(" 1- Withdraw\n 2 - View Balance\n 3 - Transfer\n 4 - Exit")
+    print(" 1 - Withdraw\n 2 - View Balance\n 3 - Transfer\n 4 - Exit")
     option = get_input("Please choose an option: ")
 
     if option == '1':
