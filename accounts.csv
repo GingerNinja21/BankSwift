@@ -1,4 +1,4 @@
-uid,name,surname,account_no,balance(R)
+uid,name,surname,account_no,balance
 0,john,doe,151876453,1000.0
 1,samantha,laqua,151569748,6000.0
 2,jaq,beniptorf,151968429,900.0
