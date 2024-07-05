@@ -4,7 +4,7 @@ import random
 from io import StringIO
 
 
-
+stored_account_no="151876453"
 ### Initialization ###
 class DataValidation:
 
@@ -34,6 +34,8 @@ class DataValidation:
                 break
 
     def account_existence(self):
+        global stored_username
+        global stored_usersurname
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:
@@ -46,13 +48,59 @@ class DataValidation:
                     
                 self.error_message += "\nAccount does not Exist!"
                 return False      
-                       
+
+                      
                     
         except FileNotFoundError:
             self.error_message += "\nError: Accounts file not found!"
         except Exception as e:
             return f"\nError: {str(e)}"
-        
+
+    def valid_acc_no(self):  
+        global stored_account_no
+        global account_bank
+        try :
+             with open("accounts.csv", "r") as file:
+                for line in file:
+                    parts = line.strip().split(",")
+
+                    if self.Username.lower() == parts[1] and self.Usersurname.lower() == parts[2]:
+                        stored_account_no = parts[3].strip()
+                         
+                        if len(stored_account_no) != 9:
+                            self.error_message = "\nInvalid Account no! [too many char's]"
+                            break
+                        return False
+
+                    
+                    
+                    
+
+                    # elif not stored_account_no.isdigit():
+                    #     self.error_message = "\nInvalid Account no! [Variable Type Error]"
+                        
+                    #     break
+
+                    # else:
+                    #         for line in file:
+                    #             if stored_account_no == line[3] :
+                    #              print("account not unique!")
+                    #              return True
+                            
+                        #  if stored_account_no[:3] == "151" :
+                        #     account_bank = "Bankswift"
+                            
+                         
+                        #  elif stored_account_no[:3] == "921" :
+                        #       account_bank = "FNB"
+                        #       return True
+
+                        
+            
+
+                     
+        except:
+            print("smth went wrong")
 
     def get_error_message(self):
         return self.error_message
@@ -114,7 +162,7 @@ usersurname= "doE"
 id_no="0214536215243"
 x= DataValidation(username , usersurname, id_no)
 y= x.account_existence()
-r= x.id_validation()
+r= x.valid_acc_no()
 z=x.get_error_message()
-print("\nAccount existence:",y ,"\n error message:",z ,"\nValid ID:",r)
+print("\nAccount existence:",y ,"\n error message:",z ,"\nValid account no:",r)
 
