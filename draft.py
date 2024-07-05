@@ -35,16 +35,21 @@ class DataValidation:
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:
-                    if self.Username.lower() in line.lower() and self.Usersurname.lower() in line.lower():
+                    if self.Username in line.lower() and self.Usersurname in line.lower():
                         return True
-                    else:
-                        self.error_message += "\nAccount does not Exist!"
-                        return False  
-                    
+                
+                # If no matching line is found
+                self.error_message = "\nAccount does not exist!"
+                return False
+            
         except FileNotFoundError:
-            self.error_message +="\nError: Accounts file not found!"
+            self.error_message = "\nError: Accounts file not found!"
+            return False
+        
         except Exception as e:
-            return f"\nError: {str(e)}"
+            self.error_message = f"\nError: {str(e)}"
+            return False
+
         
 
     def get_error_message(self):
@@ -102,9 +107,9 @@ def password_generation(name):
     return password
 
 ### Testing area ###
-username="joh3n"
-usersurname= "doe"
-id_no="02145362152432"
+username="samantha"
+usersurname="laqua"
+id_no="0214536215243"
 x= DataValidation(username , usersurname, id_no)
 y= x.account_existence()
 r= x.id_validation()

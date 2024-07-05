@@ -14,6 +14,7 @@ class DataValidation:
         self.id_no = id_no.strip() 
         self.special_chars = ["-", "^"]  
         self.error_message = ""  
+        print(self.Username , self.Usersurname)
         
         # Validate inputs during initialization
         self.validate_username()
@@ -24,6 +25,7 @@ class DataValidation:
             if not (char.isalpha() or char in self.special_chars):
                 self.error_message += "\nPlease remove any special characters or numbers when entering your Name!"
                 break
+
     
     def validate_usersurname(self):
         for char in self.Usersurname:
@@ -35,14 +37,16 @@ class DataValidation:
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:
-                    if self.Username.lower() in line.lower() and self.Usersurname.lower() in line.lower():
+                    print(line)
+                    if self.Username.lower() in line :
                         return True
-                    else:
-                        self.error_message += "\nAccount does not Exist!"
-                        return False  
+                    
+                self.error_message += "\nAccount does not Exist!"
+                return False      
+                       
                     
         except FileNotFoundError:
-            self.error_message +="\nError: Accounts file not found!"
+            self.error_message += "\nError: Accounts file not found!"
         except Exception as e:
             return f"\nError: {str(e)}"
         
@@ -102,9 +106,9 @@ def password_generation(name):
     return password
 
 ### Testing area ###
-username="joh3n"
-usersurname= "doe"
-id_no="02145362152432"
+username="samantha"
+usersurname= "laqua"
+id_no="0214536215243"
 x= DataValidation(username , usersurname, id_no)
 y= x.account_existence()
 r= x.id_validation()
