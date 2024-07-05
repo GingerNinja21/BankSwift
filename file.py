@@ -14,7 +14,7 @@ class DataValidation:
         self.id_no = id_no.strip() 
         self.special_chars = ["-", "^"]  
         self.error_message = ""  
-        print(self.Username , self.Usersurname)
+
         
         # Validate inputs during initialization
         self.validate_username()
@@ -37,8 +37,11 @@ class DataValidation:
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:
-                    print(line)
-                    if self.Username.lower() in line :
+                    parts = line.strip().split(",")
+
+                    stored_username = parts[1].strip().lower()
+                    stored_usersurname = parts[2].strip().lower()
+                    if self.Username.lower() == stored_username and self.Usersurname.lower() == stored_usersurname:
                         return True
                     
                 self.error_message += "\nAccount does not Exist!"
@@ -106,8 +109,8 @@ def password_generation(name):
     return password
 
 ### Testing area ###
-username="samantha"
-usersurname= "laqua"
+username="jOhn"
+usersurname= "doE"
 id_no="0214536215243"
 x= DataValidation(username , usersurname, id_no)
 y= x.account_existence()
