@@ -67,44 +67,72 @@ class DataValidation:
 
                     if self.Username.lower() == parts[1] and self.Usersurname.lower() == parts[2]:
                         stored_account_no = parts[3].strip()
-                         
+
                         if len(stored_account_no) != 9:
+                            
+                            print("if len works")
                             self.error_message = "\nInvalid Account no! [too many char's]"
                             break
-                        return False
+                        return False    
 
-                    
-                    
-                    
-
-                    # elif not stored_account_no.isdigit():
-                    #     self.error_message = "\nInvalid Account no! [Variable Type Error]"
+                    elif not stored_account_no.isdigit():
+                        self.error_message = "\nInvalid Account no! [Variable Type Error]"
                         
-                    #     break
+                        break
 
                     # else:
-                    #         for line in file:
-                    #             if stored_account_no == line[3] :
-                    #              print("account not unique!")
-                    #              return True
-                            
-                        #  if stored_account_no[:3] == "151" :
-                        #     account_bank = "Bankswift"
-                            
+                            # for line in file:
+                            #     parts = line.strip().split(",")
+                            #     print(stored_account_no,":",parts[3])
+                            #     if stored_account_no == parts[3] :
+                            #        self.error_message= "Account number is not unique!"
+                            #        return False
+
+                            #     else:
+                            #           if stored_account_no[:3] == "151" :
+                            #             account_bank = "Bankswift"
+                            #             print(account_bank)
+                            #             return True
                          
-                        #  elif stored_account_no[:3] == "921" :
-                        #       account_bank = "FNB"
-                        #       return True
-
-                        
-            
-
-                     
+                            #           elif stored_account_no[:3] == "921" :
+                            #             account_bank = "FNB"
+                            #             return True
         except:
-            print("smth went wrong")
+                print("smth went wrong")
+
+
+
+    def bank(self):
+        global account_bank
+
+        with open("accounts.csv", "r") as file:
+                
+                for line in file:
+                    parts = line.strip().split(",")
+                    print(stored_account_no,":",parts[3])
+
+                    if stored_account_no[:3] == "151" :
+                            account_bank = "Bankswift"
+                            
+                                
+                    elif stored_account_no[:3] == "921" :
+                            account_bank = "FNB"
+       
+                    
+                    return account_bank
+
+
 
     def get_error_message(self):
         return self.error_message
+                          
+
+    
+
+
+
+                                      
+        
     
     def id_validation(self):
         try:
@@ -165,5 +193,6 @@ x= DataValidation(username , usersurname, id_no)
 y= x.account_existence()
 r= x.valid_acc_no()
 z=x.get_error_message()
-print("\nAccount existence:",y ,"\n error message:",z ,"\nValid account no:",r)
+t= x.bank()
+print("\nAccount existence:",y ,"\n error message:",z ,"\nValid account no:",r ,"\n", t )
 
