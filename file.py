@@ -5,6 +5,7 @@ from io import StringIO
 
 
 stored_account_no="151876453"
+account_bank=" test"
 ### Initialization ###
 class DataValidation:
 
