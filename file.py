@@ -35,6 +35,7 @@ class DataValidation:
     def account_existence(self):
         global stored_username
         global stored_usersurname
+        account_exists= False
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:
@@ -43,12 +44,15 @@ class DataValidation:
                     stored_username = parts[1].strip().lower()
                     stored_usersurname = parts[2].strip().lower()
                     if self.Username.lower() == stored_username and self.Usersurname.lower() == stored_usersurname:
-                        return True
-                    
-                self.error_message += "\nAccount does not Exist!"
-                return False      
+                        account_exists= True
+                        break
+                        
+            if not account_exists:
+                self.error_message += "\nAccount does not Exist!"  
+                print(self.error_message)
+            return account_exists
 
-                      
+           
                     
         except FileNotFoundError:
             self.error_message += "\nError: Accounts file not found!"
@@ -107,8 +111,6 @@ class DataValidation:
                     return account_bank
 
     def get_error_message(self):
-    
-       
         return self.error_message
                           
     def id_validation(self):
@@ -133,23 +135,27 @@ class account_creation:
         self.Usersurname = User_surname.strip().lower()
         self.id_no = id_no.strip() 
         self.special_chars = ["-", "^" ,"\'"]  
+        self.error_message = ""  
 
         self.new_account = DataValidation(self.Username,self.Usersurname,self.id_no) 
         
-       
-        self.new_account.id_validation()
-        self.new_account.account_existence()
-        self.new_account.valid_acc_no()
-        
+        global valid_acc_no
+        global valid_id
+        global existing_account
 
+        valid_id = self.new_account.id_validation()
+        existing_account = self.new_account.account_existence()
+        valid_acc_no = self.new_account.valid_acc_no()
+        
+    def get_error_message(self):
+        x= self.new_account.error_message
+        return x
+    
     def password_generation(self):
         try:
-            print("account existence:",self.new_account.account_existence())
-            if self.new_account.account_existence() == True:
-               self.new_account.error_message += "\nAccount already exists!"
+            if existing_account == True:
+               self.new_account.error_message += "\nAccount already exists!" 
 
-               
-            
             else:
 
                 password = ""
@@ -184,34 +190,36 @@ class account_creation:
                     
                     scribe.writerows(stored_passwords)
                     
-                  
+                
                 return password
         except:
-               print()
-               
-                    # return x
+                self.new_account.error_message += "\nSomthing went wrong! Contact Administrator!"  
+
+                    
 
     # def acc_no_generator(acc_type):
     #     valid_char= ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',]
-    #     acc_type=""
+    #     ###acc type###
+    #     ###1- savings , 2- Cheque , 3 - debit ###
+    #     acc_type="1"
     #     gen_acc_no = ""
 
     #     while len(gen_acc_no) != 9 :
     
-
+    
 
 
 ### Testing area ###
-username="john"
-usersurname= "doe"
-id_no="0214536215243"
+username="joh3n"
+usersurname= "do$e"
+id_no="02145362415243"
+# d= DataValidation(username,usersurname,id_no)
 x= account_creation(username,usersurname,id_no)
 y= x.password_generation()
 z= x.new_account
-r= DataValidation(username,usersurname,id_no)
-c= r.get_error_message()
+c= x.get_error_message()
 print("c:",c)
-print*(error_message)
+
 # r= x.valid_acc_no()
 # z=x.get_error_message()
 # # t= x.bank()
