@@ -156,8 +156,10 @@ class account_creation:
             if existing_account == True:
                self.new_account.error_message += "\nAccount already exists!" 
 
-            else:
+            elif valid_id == False:
+                  self.new_account.error_message+=""
 
+            else:        
                 password = ""
                 ascii_characters = [
                     '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',
@@ -210,9 +212,9 @@ class account_creation:
 
 
 ### Testing area ###
-username="joh3n"
-usersurname= "do$e"
-id_no="02145362415243"
+username="joshn"
+usersurname= "doe"
+id_no="0214536241543"
 # d= DataValidation(username,usersurname,id_no)
 x= account_creation(username,usersurname,id_no)
 y= x.password_generation()
