@@ -4,8 +4,8 @@ import random
 from io import StringIO
 
 
-stored_account_no="151876453"
-account_bank=" test"
+stored_account_no=""
+account_bank="test"
 ### Initialization ###
 class DataValidation:
 
@@ -49,15 +49,15 @@ class DataValidation:
                         
             if not account_exists:
                 self.error_message += "\nAccount does not Exist!"  
-                print(self.error_message)
+        
             return account_exists
 
            
                     
         except FileNotFoundError:
             self.error_message += "\nError: Accounts file not found!"
-        except Exception as e:
-            return f"\nError: {str(e)}"
+        except :
+            self.error_message+="Something went wrong! \nContact Administrator\n(Error location: account_existence)"
 
     def valid_acc_no(self):  
         global stored_account_no
@@ -75,10 +75,9 @@ class DataValidation:
                         break
 
                     elif  len(stored_account_no) != 9:
-                            
-                        self.error_message += "\nInvalid Account no! [too many char's]"
-                        return False    
-                        break
+                            self.error_message += "\nInvalid Account no! [too many char's]"
+                            return False    
+
 
                     elif not stored_account_no.isdigit():
                         self.error_message += "\nInvalid Account no! [Variable Type Error]"
@@ -89,26 +88,40 @@ class DataValidation:
                         return True
                             
         except:
-                print("smth went wrong")
+                self.error_message+="Something went wrong! \nContact Administrator\n(Error location: valid_acc_no)"
 
     def bank(self):
         global account_bank
-
-        with open("accounts.csv", "r") as file:
-                
-                for line in file:
-                    parts = line.strip().split(",")
-                    print(stored_account_no,":",parts[3])
-
-                    if stored_account_no[:3] == "151" :
-                            account_bank = "Bankswift"
-                            
-                                
-                    elif stored_account_no[:3] == "921" :
-                            account_bank = "FNB"
-       
+        try:
+            with open("accounts.csv", "r") as file:
                     
+                    for line in file:
+                        parts = line.strip().split(",")
+
+                        if stored_account_no[:3] == "151" :
+                                account_bank = "Bankswift"
+
+                        elif stored_account_no[:1] == "4" :
+                                if stored_account_no[:3] =="470" or stored_account_no[:4] =="4700":
+                                    account_bank = "Capitec"
+                                else:
+                                    account_bank = "ABSA"       
+                                    
+                        elif stored_account_no[:1] == "6" :
+                                account_bank = "FNB"
+                        
+                        elif stored_account_no[:1] == "1" or "0" :
+                                if stored_account_no[:2] == "15":
+                                    account_bank = "Nedbank"
+                                else: 
+                                    account_bank = "Standard Bank"
+            
+                        
+                        elif stored_account_no[:1] == "5" or "2" :
+                                account_bank = "Nedbank"
                     return account_bank
+        except:
+                self.error_message+="Something went wrong! \nContact Administrator\n(Error location: bank() function)"
 
     def get_error_message(self):
         return self.error_message
@@ -126,14 +139,15 @@ class DataValidation:
             else :
                 return True
         except:
-            self.error_message="Something went wrong! \nContact Administrator"
+            self.error_message+="Something went wrong! \nContact Administrator\n(Error location: id_validation)"
 
 class account_creation:
 
-    def __init__(self, User_name, User_surname,id_no):
+    def __init__(self, User_name, User_surname,id_no,acc_type):
         self.Username = User_name.strip().lower()
         self.Usersurname = User_surname.strip().lower()
         self.id_no = id_no.strip() 
+        self.acc_type = acc_type.strip().lower()
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
 
@@ -145,7 +159,6 @@ class account_creation:
 
         valid_id = self.new_account.id_validation()
         existing_account = self.new_account.account_existence()
-        valid_acc_no = self.new_account.valid_acc_no()
         
     def get_error_message(self):
         x= self.new_account.error_message
@@ -195,30 +208,44 @@ class account_creation:
                 
                 return password
         except:
-                self.new_account.error_message += "\nSomthing went wrong! Contact Administrator!"  
+                self.new_account.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: password_generation)"  
 
                     
 
-    # def acc_no_generator(acc_type):
-    #     valid_char= ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',]
-    #     ###acc type###
-    #     ###1- savings , 2- Cheque , 3 - debit ###
-    #     acc_type="1"
-    #     gen_acc_no = ""
+    def acc_no_generator(self):
+        valid_char= ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',]
 
-    #     while len(gen_acc_no) != 9 :
-    
-    
+        gen_acc_no = "151"
+        valid_acc = False
+        try:
+            while len(gen_acc_no) != 9 :
+                    gen_acc_no += random.choice(valid_char)
 
+            stored_account_no = gen_acc_no
+            with open("accounts.csv", "r") as file:
+                while valid_acc == False:    
+                    for line in file:
+                        parts = line.strip().split(",")
+
+                        if stored_account_no == parts[3]:
+                            self.new_account.error_message += "\nCannot create new account. Account number not unique.\n Attempting new account number generation..."
+
+                        else:
+                            valid_acc = True 
+
+                return gen_acc_no
+    
+        except:
+             self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
 
 ### Testing area ###
-username="joshn"
+username="john"
 usersurname= "doe"
 id_no="0214536241543"
-# d= DataValidation(username,usersurname,id_no)
-x= account_creation(username,usersurname,id_no)
-y= x.password_generation()
-z= x.new_account
+d= DataValidation(username,usersurname,id_no)
+x= account_creation(username,usersurname,id_no,"bankswift")
+
+f= x.acc_no_generator()
 c= x.get_error_message()
 print("c:",c)
 
