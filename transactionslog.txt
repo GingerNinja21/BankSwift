@@ -1,2 +1,4 @@
-2024-07-04 15:35:37 - Transfer: R2000.00 - From: User (Savings Acc) - To: andrea
-2024-07-04 15:35:58 - Withdraw: R2000.00 - From: User (Savings Acc)
+2024-07-08 15:21:17 - Withdraw: R100.00 - From: JOHN (Savings)
+2024-07-08 15:21:30 - Transfer: R200.00 - From: JOHN (Savings) - To: alex
+2024-07-08 15:48:33 - Withdraw: R500.00 - From: john (Savings)
+2024-07-08 15:48:49 - Transfer: R500.00 - From: john (Savings) - To: andy
