@@ -12,7 +12,10 @@ class DataValidation:
     def __init__(self, User_name, User_surname,id_no):
         self.Username = User_name.strip()
         self.Usersurname = User_surname.strip()
-        self.id_no = id_no.strip() 
+        self.id_no = id_no.strip()
+        # self.pin= pin.strip()
+        # self.phone_number= phone_number.strip()
+        # self.email = email.strip().lower()
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
 
@@ -89,6 +92,20 @@ class DataValidation:
                             
         except:
                 self.error_message+="Something went wrong! \nContact Administrator\n(Error location: valid_acc_no)"
+
+    def validate_pin(self):
+        try:       
+            if self.pin != 5 :
+                 self.error_message += "Pin does not meet the minimum requirements!\nYour pin need's to contain 5 digits!"
+                 return False    
+        except: 
+                 return True
+
+    def validate_phone_number(self):
+        print()
+
+    def validate_email(self):
+         print()
 
     def bank(self):
         global account_bank
@@ -239,15 +256,15 @@ class account_creation:
              self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
 
 ### Testing area ###
-username="john"
-usersurname= "doe"
-id_no="0214536241543"
-d= DataValidation(username,usersurname,id_no)
-x= account_creation(username,usersurname,id_no,"bankswift")
+# username="john"
+# usersurname= "doe"
+# id_no="0214536241543"
+# d= DataValidation(username,usersurname,id_no)
+# x= account_creation(username,usersurname,id_no,"bankswift")
 
-f= x.acc_no_generator()
-c= x.get_error_message()
-print("c:",c)
+# f= x.acc_no_generator()
+# c= x.get_error_message()
+# print("c:",c)
 
 # r= x.valid_acc_no()
 # z=x.get_error_message()

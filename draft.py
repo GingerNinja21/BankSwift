@@ -1,273 +1,278 @@
 import tkinter as tk
-from tkinter import messagebox
-import csv
+from tkinter import ttk, messagebox
 import random
-
-stored_account_no = ""
-account_bank = "test"
-
-### Initialization ###
-class DataValidation:
-
-    def __init__(self, User_name, User_surname, id_no):
-        self.Username = User_name.strip()
-        self.Usersurname = User_surname.strip()
-        self.id_no = id_no.strip()
-        self.special_chars = ["-", "^", "'"]
-        self.error_message = ""
-
-        self.validate_username()
-        self.validate_usersurname()
-
-    def validate_username(self):
-        for char in self.Username:
-            if not (char.isalpha() or char in self.special_chars):
-                self.error_message += "\nPlease remove any special characters or numbers when entering your Name!"
-                break
-
-    def validate_usersurname(self):
-        for char in self.Usersurname:
-            if not (char.isalpha() or char in self.special_chars):
-                self.error_message += "\nPlease remove any special characters or numbers when entering your Surname!"
-                break
-
-    def account_existence(self):
-        global stored_username
-        global stored_usersurname
-        account_exists = False
-        try:
-            with open("accounts.csv", "r") as file:
-                for line in file:
-                    parts = line.strip().split(",")
-
-                    stored_username = parts[1].strip().lower()
-                    stored_usersurname = parts[2].strip().lower()
-                    if self.Username.lower() == stored_username and self.Usersurname.lower() == stored_usersurname:
-                        account_exists = True
-                        break
-
-            if not account_exists:
-                self.error_message += "\nAccount does not Exist!"
-
-            return account_exists
-
-        except FileNotFoundError:
-            self.error_message += "\nError: Accounts file not found!"
-        except:
-            self.error_message += "Something went wrong! \nContact Administrator\n(Error location: account_existence)"
-
-    def valid_acc_no(self):
-        global stored_account_no
-        global account_bank
-
-        try:
-            with open("accounts.csv", "r") as file:
-                for line in file:
-                    parts = line.strip().split(",")
-
-                    if self.Username.lower() == parts[1] and self.Usersurname.lower() == parts[2]:
-                        stored_account_no = parts[3].strip()
-                        self.error_message += "Account already exists!"
-                        return False
-
-                    elif len(stored_account_no) != 9:
-                        self.error_message += "\nInvalid Account no! [too many char's]"
-                        return False
-
-                    elif not stored_account_no.isdigit():
-                        self.error_message += "\nInvalid Account no! [Variable Type Error]"
-                        break
-
-                    else:
-                        return True
-
-        except:
-            self.error_message += "Something went wrong! \nContact Administrator\n(Error location: valid_acc_no)"
-
-    def bank(self):
-        global account_bank
-        try:
-            with open("accounts.csv", "r") as file:
-
-                for line in file:
-                    parts = line.strip().split(",")
-
-                    if stored_account_no[:3] == "151":
-                        account_bank = "Bankswift"
-
-                    elif stored_account_no[:1] == "4":
-                        if stored_account_no[:3] == "470" or stored_account_no[:4] == "4700":
-                            account_bank = "Capitec"
-                        else:
-                            account_bank = "ABSA"
-
-                    elif stored_account_no[:1] == "6":
-                        account_bank = "FNB"
-
-                    elif stored_account_no[:1] == "1" or stored_account_no[:1] == "0":
-                        if stored_account_no[:2] == "15":
-                            account_bank = "Nedbank"
-                        else:
-                            account_bank = "Standard Bank"
-
-                    elif stored_account_no[:1] == "5" or stored_account_no[:1] == "2":
-                        account_bank = "Nedbank"
-            return account_bank
-        except:
-            self.error_message += "Something went wrong! \nContact Administrator\n(Error location: bank() function)"
-
-    def get_error_message(self):
-        return self.error_message
-
-    def id_validation(self):
-        try:
-            if len(self.id_no) != 13:
-                self.error_message += "\nInvalid ID number!"
-                return False
-
-            elif not self.id_no.isdigit():
-                self.error_message += "\nInvalid ID number! Remove any characters that are not Numbers!"
-                return False
-
-            else:
-                return True
-        except:
-            self.error_message += "Something went wrong! \nContact Administrator\n(Error location: id_validation)"
-
-
-class account_creation:
-
-    def __init__(self, User_name, User_surname, id_no, acc_type):
-        self.Username = User_name.strip().lower()
-        self.Usersurname = User_surname.strip().lower()
-        self.id_no = id_no.strip()
-        self.acc_type = acc_type.strip().lower()
-        self.special_chars = ["-", "^", "'"]
-        self.error_message = ""
-
-        self.new_account = DataValidation(self.Username, self.Usersurname, self.id_no)
-
-        global valid_acc_no
-        global valid_id
-        global existing_account
-
-        valid_id = self.new_account.id_validation()
-        existing_account = self.new_account.account_existence()
-
-    def get_error_message(self):
-        x = self.new_account.error_message
-        return x
-
-    def password_generation(self):
-        try:
-            if existing_account == True:
-                self.new_account.error_message += "\nAccount already exists!"
-
-            elif valid_id == False:
-                self.new_account.error_message += ""
-
-            else:
-                password = ""
-                ascii_characters = [
-                    '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',
-                    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>',
-                    '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\',
-                    ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-                    'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                    '{', '|', '}', '~'
-                ]
-
-                while len(password) <= 11:
-                    password += random.choice(ascii_characters)
-
-                ### Storing Passwords ##
-                stored_passwords = []
-                stored_passwords.append({"Name": self.Username, "Surname": self.Usersurname, "Password": password})
-
-                file_name = "password_records.csv"
-                fields = ["Name", "Surname", "Password"]
-
-                with open(file_name, "a", newline="") as csvfile:
-                    scribe = csv.DictWriter(csvfile, fieldnames=fields)
-                    ## Checks if file is empty ###
-                    if csvfile.tell() == 0:
-                        scribe.writeheader()
-
-                    scribe.writerows(stored_passwords)
-
-                return password
-        except:
-            self.new_account.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: password_generation)"
-
-    def acc_no_generator(self):
-        valid_char = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-
-        gen_acc_no = "151"
-        valid_acc = False
-        try:
-            while len(gen_acc_no) != 9:
-                gen_acc_no += random.choice(valid_char)
-
-            stored_account_no = gen_acc_no
-            with open("accounts.csv", "r") as file:
-                while valid_acc == False:
-                    for line in file:
-                        parts = line.strip().split(",")
-
-                        if stored_account_no == parts[3]:
-                            self.new_account.error_message += "\nCannot create new account. Account number not unique.\n Attempting new account number generation..."
-
-                        else:
-                            valid_acc = True
-
-            return gen_acc_no
-
-        except:
-            self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
-
-### Testing area ###
-
-def create_account():
-    username = username_entry.get()
-    usersurname = usersurname_entry.get()
-    id_no = id_entry.get()
-    acc_type = acc_type_entry.get()
-
-    d = DataValidation(username, usersurname, id_no)
-    x = account_creation(username, usersurname, id_no, acc_type)
-
-    acc_no = x.acc_no_generator()
-    error_message = x.get_error_message()
-
-    if error_message:
-        messagebox.showerror("Error", error_message)
-    else:
-        password = x.password_generation()
-        bank = d.bank()
-        messagebox.showinfo("Success", f"Account Number: {acc_no}\nPassword: {password}\nBank: {bank}")
-
-# Tkinter UI
-root = tk.Tk()
-root.title("Account Creation")
-
-tk.Label(root, text="Username:").grid(row=0, column=0)
-username_entry = tk.Entry(root)
-username_entry.grid(row=0, column=1)
-
-tk.Label(root, text="User Surname:").grid(row=1, column=0)
-usersurname_entry = tk.Entry(root)
-usersurname_entry.grid(row=1, column=1)
-
-tk.Label(root, text="ID Number:").grid(row=2, column=0)
-id_entry = tk.Entry(root)
-id_entry.grid(row=2, column=1)
-
-tk.Label(root, text="Account Type:").grid(row=3, column=0)
-acc_type_entry = tk.Entry(root)
-acc_type_entry.grid(row=3, column=1)
-
-create_btn = tk.Button(root, text="Create Account", command=create_account)
-create_btn.grid(row=4, column=0, columnspan=2)
-
-root.mainloop()
+import string
+ 
+class WelcomeWindow:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("BankSwift")
+        self.root.geometry("400x400")
+        self.root.configure(bg="#f0f0f0")
+        self.create_widgets()
+ 
+    def create_widgets(self):
+        create_account_btn = tk.Button(self.root, text="Create Account", command=self.open_create_account, bg="#4CAF50", fg="white", padx=20, pady=10)
+        create_account_btn.place(relx=0.5, rely=0.4, anchor="center")
+ 
+        login_btn = tk.Button(self.root, text="Login", command=self.open_login, bg="#2196F3", fg="white", padx=20, pady=10)
+        login_btn.place(relx=0.5, rely=0.6, anchor="center")
+ 
+        menubar = tk.Menu(self.root)
+        self.root.config(menu=menubar)
+        about_menu = tk.Menu(menubar)
+        menubar.add_cascade(label="About Us", menu=about_menu)
+        about_menu.add_command(label="About Us")
+ 
+        contact_menu = tk.Menu(menubar)
+        menubar.add_cascade(label="Contact Us", menu=contact_menu)
+        contact_menu.add_command(label="Contact Us")
+ 
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.root.mainloop()
+ 
+    def on_close(self):
+        self.root.destroy()
+ 
+    def open_create_account(self):
+        self.root.withdraw()
+        CreateAccountWindow(self)
+ 
+    def open_login(self):
+        self.root.withdraw()
+        LoginWindow(self)
+ 
+ 
+class CreateAccountWindow:
+    def __init__(self, welcome_window):
+        self.welcome_window = welcome_window
+        self.create_account = tk.Toplevel()
+        self.create_account.title("Create Account")
+        self.create_account.geometry("600x600")
+        self.create_account.configure(bg="#f0f0f0")
+        self.create_widgets()
+ 
+    def create_account_function(self):
+            if self.validate_entries():
+                messagebox.showinfo("Success", "Account created successfully.")
+ 
+    def create_widgets(self):
+        name_label = tk.Label(self.create_account, text="Name:", bg="#f0f0f0")
+        name_label.place(relx=0.1, rely=0.1)
+        self.name_entry = tk.Entry(self.create_account)
+        self.name_entry.place(relx=0.3, rely=0.1)
+ 
+        surname_label = tk.Label(self.create_account, text="Surname:", bg="#f0f0f0")
+        surname_label.place(relx=0.1, rely=0.15)
+        self.surname_entry = tk.Entry(self.create_account)
+        self.surname_entry.place(relx=0.3, rely=0.15)
+ 
+        id_label = tk.Label(self.create_account, text="ID No.:", bg="#f0f0f0")
+        id_label.place(relx=0.1, rely=0.2)
+        self.id_entry = tk.Entry(self.create_account)
+        self.id_entry.place(relx=0.3, rely=0.2)
+ 
+        phone_label = tk.Label(self.create_account, text="Phone:", bg="#f0f0f0")
+        phone_label.place(relx=0.1, rely=0.25)
+        self.phone_entry = tk.Entry(self.create_account)
+        self.phone_entry.place(relx=0.3, rely=0.25)
+ 
+        email_label = tk.Label(self.create_account, text="Email:", bg="#f0f0f0")
+        email_label.place(relx=0.1, rely=0.3)
+        self.email_entry = tk.Entry(self.create_account)
+        self.email_entry.place(relx=0.3, rely=0.3)
+ 
+        balance_label = tk.Label(self.create_account, text="Opening Balance:", bg="#f0f0f0")
+        balance_label.place(relx=0.1, rely=0.4)
+        self.balance_entry = tk.Entry(self.create_account)
+        self.balance_entry.place(relx=0.3, rely=0.4)
+ 
+        pin_label = tk.Label(self.create_account, text="Pin Number:", bg="#f0f0f0")
+        pin_label.place(relx=0.1, rely=0.45)
+        self.pin_entry = tk.Entry(self.create_account, show="*")
+        self.pin_entry.place(relx=0.3, rely=0.45)
+ 
+        password_label = tk.Label(self.create_account, text="Password:", bg="#f0f0f0")
+        password_label.place(relx=0.1, rely=0.5)
+        self.password_entry = tk.Entry(self.create_account)
+        self.password_entry.place(relx=0.3, rely=0.5)
+       
+        generate_btn = tk.Button(self.create_account, text="Generate", command=self.generate_password, bg="#4CAF50", fg="white", padx=1, pady=1)
+        generate_btn.place(relx=0.6, rely=0.5)
+ 
+        self.strength_label = tk.Label(self.create_account, text="Password Strength:", bg="#f0f0f0")
+        self.strength_label.place(relx=0.1, rely=0.55)
+        self.strength_bar = ttk.Progressbar(self.create_account, mode="determinate", length=200)
+        self.strength_bar.place(relx=0.3, rely=0.55)
+ 
+   
+ 
+        create_btn = tk.Button(self.create_account, text="Create Account", command=self.create_account_function, bg="#4CAF50", fg="white", padx=20, pady=10)
+        create_btn.place(relx=0.5, rely=0.7, anchor="center")
+ 
+        back_btn = tk.Button(self.create_account, text="Back", command=self.go_back, bg="#FF5722", fg="white", padx=20, pady=10)
+        back_btn.place(relx=0.3, rely=0.7, anchor="center")
+ 
+        self.create_account.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.create_account.mainloop()
+ 
+   
+    def on_close(self):
+        self.create_account.destroy()
+        self.welcome_window.root.deiconify()
+ 
+    def go_back(self):
+        self.create_account.destroy()
+        self.welcome_window.root.deiconify()
+ 
+    def generate_password(self):
+        characters = string.ascii_letters + string.digits + string.punctuation
+        password = ''.join(random.choice(characters) for i in range(12))
+        self.password_entry.delete(0, tk.END)
+        self.password_entry.insert(0, password)
+        strength = self.calculate_strength(password)
+        self.strength_bar['value'] = strength
+ 
+    def calculate_strength(self, password):
+        strength = 0
+        if len(password) >= 8:
+            strength += 20
+        if any(char.isdigit() for char in password):
+            strength += 20
+        if any(char.isupper() for char in password):
+            strength += 20
+        if any(char in string.punctuation for char in password):
+            strength += 20
+        if len(password) >= 12:
+            strength += 20
+        return strength
+ 
+    #def create_account_function(self):
+        #if self.validate_entries():
+            #messagebox.showinfo("Success", "Account created successfully.")
+ 
+ 
+class LoginWindow:
+    def __init__(self, welcome_window):
+        self.welcome_window = welcome_window
+        self.login = tk.Toplevel()
+        self.login.title("Login")
+        self.login.geometry("400x400")
+        self.login.configure(bg="#f0f0f0")
+        self.create_widgets()
+ 
+    def create_widgets(self):
+        username_label = tk.Label(self.login, text="Username:", bg="#f0f0f0")
+        username_label.place(relx=0.1, rely=0.3)
+        self.username_entry = tk.Entry(self.login)
+        self.username_entry.place(relx=0.3, rely=0.3)
+ 
+        pin_label = tk.Label(self.login, text="Pin:", bg="#f0f0f0")
+        pin_label.place(relx=0.1, rely=0.4)
+        self.pin_entry = tk.Entry(self.login, show="*")
+        self.pin_entry.place(relx=0.3, rely=0.4)
+ 
+        login_btn = tk.Button(self.login, text="Login", command=self.login_function, bg="#4CAF50", fg="white", padx=20, pady=10)
+        login_btn.place(relx=0.5, rely=0.7, anchor="center")
+ 
+        forgot_pin_link = tk.Label(self.login, text="Forgot Pin?", fg="blue", cursor="hand2")
+        forgot_pin_link.place(relx=0.6, rely=0.4)
+        forgot_pin_link.bind("<Button-1>", lambda event: self.forgot_pin())
+ 
+        self.new_pin_label = tk.Label(self.login, text="New Pin:", bg="#f0f0f0")
+        self.new_pin_entry = tk.Entry(self.login, show="*")
+ 
+        self.confirm_pin_label = tk.Label(self.login, text="Confirm Pin:", bg="#f0f0f0")
+        self.confirm_pin_entry = tk.Entry(self.login, show="*")
+ 
+        change_pin_btn = tk.Button(self.login, text="Change Pin", command=self.change_pin, bg="#2196F3", fg="white", padx=10, pady=5)
+ 
+        back_btn = tk.Button(self.login, text="Back", command=self.go_back, bg="#FF5722", fg="white", padx=20, pady=10)
+        back_btn.place(relx=0.3, rely=0.7, anchor="center")
+ 
+        self.login.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.login.mainloop()
+ 
+    def on_close(self):
+        self.login.destroy()
+        self.welcome_window.root.deiconify()
+ 
+    def go_back(self):
+        self.login.destroy()
+        self.welcome_window.root.deiconify()
+ 
+    def validate_entries(self):
+        username = self.username_entry.get().strip()
+        pin = self.pin_entry.get().strip()
+ 
+        if not username or not pin:
+            messagebox.showerror("Error", "Username and Pin are required")
+            return False
+        return True
+ 
+    def forgot_pin(self):
+        self.new_pin_label.place(relx=0.1, rely=0.5)
+        self.new_pin_entry.place(relx=0.3, rely=0.5)
+        self.confirm_pin_label.place(relx=0.1, rely=0.6)
+        self.confirm_pin_entry.place(relx=0.3, rely=0.6)
+ 
+        # Hide login button temporarily
+        self.login_btn = tk.Button(self.login, text="Login", command=self.login_function, bg="#4CAF50", fg="white", padx=20, pady=10)
+        self.login_btn.place_forget()
+ 
+        self.change_pin_btn.place(relx=0.5, rely=0.7, anchor="center")
+ 
+    def change_pin(self):
+        new_pin = self.new_pin_entry.get()
+        confirm_new_pin = self.confirm_pin_entry.get()
+        if new_pin == confirm_new_pin:
+            self.new_pin_entry.delete(0, tk.END)
+            self.confirm_pin_entry.delete(0, tk.END)
+            messagebox.showinfo("Success", "Pin changed successfully.")
+        else:
+            messagebox.showerror("Error", "New pin and confirm pin do not match.")
+ 
+    def login_function(self):
+        if self.validate_entries():
+            messagebox.showinfo("Success", "Login successful.")
+            self.login.destroy()
+            DashboardWindow(self.welcome_window)
+ 
+ 
+class DashboardWindow:
+    def __init__(self, welcome_window):
+        self.welcome_window = welcome_window
+        self.dashboard = tk.Toplevel()
+        self.dashboard.title("Dashboard")
+        self.dashboard.geometry("600x600")
+        self.dashboard.configure(bg="#f0f0f0")
+        self.create_widgets()
+ 
+    def create_widgets(self):
+        view_transactions_btn = tk.Button(self.dashboard, text="View Transactions", bg="#2196F3", fg="white", padx=20, pady=10)
+        view_transactions_btn.place(relx=0.5, rely=0.2, anchor="center")
+ 
+        balance_inquiry_btn = tk.Button(self.dashboard, text="Balance Inquiry", bg="#2196F3", fg="white", padx=20, pady=10)
+        balance_inquiry_btn.place(relx=0.5, rely=0.4, anchor="center")
+ 
+        credit_debit_btn = tk.Button(self.dashboard, text="Credit/Debit Amount", bg="#2196F3", fg="white", padx=20, pady=10)
+        credit_debit_btn.place(relx=0.5, rely=0.6, anchor="center")
+ 
+        back_btn = tk.Button(self.dashboard, text="Back", command=self.go_back, bg="#FF5722", fg="white", padx=20, pady=10)
+        back_btn.place(relx=0.3, rely=0.7, anchor="center")
+ 
+        self.dashboard.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.dashboard.mainloop()
+ 
+    def on_close(self):
+        self.dashboard.destroy()
+        self.welcome_window.root.deiconify()
+ 
+    def go_back(self):
+        self.dashboard.destroy()
+        self.welcome_window.root.deiconify()
+ 
+ 
+if __name__ == "__main__":
+    WelcomeWindow()
+ 
