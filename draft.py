@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import random
 import string
- 
+import file
 class WelcomeWindow:
     def __init__(self):
         self.root = tk.Tk()
@@ -51,11 +51,38 @@ class CreateAccountWindow:
         self.create_account.geometry("600x600")
         self.create_account.configure(bg="#f0f0f0")
         self.create_widgets()
- 
+    
+
     def create_account_function(self):
-            if self.validate_entries():
-                messagebox.showinfo("Success", "Account created successfully.")
- 
+        name = self.name_entry.get().strip()
+        surname = self.surname_entry.get().strip()
+        id_no = self.id_entry.get().strip()
+
+        # phone_number = self.phone_entry.get().strip()
+        # email = self.email_entry.get().strip().lower()
+        # pin = self.pin_entry.get().strip()
+        
+        validator = file.DataValidation(name, surname, id_no)
+
+        if not name or not surname or not id_no :
+            messagebox.showerror("Validation Error", "All fields are required!")
+            return
+        
+        if validator.error_message != "":
+            print("here")
+            messagebox.showerror("Validation Error", validator.error_message)
+        
+        # if validator.id_validation():
+        #     print("here", validator.id_validation())
+        #     messagebox.showerror("Validation Error", validator.error_message)
+
+        if validator.account_existence():
+             validator.error_message += "\nAccount already exists!"
+             messagebox.showerror("Validation Error", validator.error_message)
+
+        elif not validator.account_existence() and not validator.error_message:
+            messagebox.showinfo("Success", "Account created successfully.")
+
     def create_widgets(self):
         name_label = tk.Label(self.create_account, text="Name:", bg="#f0f0f0")
         name_label.place(relx=0.1, rely=0.1)

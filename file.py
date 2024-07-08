@@ -9,7 +9,7 @@ account_bank=""
 ### Initialization ###
 class DataValidation:
 
-    def __init__(self, User_name, User_surname,id_no):
+    def __init__(self, User_name, User_surname,id_no,):
         self.Username = User_name.strip()
         self.Usersurname = User_surname.strip()
         self.id_no = id_no.strip()
@@ -22,11 +22,14 @@ class DataValidation:
         
         self.validate_username()
         self.validate_usersurname()
+        self.id_validation()
     
     def validate_username(self):
+
         for char in self.Username:
-            if not (char.isalpha() or char in self.special_chars):
-                self.error_message += "\nPlease remove any special characters or numbers when entering your Name!"
+            if not (char.isalpha() or char in self.special_chars) :
+                self.error_message += "\nPlease remove any special characters or numbers when entering your Name and Surname!"
+                print("here")
                 break
 
     def validate_usersurname(self):
@@ -141,7 +144,9 @@ class DataValidation:
                 self.error_message+="Something went wrong! \nContact Administrator\n(Error location: bank() function)"
 
     def get_error_message(self):
-        return self.error_message
+        error_message= self.error_message
+        print(error_message,"here")
+        return error_message
                           
     def id_validation(self):
         try:
