@@ -39,11 +39,6 @@ class DataValidation:
                 self.error_message += "\nPlease remove any special characters or numbers when entering your Name and Surname!"
                 return
             
-        
-        
-
-    
-
     def account_existence(self):
         global stored_username
         global stored_usersurname
@@ -134,7 +129,6 @@ class DataValidation:
                 self.error_message += "\n" + str((e))
                 return False
 
-
     def bank(self):
         global account_bank
         try:
@@ -186,6 +180,9 @@ class DataValidation:
                 return True
         except:
             self.error_message+="Something went wrong! \nContact Administrator\n(Error location: id_validation)"
+    
+    def transaction_validation(self):
+         print()
 
 class account_creation:
 
@@ -286,7 +283,112 @@ class account_creation:
         except:
              self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
 
+    # def store_passwords(self):
+    #     try:
+    #         stored_passwords=[]
+    #         stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"Password" : self.password ,"Pin":self.pin})
+                        
+    #         file_name = "password_records.csv"
+    #         fields= ["Name" ,"Surname", "Password","Pin"]
+                        
+    #         with open(file_name , "a" , newline="") as csvfile:
+    #                 scribe = csv.DictWriter(csvfile , fieldnames = fields )
+    #                     ## Checks if file is empty ###
+    #                 if csvfile.tell () == 0:
+    #                     scribe.writeheader()
+                        
+    #                 scribe.writerows(stored_passwords)
+    #                 return 
+        
+    #     except:
+    #             self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
+
+    # def store_account(self):
+    #     try:
+    #         account_no =account_creation.acc_no_generator() 
+    #         stored_account=[]
+    #         stored_account.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"id_no":self.id_no, "bank_name": "bankswift", "account_no":account_no})
+                        
+    #         file_name = "accounts.csv"
+    #         fields= ["Name" ,"Surname", "id_no", "bank_name" ,"account_no"]
+                        
+    #         with open(file_name , "a" , newline="") as csvfile:
+    #                 scribe = csv.DictWriter(csvfile , fieldnames = fields )
+    #                     ## Checks if file is empty ###
+    #                 if csvfile.tell () == 0:
+    #                     scribe.writeheader()
+                        
+    #                 scribe.writerows(stored_account)
+    #                 return 
+        
+    #     except:
+    #             self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"
     def store_account(self):
+        try:
+            account_no = self.acc_no_generator()  # Adjust this to your method of generating account numbers
+            stored_account = [{
+                "Uid" : "5" ,
+                "Name": self.Username,
+                "Surname": self.Usersurname,
+                "account_no": account_no,
+                "balance": "200",
+                "account_type": "Savings",
+                "id_number": self.id_no,
+                
+            }]
+                        
+            file_name = "accounts.csv"
+            fields = ["Uid","Name", "Surname","account_no", "balance", "account_type", "id_number" ,"linked_accounts"]
+                        
+            with open(file_name, "a", newline="") as csvfile:
+                scribe = csv.DictWriter(csvfile, fieldnames=fields)
+                if csvfile.tell() == 0:  # Checks if file is empty
+                    scribe.writeheader()
+                        
+                scribe.writerows(stored_account)
+                return
+        except Exception as e:
+            print(f"Error storing account: {e}")
+
+class AccountHandler:
+    def __init__(self, uid, username, usersurname, account_type, id_no, linked_accounts, balance=0):
+        self.uid = uid
+        self.Username = username
+        self.Usersurname = usersurname
+        self.account_type = account_type
+        self.id_no = id_no
+        self.linked_accounts = linked_accounts
+        self.balance = balance
+        self.error_message=""
+
+    def store_account(self):
+        try:
+            account_no = self.acc_no_generator()  # Adjust this to your method of generating account numbers
+            stored_account = [{
+                "uid": self.uid,
+                "name": self.Username,
+                "surname": self.Usersurname,
+                "account_no": account_no,
+                "balance": self.balance,
+                "account_type": self.account_type,
+                "id_number": self.id_no,
+                "linked_accounts": self.linked_accounts
+            }]
+                        
+            file_name = "accounts.csv"
+            fields = ["uid", "name", "surname", "account_no", "balance", "account_type", "id_number", "linked_accounts"]
+                        
+            with open(file_name, "a", newline="") as csvfile:
+                scribe = csv.DictWriter(csvfile, fieldnames=fields)
+                if csvfile.tell() == 0:  # Checks if file is empty
+                    scribe.writeheader()
+                        
+                scribe.writerows(stored_account)
+                return
+        except Exception as e:
+            print(f"Error storing account: {e}")
+
+    def store_passwords(self):
         try:
             stored_passwords=[]
             stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"Password" : self.password ,"Pin":self.pin})
@@ -304,14 +406,14 @@ class account_creation:
                     return 
         
         except:
-                self.new_account.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
+                self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
 
          
 ### Testing area ###
 # username="john"
 # usersurname= "doe"
 # id_no="0214536241543"
-# d= DataValidation(username,usersurname,id_no)
+#  d= DataValidation(username,usersurname,id_no)
 # x= account_creation(username,usersurname,id_no,"bankswift")
 
 # f= x.acc_no_generator()

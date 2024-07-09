@@ -79,7 +79,8 @@ class CreateAccountWindow:
              messagebox.showerror("Validation Error", validator.error_message)
              return
         else:
-            file_writer = file.account_creation(name,surname, id_no , pin ,password,)
+            file_writer = file.AccountHandler("5",name,surname,"Savings",id_no,"",0)
+            file_writer.store_passwords()
             file_writer.store_account()
             messagebox.showinfo("Success", "Account created successfully.")
             response = messagebox.askyesno("Login", "Would you like to log in?") 
@@ -87,7 +88,7 @@ class CreateAccountWindow:
                 LoginWindow(self)
             
             else:
-                CreateAccountWindow.go_back(self)
+                self.create_account.destroy()
 
     def create_widgets(self):
         name_label = tk.Label(self.create_account, text="Name:", bg="#f0f0f0")
@@ -153,6 +154,7 @@ class CreateAccountWindow:
     def on_close(self):
         self.create_account.destroy()
         self.welcome_window.root.deiconify()
+    
  
     def go_back(self):
         self.create_account.destroy()

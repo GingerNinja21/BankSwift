@@ -1,5 +1,5 @@
-uid,name,id_number,bank_name,account_no,linked_accounts
-0,john,123456789,FNB,151876453,john
+uid,name,surname,id_number,bank_name,account_no,linked_accounts
+0,john,doe,123456789,FNB,151876453,john
 1,samantha,984984984,CAPITEC,151569748,
 2,jaq,5419849529,ABSA,151968429,
 3,alexa,844169879494,NEDBANK,185489479,john
