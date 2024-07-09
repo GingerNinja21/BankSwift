@@ -69,13 +69,8 @@ class CreateAccountWindow:
             return
         
         if validator.error_message != "":
-            print("here")
             messagebox.showerror("Validation Error", validator.error_message)
         
-        # if validator.id_validation():
-        #     print("here", validator.id_validation())
-        #     messagebox.showerror("Validation Error", validator.error_message)
-
         if validator.account_existence():
              validator.error_message += "\nAccount already exists!"
              messagebox.showerror("Validation Error", validator.error_message)
