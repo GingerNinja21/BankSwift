@@ -104,15 +104,17 @@ class DataValidation:
 
     def validate_pin(self):
         try:       
-            if self.pin != 5 :
-                 self.error_message += "\nPin does not meet the minimum requirements!\nYour pin need's to contain 5 digits!"
+            if len(self.pin) != 5 :
+                 self.error_message += "\nPin does not meet the minimum requirements!\nYour pin needs to contain 5 digits!"
                  return False    
             
             if not(self.pin.isdigit()):
                  self.error_message += "\nPin does not meet the minimum requirements!\nYour cannot contain Letters or Special characters!"
                  return False
-        except: 
+            else:
                  return True
+        except: 
+                self.error_message+="Something went wrong! \nContact Administrator\n(Error location: validate_pin)"
 
     def validate_phone_number(self):
         regex = r'^(\+27|0)\d{9}$'
@@ -187,22 +189,24 @@ class DataValidation:
 
 class account_creation:
 
-    def __init__(self, User_name, User_surname,id_no,acc_type):
+    def __init__(self, User_name, User_surname,id_no,pin,password):
         self.Username = User_name.strip().lower()
         self.Usersurname = User_surname.strip().lower()
         self.id_no = id_no.strip() 
-        self.acc_type = acc_type.strip().lower()
+        self.pin= pin.strip()
+        self.password= password.strip()
+        # self.acc_type = acc_type.strip().lower()
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
 
-        self.new_account = DataValidation(self.Username,self.Usersurname,self.id_no) 
+        # self.new_account = DataValidation(self.Username,self.Usersurname,self.id_no,) 
         
         global valid_acc_no
         global valid_id
         global existing_account
 
-        valid_id = self.new_account.id_validation()
-        existing_account = self.new_account.account_existence()
+        # valid_id = self.new_account.id_validation()
+        # existing_account = self.new_account.account_existence()
         
     def get_error_message(self):
         x= self.new_account.error_message
@@ -272,8 +276,8 @@ class account_creation:
                         parts = line.strip().split(",")
 
                         if stored_account_no == parts[3]:
-                            self.new_account.error_message += "\nCannot create new account. Account number not unique.\n Attempting new account number generation..."
-
+                            # self.new_account.error_message += "\nCannot create new account. Account number not unique.\n Attempting new account number generation..."
+                            print()
                         else:
                             valid_acc = True 
 
@@ -283,6 +287,25 @@ class account_creation:
              self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
 
     def store_account(self):
+        try:
+            stored_passwords=[]
+            stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"Password" : self.password ,"Pin":self.pin})
+                        
+            file_name = "password_records.csv"
+            fields= ["Name" ,"Surname", "Password","Pin"]
+                        
+            with open(file_name , "a" , newline="") as csvfile:
+                    scribe = csv.DictWriter(csvfile , fieldnames = fields )
+                        ## Checks if file is empty ###
+                    if csvfile.tell () == 0:
+                        scribe.writeheader()
+                        
+                    scribe.writerows(stored_passwords)
+                    return 
+        
+        except:
+                self.new_account.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
+
          
 ### Testing area ###
 # username="john"

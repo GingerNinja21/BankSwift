@@ -61,6 +61,7 @@ class CreateAccountWindow:
         id_no = self.id_entry.get().strip()
         phone_number = self.phone_entry.get().strip()
         email = self.email_entry.get().strip().lower()
+        password = self.password_entry.get()
         pin = self.pin_entry.get().strip()
         
         validator = file.DataValidation(name, surname, id_no, email,phone_number,pin)
@@ -78,6 +79,8 @@ class CreateAccountWindow:
              messagebox.showerror("Validation Error", validator.error_message)
              return
         else:
+            file_writer = file.account_creation(name,surname, id_no , pin ,password,)
+            file_writer.store_account()
             messagebox.showinfo("Success", "Account created successfully.")
 
     def create_widgets(self):
