@@ -185,12 +185,78 @@ class DataValidation:
     def transaction_validation(self):
          print()
 
-# class LoginValidation:
-#      __init__ :
+class LoginValidation:
+     def __init__(self,username,id_no,pin):
+          self.username= username.strip().lower()
+          self.id_no= id_no.strip().lower()
+          self.pin= pin.strip().lower()
+          self.special_chars = ["-", "^" ,"\'"]  
+          self.error_message = ""
+          
+          self.validate_username()
+          self.validate_pin() 
+          self.id_validation()
+          self.account_existence()
 
-#      def valid_input():
-#           print()
+     def validate_pin(self):
+        try:       
+            if len(self.pin) != 5 :
+                 self.error_message += "\nPin does not meet the minimum requirements!\nYour pin needs to contain 5 digits!"
+                 return False    
+            
+            if not(self.pin.isdigit()):
+                 self.error_message += "\nPin does not meet the minimum requirements!\nYour cannot contain Letters or Special characters!"
+                 return False
+            else:
+                 return True
+        except: 
+                self.error_message+="Something went wrong! \nContact Administrator\n(Error location: validate_pin)"
+    
+     def id_validation(self):
+        try:
+            if len(self.id_no) != 13 :
+                self.error_message += "\nInvalid ID number!"
+                return False
+            
+            elif not self.id_no.isdigit():
+                self.error_message += "\nInvalid ID number! Remove any characters that are not Numbers!"
+                return False
+            
+            else :
+                return True
+        except:
+            self.error_message+="Something went wrong! \nContact Administrator\n(Error location: id_validation)"
+
+     def validate_username(self):
+        for char in self.username:
+            if not (char.isalpha() or char in self.special_chars):
+                self.error_message += "\nPlease remove any special characters or numbers when entering your Name and Surname!"
+                return 
      
+     def account_existence(self):
+        # global stored_username
+        # global stored_usersurname
+        account_exists= False
+        try:
+            with open("accounts.csv", "r") as file:
+                for line in file:
+                    parts = line.strip().split(",")
+
+                    stored_id = parts[6].strip().lower()
+                    if self.id_no == stored_id:
+                        account_exists= True
+                        break
+                        
+            if not account_exists:
+                self.error_message += "\nAccount does not Exist!"  
+        
+            return account_exists
+        
+        except FileNotFoundError:
+            self.error_message += "\nError: Accounts file not found!"
+        except :
+            self.error_message+="Something went wrong! \nContact Administrator\n(Error location: account_existence)"
+
 class account_creation:
 
     def __init__(self, User_name, User_surname,id_no,pin,password):

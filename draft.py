@@ -279,15 +279,15 @@ class LoginWindow:
         pin= str(self.pin_entry)
         id_no= str(self.id_entry)
         if self.validate_entries():
-            validator= file.DataValidation(username,"a",id_no,"a@gmail.com","05454",pin)
+            validator= file.LoginValidation(username,id_no,pin)
             
             if validator.account_existence():
                 messagebox.showinfo("Success", "Login successful.")
                 self.login.destroy()
                 DashboardWindow(self.welcome_window)
                 return
-            
-            messagebox.showerror("Error",validator.error_message)
+            if validator.error_message:
+                 messagebox.showerror("Error",validator.error_message)
             
  
 
