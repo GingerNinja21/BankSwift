@@ -3,6 +3,7 @@ import csv
 import random
 import re
 from io import StringIO
+import pandas as pd
 from email_validator import validate_email, EmailNotValidError
 
 
@@ -283,111 +284,6 @@ class account_creation:
         except:
              self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
 
-    # def store_passwords(self):
-    #     try:
-    #         stored_passwords=[]
-    #         stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"Password" : self.password ,"Pin":self.pin})
-                        
-    #         file_name = "password_records.csv"
-    #         fields= ["Name" ,"Surname", "Password","Pin"]
-                        
-    #         with open(file_name , "a" , newline="") as csvfile:
-    #                 scribe = csv.DictWriter(csvfile , fieldnames = fields )
-    #                     ## Checks if file is empty ###
-    #                 if csvfile.tell () == 0:
-    #                     scribe.writeheader()
-                        
-    #                 scribe.writerows(stored_passwords)
-    #                 return 
-        
-    #     except:
-    #             self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
-
-    # def store_account(self):
-    #     try:
-    #         account_no =account_creation.acc_no_generator() 
-    #         stored_account=[]
-    #         stored_account.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"id_no":self.id_no, "bank_name": "bankswift", "account_no":account_no})
-                        
-    #         file_name = "accounts.csv"
-    #         fields= ["Name" ,"Surname", "id_no", "bank_name" ,"account_no"]
-                        
-    #         with open(file_name , "a" , newline="") as csvfile:
-    #                 scribe = csv.DictWriter(csvfile , fieldnames = fields )
-    #                     ## Checks if file is empty ###
-    #                 if csvfile.tell () == 0:
-    #                     scribe.writeheader()
-                        
-    #                 scribe.writerows(stored_account)
-    #                 return 
-        
-    #     except:
-    #             self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"
-    def store_account(self):
-        try:
-            account_no = self.acc_no_generator()  # Adjust this to your method of generating account numbers
-            stored_account = [{
-                "Uid" : "5" ,
-                "Name": self.Username,
-                "Surname": self.Usersurname,
-                "account_no": account_no,
-                "balance": "200",
-                "account_type": "Savings",
-                "id_number": self.id_no,
-                
-            }]
-                        
-            file_name = "accounts.csv"
-            fields = ["Uid","Name", "Surname","account_no", "balance", "account_type", "id_number" ,"linked_accounts"]
-                        
-            with open(file_name, "a", newline="") as csvfile:
-                scribe = csv.DictWriter(csvfile, fieldnames=fields)
-                if csvfile.tell() == 0:  # Checks if file is empty
-                    scribe.writeheader()
-                        
-                scribe.writerows(stored_account)
-                return
-        except Exception as e:
-            print(f"Error storing account: {e}")
-
-class AccountHandler:
-    def __init__(self, uid, username, usersurname, account_type, id_no, linked_accounts, balance=0):
-        self.uid = uid
-        self.Username = username
-        self.Usersurname = usersurname
-        self.account_type = account_type
-        self.id_no = id_no
-        self.linked_accounts = linked_accounts
-        self.balance = balance
-        self.error_message=""
-
-    def store_account(self):
-        try:
-            account_no = self.acc_no_generator()  # Adjust this to your method of generating account numbers
-            stored_account = [{
-                "uid": self.uid,
-                "name": self.Username,
-                "surname": self.Usersurname,
-                "account_no": account_no,
-                "balance": self.balance,
-                "account_type": self.account_type,
-                "id_number": self.id_no,
-                "linked_accounts": self.linked_accounts
-            }]
-                        
-            file_name = "accounts.csv"
-            fields = ["uid", "name", "surname", "account_no", "balance", "account_type", "id_number", "linked_accounts"]
-                        
-            with open(file_name, "a", newline="") as csvfile:
-                scribe = csv.DictWriter(csvfile, fieldnames=fields)
-                if csvfile.tell() == 0:  # Checks if file is empty
-                    scribe.writeheader()
-                        
-                scribe.writerows(stored_account)
-                return
-        except Exception as e:
-            print(f"Error storing account: {e}")
-
     def store_passwords(self):
         try:
             stored_passwords=[]
@@ -407,6 +303,30 @@ class AccountHandler:
         
         except:
                 self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
+
+    def store_account(self):
+        try:
+            # new_account_no = account_creation.acc_no_generator()
+            # stored_data=[]
+            # df = pd.read_csv("accounts.csv")
+            # Uid=[df['uid'].max() + 1 if not df.empty else 0]
+            # stored_data.append({"uid":Uid,"Name" : self.Username ,"Surname" : self.Usersurname ,"Account_no" : new_account_no,"Balance" : "0" , "Account_type": "Savings","Id_no":self.id_no,"Linked_accounts":""})
+            
+            # file_name = "accounts.csv"
+            # fields= ["uid","Name" ,"Surname","Account_no","Balance","Account_type", "Savings","Id_no","Linked_Accounts"]
+                        
+            # with open(file_name , "a" , newline="") as csvfile:
+            #         scribe = csv.DictWriter(csvfile , fieldnames = fields )
+            #             ## Checks if file is empty ###
+            #         if csvfile.tell () == 0:
+            #             scribe.writeheader()
+                        
+            #         scribe.writerows(stored_data)
+            #         return 
+        except:
+                self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"
+    
+
 
          
 ### Testing area ###

@@ -79,9 +79,9 @@ class CreateAccountWindow:
              messagebox.showerror("Validation Error", validator.error_message)
              return
         else:
-            file_writer = file.AccountHandler("5",name,surname,"Savings",id_no,"",0)
-            file_writer.store_passwords()
+            file_writer = file.account_creation(name,surname,id_no,pin,password)
             file_writer.store_account()
+            file_writer.store_passwords()
             messagebox.showinfo("Success", "Account created successfully.")
             response = messagebox.askyesno("Login", "Would you like to log in?") 
             if response:
