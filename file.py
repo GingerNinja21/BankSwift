@@ -41,17 +41,17 @@ class DataValidation:
                 return
             
     def account_existence(self):
-        global stored_username
-        global stored_usersurname
+        # global stored_username
+        # global stored_usersurname
         account_exists= False
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
 
-                    stored_username = parts[1].strip().lower()
-                    stored_usersurname = parts[2].strip().lower()
-                    if self.Username.lower() == stored_username and self.Usersurname.lower() == stored_usersurname:
+                    stored_id = parts[6].strip().lower()
+                    # stored_usersurname = parts[2].strip().lower()
+                    if self.id_no == stored_id:
                         account_exists= True
                         break
                         
@@ -185,6 +185,12 @@ class DataValidation:
     def transaction_validation(self):
          print()
 
+# class LoginValidation:
+#      __init__ :
+
+#      def valid_input():
+#           print()
+     
 class account_creation:
 
     def __init__(self, User_name, User_surname,id_no,pin,password):
@@ -305,7 +311,8 @@ class account_creation:
                 self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
 
     def store_account(self):
-        try:
+         print()
+        # try:
             # new_account_no = account_creation.acc_no_generator()
             # stored_data=[]
             # df = pd.read_csv("accounts.csv")
@@ -323,8 +330,8 @@ class account_creation:
                         
             #         scribe.writerows(stored_data)
             #         return 
-        except:
-                self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"
+        # except:
+        #         self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"
     
 
 
