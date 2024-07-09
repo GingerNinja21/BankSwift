@@ -74,7 +74,7 @@ class BankingApplication:
                     'name': [account_name],
                     'surname': ['unknown'],  
                     'account_no': [new_account_no],
-                    'balance': [100.0],  
+                    'balance': [100],  
                     'account_type': [acc_type],
                     'id_number': [new_account_id],
                     'linked_accounts': ['']  
@@ -107,7 +107,7 @@ class BankingApplication:
         df = pd.read_csv(self.accounts_file)
         mask = df['name'].str.lower() == self.recipient_name.lower()
         if mask.any():
-            df.loc[mask, 'balance'] += amount
+            df.loc[mask, 'balance'].astype(int) + int(amount)
             df.to_csv(self.accounts_file, index=False)
         else:
             print(f"Account '{self.recipient_name}' not found.")
@@ -154,7 +154,7 @@ class BankingApplication:
                         'name': recipient_name, 
                         'surname': 'unknown', 
                         'account_no': recipient_account_no, 
-                        'balance': 100.0, 
+                        'balance': 100, 
                         'account_type': '', 
                         'id_number': "",
                         'linked_accounts': ""
