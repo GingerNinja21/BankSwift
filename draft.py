@@ -2,7 +2,9 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import random
 import string
+
 import file
+
 class WelcomeWindow:
     def __init__(self):
         self.root = tk.Tk()
@@ -57,25 +59,25 @@ class CreateAccountWindow:
         name = self.name_entry.get().strip()
         surname = self.surname_entry.get().strip()
         id_no = self.id_entry.get().strip()
-
-        # phone_number = self.phone_entry.get().strip()
-        # email = self.email_entry.get().strip().lower()
-        # pin = self.pin_entry.get().strip()
+        phone_number = self.phone_entry.get().strip()
+        email = self.email_entry.get().strip().lower()
+        pin = self.pin_entry.get().strip()
         
-        validator = file.DataValidation(name, surname, id_no)
+        validator = file.DataValidation(name, surname, id_no, email,phone_number,pin)
 
-        if not name or not surname or not id_no :
+        if not name or not surname or not id_no or not email :
             messagebox.showerror("Validation Error", "All fields are required!")
             return
         
-        if validator.error_message != "":
+        if validator.error_message :
             messagebox.showerror("Validation Error", validator.error_message)
+            return
         
         if validator.account_existence():
              validator.error_message += "\nAccount already exists!"
              messagebox.showerror("Validation Error", validator.error_message)
-
-        elif not validator.account_existence() and not validator.error_message:
+             return
+        else:
             messagebox.showinfo("Success", "Account created successfully.")
 
     def create_widgets(self):

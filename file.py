@@ -1,7 +1,9 @@
 import requests
 import csv
 import random
+import re
 from io import StringIO
+from email_validator import validate_email, EmailNotValidError
 
 
 stored_account_no=""
@@ -9,34 +11,38 @@ account_bank=""
 ### Initialization ###
 class DataValidation:
 
-    def __init__(self, User_name, User_surname,id_no,):
+    def __init__(self, User_name, User_surname,id_no,email,phone_number,pin):
         self.Username = User_name.strip()
         self.Usersurname = User_surname.strip()
         self.id_no = id_no.strip()
-        # self.pin= pin.strip()
-        # self.phone_number= phone_number.strip()
-        # self.email = email.strip().lower()
+        self.pin= pin.strip()
+        self.phone_number= phone_number.strip()
+        self.email = email.strip()
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
 
         
-        self.validate_username()
-        self.validate_usersurname()
+        self.validate_username_and_surname()
         self.id_validation()
-    
-    def validate_username(self):
-
+        self.validate_phone_number()
+        self.validate_email()
+        self.validate_pin()
+            
+    def validate_username_and_surname(self):
         for char in self.Username:
-            if not (char.isalpha() or char in self.special_chars) :
+            if not (char.isalpha() or char in self.special_chars):
                 self.error_message += "\nPlease remove any special characters or numbers when entering your Name and Surname!"
-                print("here")
-                break
-
-    def validate_usersurname(self):
+                return
+        
         for char in self.Usersurname:
             if not (char.isalpha() or char in self.special_chars):
-                self.error_message += "\nPlease remove any special characters or numbers when entering your Surname!"
-                break
+                self.error_message += "\nPlease remove any special characters or numbers when entering your Name and Surname!"
+                return
+            
+        
+        
+
+    
 
     def account_existence(self):
         global stored_username
@@ -99,16 +105,33 @@ class DataValidation:
     def validate_pin(self):
         try:       
             if self.pin != 5 :
-                 self.error_message += "Pin does not meet the minimum requirements!\nYour pin need's to contain 5 digits!"
+                 self.error_message += "\nPin does not meet the minimum requirements!\nYour pin need's to contain 5 digits!"
                  return False    
+            
+            if not(self.pin.isdigit()):
+                 self.error_message += "\nPin does not meet the minimum requirements!\nYour cannot contain Letters or Special characters!"
+                 return False
         except: 
                  return True
 
     def validate_phone_number(self):
-        print()
+        regex = r'^(\+27|0)\d{9}$'
+        if re.match(regex, self.phone_number):
+            return True
+        else:
+            self.error_message +="\nInvalid phone number!"
+            return False
 
     def validate_email(self):
-         print()
+        try:    
+                valid = validate_email(self.email)
+                email = valid.email
+                return True
+        
+        except EmailNotValidError as e:
+                self.error_message += "\n" + str((e))
+                return False
+
 
     def bank(self):
         global account_bank
@@ -145,7 +168,6 @@ class DataValidation:
 
     def get_error_message(self):
         error_message= self.error_message
-        print(error_message,"here")
         return error_message
                           
     def id_validation(self):
@@ -260,6 +282,8 @@ class account_creation:
         except:
              self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
 
+    def store_account(self):
+         
 ### Testing area ###
 # username="john"
 # usersurname= "doe"
