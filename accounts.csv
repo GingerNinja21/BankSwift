@@ -6,3 +6,5 @@ uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
 5,annie,unknown,1000,200,,,
 6,man,unknown,,100,savings,101100528088,
 7,test,unknown,151031684,200,savings,101100528088,
+
+8,john,doe,,0,savings,0214536241543,
