@@ -7,6 +7,8 @@ uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
 6,man,unknown,,100,savings,101100528088,
 7,test,unknown,151031684,200,savings,101100528088,
 8,dummy,data,,0,savings,0210085197080,
-9,duamy,sata,151500195,0,savings,0210085197087,
-10,duamy,sata,151480655,0,savings,0210085197082,
-11,xas,doe,151135998,100,cheque,0210085197080,
+8,asdf,asf,151683996,500,cheque,0210085197080,
+8,asdf,asf,151317567,500,cheque,0210085197080,
+8,asdf,asf,151537499,500,cheque,0210085197080,
+8,asdf,asf,151652129,500,cheque,0210085197080,
+

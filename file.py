@@ -57,13 +57,16 @@ class DataValidation:
                     stored_usersurname = parts[2].strip().lower()
                     stored_username= parts[1].strip().lower()
                     stored_account_type = parts[5].strip().lower()
-                    if (self.Username == stored_username) and (self.Usersurname == stored_usersurname) and (self.account_type == stored_account_type) and (self.id_no == stored_id):
-                        account_exists= True
-                        return account_exists
+                    
 
                     if (self.id_no == stored_id):
-                        self.existing_user_id_acc_creation_message += "\nAn account already exists for the provided ID number! \n Would you like to create a new account? "
-                        return self.existing_user_id_acc_creation_message
+                        if (self.Username == stored_username) and (self.Usersurname == stored_usersurname) and (self.account_type == stored_account_type) and (self.id_no == stored_id):
+                            account_exists= True
+                            return account_exists
+                    
+                      
+                    self.existing_user_id_acc_creation_message += "\nAn account already exists for the provided ID number! \n Would you like to create a new account? "
+                    return self.existing_user_id_acc_creation_message
                     
             if not account_exists:
                 self.error_message += "\nAccount does not Exist!"  
@@ -176,7 +179,27 @@ class DataValidation:
     def get_error_message(self):
         error_message= self.error_message
         return error_message
-                          
+
+    def get_uid(self):
+        try:
+            uid = ""
+            with open("accounts.csv", "r") as file:
+                for line in file:
+                    parts = line.strip().split(",")
+
+                    
+                    stored_id = parts[6].strip().lower()
+                    if self.id_no == stored_id:
+                        uid = parts[0]
+                        return uid
+                
+                print(uid)
+
+
+        except:
+             print()
+
+
     def id_validation(self):
         try:
             if len(self.id_no) != 13 :
@@ -300,7 +323,7 @@ class LoginValidation:
         
 class account_creation:
 
-    def __init__(self, User_name, User_surname,id_no,pin,password,email, balance,account_type):
+    def __init__(self, User_name, User_surname,id_no,pin, phone_number,password,email, balance,account_type):
         self.Username = User_name.strip().lower()
         self.Usersurname = User_surname.strip().lower()
         self.id_no = id_no.strip() 
@@ -309,14 +332,12 @@ class account_creation:
         self.email= email.strip()
         self.balance= balance.strip()
         self.account_type= account_type.strip().lower()
+        self.phone_number = phone_number.strip()
+
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
-        
-        global valid_acc_no
-        global valid_id
-        global existing_account
-
-        
+    
+    
         
     def get_error_message(self):
         x= self.error_message
@@ -373,8 +394,13 @@ class account_creation:
             new_account_no = self.acc_no_generator()
             stored_data = []
             
+            validator = DataValidation(self.Username,self.Usersurname,self.id_no,self.email,self.phone_number,self.pin,self.balance,self.account_type)
             df = pd.read_csv("accounts.csv")
-            Uid = df['uid'].max() + 1 if not df.empty else 0
+            if validator.account_existence():
+                Uid = validator.get_uid()
+            else:
+                Uid = df['uid'].max() + 1 if not df.empty else 0
+
             stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": self.account_type, "Id_no": self.id_no, "Linked_accounts": ""})
 
             file_name = "accounts.csv"

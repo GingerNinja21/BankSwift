@@ -79,14 +79,14 @@ class CreateAccountWindow:
              if validator.existing_user_id_acc_creation_message:
                 response = messagebox.askyesno("ID number already exists in database", validator.existing_user_id_acc_creation_message) 
                 if response:
-                    file_writer = file.account_creation(name,surname,id_no,pin,password,email,balance,account_type)
+                    file_writer = file.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
                     file_writer.store_account()
                 else:
-                    # validator.error_message += "\nAccount already exists!"
+                    validator.error_message += "\nAccount already exists!"
                     messagebox.showerror("Validation Error", validator.error_message)
                     return
         else:
-            file_writer = file.account_creation(name,surname,id_no,pin,password,email,balance,account_type)
+            file_writer = file.account_creation(name,surname,id_no,pin,password,email,balance,str(account_type))
             file_writer.store_account()
             file_writer.store_passwords()
             messagebox.showinfo("Success", "Account created successfully.")
