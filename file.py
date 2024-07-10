@@ -13,15 +13,17 @@ account_bank=""
 ### Initialization ###
 class DataValidation:
 
-    def __init__(self, User_name, User_surname,id_no,email,phone_number,pin):
+    def __init__(self, User_name, User_surname,id_no,email,phone_number,pin ,balance):
         self.Username = User_name.strip()
         self.Usersurname = User_surname.strip()
         self.id_no = id_no.strip()
         self.pin= pin.strip()
         self.phone_number= phone_number.strip()
         self.email = email.strip()
+        self.balance = balance
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
+
 
         
         self.validate_username_and_surname()
@@ -29,6 +31,7 @@ class DataValidation:
         self.validate_phone_number()
         self.validate_email()
         self.validate_pin()
+        self.validate_opening_balance()
             
     def validate_username_and_surname(self):
         for char in self.Username:
@@ -186,6 +189,19 @@ class DataValidation:
     def transaction_validation(self):
          print()
 
+    def validate_opening_balance(self):
+            balance = self.balance
+
+            try:
+                if not balance.isdigit() or balance < 100 :
+                    self.error_message += "\nInsufficient opening balance!\nMinimum amount: R100"
+                    return False
+                else:
+                    return True
+            
+            except:
+                self.error_message += "Something went wrong! \nContact Administrator\n(Error location: validate_opening_balance)"
+
 class LoginValidation:
     def __init__(self, username, id_no, pin):
         self.username = username.strip().lower()
@@ -277,14 +293,14 @@ class LoginValidation:
         
 class account_creation:
 
-    def __init__(self, User_name, User_surname,id_no,pin,password,email):
+    def __init__(self, User_name, User_surname,id_no,pin,password,email, balance):
         self.Username = User_name.strip().lower()
         self.Usersurname = User_surname.strip().lower()
         self.id_no = id_no.strip() 
         self.pin= pin.strip()
         self.password= password.strip()
         self.email= email
-        # self.acc_type = acc_type.strip().lower()
+        self.balance= balance
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
 
@@ -347,7 +363,6 @@ class account_creation:
         except Exception as e:
                 self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: password_generation)"  
 
-
     def store_account(self):
         try:
             new_account_no = self.acc_no_generator()
@@ -355,7 +370,7 @@ class account_creation:
             
             df = pd.read_csv("accounts.csv")
             Uid = df['uid'].max() + 1 if not df.empty else 0
-            stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": "0", "Account_type": "savings", "Id_no": self.id_no, "Linked_accounts": ""})
+            stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": "savings", "Id_no": self.id_no, "Linked_accounts": ""})
 
             file_name = "accounts.csv"
             fields = ["uid", "Name", "Surname", "Account_no", "Balance", "Account_type", "Id_no", "Linked_accounts"]
@@ -369,7 +384,6 @@ class account_creation:
         except Exception as e:
             return f"Something went wrong! Contact Administrator!\n(Error location: store_account)\n{str(e)}"
            
-
     def acc_no_generator(self):
         valid_char= ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',]
 
@@ -416,7 +430,8 @@ class account_creation:
         except:
                 self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
 
- 
+             
+         
          
 ### Testing area ###
 # username="john"

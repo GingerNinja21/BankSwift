@@ -63,6 +63,7 @@ class CreateAccountWindow:
         email = self.email_entry.get().strip().lower()
         password = self.password_entry.get()
         pin = self.pin_entry.get().strip()
+        balance= self.balance_entry.get().strip
         
         validator = file.DataValidation(name, surname, id_no, email,phone_number,pin)
 
@@ -115,7 +116,17 @@ class CreateAccountWindow:
         email_label.place(relx=0.1, rely=0.3)
         self.email_entry = tk.Entry(self.create_account)
         self.email_entry.place(relx=0.3, rely=0.3)
- 
+        
+
+        account_type_label = tk.Label(self.create_account, text="Account Type:", bg="#f0f0f0")
+        account_type_label.place(relx=0.1, rely=0.35)
+        self.account_type = tk.StringVar(value="Cheque")
+        cheque_radio = tk.Radiobutton(self.create_account, text="Cheque", variable=self.account_type, value="Cheque", bg="#f0f0f0")
+        cheque_radio.place(relx=0.3, rely=0.35)
+        savings_radio = tk.Radiobutton(self.create_account, text="Savings", variable=self.account_type, value="Savings", bg="#f0f0f0")
+        savings_radio.place(relx=0.5, rely=0.35)
+
+
         balance_label = tk.Label(self.create_account, text="Opening Balance:", bg="#f0f0f0")
         balance_label.place(relx=0.1, rely=0.4)
         self.balance_entry = tk.Entry(self.create_account)
