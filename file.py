@@ -277,12 +277,13 @@ class LoginValidation:
         
 class account_creation:
 
-    def __init__(self, User_name, User_surname,id_no,pin,password):
+    def __init__(self, User_name, User_surname,id_no,pin,password,email):
         self.Username = User_name.strip().lower()
         self.Usersurname = User_surname.strip().lower()
         self.id_no = id_no.strip() 
         self.pin= pin.strip()
         self.password= password.strip()
+        self.email= email
         # self.acc_type = acc_type.strip().lower()
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
@@ -297,16 +298,16 @@ class account_creation:
         # existing_account = self.new_account.account_existence()
         
     def get_error_message(self):
-        x= self.new_account.error_message
+        x= self.error_message
         return x
     
     def password_generation(self):
         try:
             if existing_account == True:
-               self.new_account.error_message += "\nAccount already exists!" 
+               self.error_message += "\nAccount already exists!" 
 
             elif valid_id == False:
-                  self.new_account.error_message+=""
+                  self.error_message+=""
 
             else:        
                 password = ""
@@ -347,13 +348,14 @@ class account_creation:
                 self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: password_generation)"  
 
 
-    def store_account(self, User_name, User_surname, id_no, acc_type):
+    def store_account(self):
         try:
             new_account_no = self.acc_no_generator()
             stored_data = []
+            
             df = pd.read_csv("accounts.csv")
             Uid = df['uid'].max() + 1 if not df.empty else 0
-            stored_data.append({"uid": Uid, "Name": User_name.strip().lower(), "Surname": User_surname.strip().lower(), "Account_no": new_account_no, "Balance": "0", "Account_type": acc_type.strip().lower(), "Id_no": id_no.strip(), "Linked_accounts": ""})
+            stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": "0", "Account_type": "savings", "Id_no": self.id_no, "Linked_accounts": ""})
 
             file_name = "accounts.csv"
             fields = ["uid", "Name", "Surname", "Account_no", "Balance", "Account_type", "Id_no", "Linked_accounts"]
@@ -392,15 +394,15 @@ class account_creation:
                 return gen_acc_no
     
         except:
-             self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
+             self.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
 
     def store_passwords(self):
         try:
             stored_passwords=[]
-            stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"Password" : self.password ,"Pin":self.pin})
+            stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"id":self.id_no ,"email":self.email ,"Password" : self.password ,"Pin":self.pin})
                         
             file_name = "password_records.csv"
-            fields= ["Name" ,"Surname", "Password","Pin"]
+            fields= ["Name" ,"Surname","id","email", "Password","Pin"]
                         
             with open(file_name , "a" , newline="") as csvfile:
                     scribe = csv.DictWriter(csvfile , fieldnames = fields )
@@ -420,35 +422,20 @@ class account_creation:
 # username="john"
 # usersurname= "doe"
 # id_no="0214536241543"
-#  d= DataValidation(username,usersurname,id_no)
+# d= DataValidation(username,usersurname,id_no,"person@gmail.com","0712663977","12345")
 # x= account_creation(username,usersurname,id_no,"bankswift")
-username="john"
-usersurname= "doe"
-id_no="0214536241543"
-acc_type = "savings"
 
-d= DataValidation(username,usersurname,id_no)
-x= account_creation(username,usersurname,id_no,"bankswift")
-
-# f= x.acc_no_generator()
-# c= x.get_error_message()
-# print("c:",c)
-# y= d.password_recovery()
-# print("Password Recovery Result:", y)
+# acc_type = "savings"
 
 
-ac = account_creation(username, usersurname, id_no, acc_type)
-result = ac.store_account(username, usersurname, id_no, acc_type)
-print(result)
+# # f= x.acc_no_generator()
+# # c= x.get_error_message()
+# # print("c:",c)
+# # y= d.pas
+# # print("Password Recovery Result:", y)
 
-
-# f= x.acc_no_generator()
-# c= x.get_error_message()
-# print("c:",c)
-
-# r= x.valid_acc_no()
-# z=x.get_error_message()
-# # t= x.bank()
-# print("\nAccount existence:",y ,"\n error message:",z ,"\nValid account no:",r ,"\n", t )
+# ac = account_creation(username, usersurname, id_no, acc_type)
+# result = ac.store_account(username, usersurname, id_no, acc_type)
+# print(result)
 
 
