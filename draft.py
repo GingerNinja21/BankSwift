@@ -206,12 +206,12 @@ class LoginWindow:
         pin_label = tk.Label(self.login, text="Pin:", bg="#f0f0f0")
         pin_label.place(relx=0.1, rely=0.4)
         self.pin_entry = tk.Entry(self.login, show="*")
-        self.pin_entry.place(relx=0.3, rely=0.5)
+        self.pin_entry.place(relx=0.3, rely=0.4)
 
-        pin_label = tk.Label(self.login, text="ID Number:", bg="#f0f0f0")
-        pin_label.place(relx=0.1, rely=0.5)
-        self.id_entry = tk.Entry(self.login, show="*")
-        self.id_entry.place(relx=0.3, rely=0.4)
+        id_label = tk.Label(self.login, text="ID Number:", bg="#f0f0f0")
+        id_label.place(relx=0.1, rely=0.5)
+        self.id_entry = tk.Entry(self.login)
+        self.id_entry.place(relx=0.3, rely=0.5)
  
  
         login_btn = tk.Button(self.login, text="Login", command=self.login_function, bg="#4CAF50", fg="white", padx=20, pady=10)
@@ -275,12 +275,12 @@ class LoginWindow:
             messagebox.showerror("Error", "New pin and confirm pin do not match.")
  
     def login_function(self):
-        username = str(self.username_entry)
-        pin= str(self.pin_entry)
-        id_no= str(self.id_entry)
+        username = self.username_entry.get().strip()
+        pin= self.pin_entry.get().strip()
+        id_no= self.id_entry.get().strip()
+
         if self.validate_entries():
             validator= file.LoginValidation(username,id_no,pin)
-            
             if validator.account_existence():
                 messagebox.showinfo("Success", "Login successful.")
                 self.login.destroy()
