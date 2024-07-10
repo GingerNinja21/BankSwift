@@ -13,16 +13,18 @@ account_bank=""
 ### Initialization ###
 class DataValidation:
 
-    def __init__(self, User_name, User_surname,id_no,email,phone_number,pin ,balance):
+    def __init__(self, User_name, User_surname,id_no,email,phone_number,pin ,balance, account_type):
         self.Username = User_name.strip()
         self.Usersurname = User_surname.strip()
         self.id_no = id_no.strip()
         self.pin= pin.strip()
         self.phone_number= phone_number.strip()
         self.email = email.strip()
-        self.balance = balance
+        self.balance = balance.strip()
+        self.account_type = account_type.strip().lower()
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
+        self.existing_user_id_acc_creation_message= ""
 
 
         
@@ -45,8 +47,6 @@ class DataValidation:
                 return
             
     def account_existence(self):
-        # global stored_username
-        # global stored_usersurname
         account_exists= False
         try:
             with open("accounts.csv", "r") as file:
@@ -54,15 +54,21 @@ class DataValidation:
                     parts = line.strip().split(",")
 
                     stored_id = parts[6].strip().lower()
-                    # stored_usersurname = parts[2].strip().lower()
-                    if self.id_no == stored_id:
+                    stored_usersurname = parts[2].strip().lower()
+                    stored_username= parts[1].strip().lower()
+                    stored_account_type = parts[5].strip().lower()
+                    if (self.Username == stored_username) and (self.Usersurname == stored_usersurname) and (self.account_type == stored_account_type) and (self.id_no == stored_id):
                         account_exists= True
-                        break
-                        
+                        return account_exists
+
+                    if (self.id_no == stored_id):
+                        self.existing_user_id_acc_creation_message += "\nAn account already exists for the provided ID number! \n Would you like to create a new account? "
+                        return self.existing_user_id_acc_creation_message
+                    
             if not account_exists:
                 self.error_message += "\nAccount does not Exist!"  
         
-            return account_exists
+            # return account_exists
 
            
                     
@@ -190,17 +196,18 @@ class DataValidation:
          print()
 
     def validate_opening_balance(self):
-            balance = self.balance
-
+            
             try:
-                if not balance.isdigit() or balance < 100 :
+                opening_balance = self.balance
+                amount = int(opening_balance)
+                if not (amount) or not (amount>= 100) :
                     self.error_message += "\nInsufficient opening balance!\nMinimum amount: R100"
                     return False
                 else:
                     return True
             
             except:
-                self.error_message += "Something went wrong! \nContact Administrator\n(Error location: validate_opening_balance)"
+                self.error_message += "\nSomething went wrong! \nContact Administrator\n(Error location: validate_opening_balance)"
 
 class LoginValidation:
     def __init__(self, username, id_no, pin):
@@ -428,7 +435,11 @@ class account_creation:
         except:
                 self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
 
+    # def existing_user_new_account(self):
+    #     try:
              
+    #     except:
+    #          print()          
          
          
 ### Testing area ###
