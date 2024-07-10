@@ -1,3 +1,4 @@
+import pandas as pd
 import requests
 import csv
 import random
@@ -208,7 +209,7 @@ class account_creation:
                     password += random.choice(ascii_characters)
                     
 
-                    ### Storing Passwords ##
+                    ## Storing Passwords ##
                 stored_passwords=[]
                 stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"Password" : password})
                     
@@ -225,10 +226,30 @@ class account_creation:
                     
                 
                 return password
-        except:
+        except Exception as e:
                 self.new_account.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: password_generation)"  
 
-                    
+
+    def store_account(self, User_name, User_surname, id_no, acc_type):
+        try:
+            new_account_no = self.acc_no_generator()
+            stored_data = []
+            df = pd.read_csv("accounts.csv")
+            Uid = df['uid'].max() + 1 if not df.empty else 0
+            stored_data.append({"uid": Uid, "Name": User_name.strip().lower(), "Surname": User_surname.strip().lower(), "Account_no": new_account_no, "Balance": "0", "Account_type": acc_type.strip().lower(), "Id_no": id_no.strip(), "Linked_accounts": ""})
+
+            file_name = "accounts.csv"
+            fields = ["uid", "Name", "Surname", "Account_no", "Balance", "Account_type", "Id_no", "Linked_accounts"]
+
+            with open(file_name, "a", newline="") as csvfile:
+                scribe = csv.DictWriter(csvfile, fieldnames=fields)
+                if csvfile.tell() == 0:
+                    scribe.writeheader()
+                scribe.writerows(stored_data)
+            return "Account saved successfully!"
+        except Exception as e:
+            return f"Something went wrong! Contact Administrator!\n(Error location: store_account)\n{str(e)}"
+           
 
     def acc_no_generator(self):
         valid_char= ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',]
@@ -260,11 +281,17 @@ class account_creation:
 username="john"
 usersurname= "doe"
 id_no="0214536241543"
+acc_type = "savings"
+
 d= DataValidation(username,usersurname,id_no)
 x= account_creation(username,usersurname,id_no,"bankswift")
 
 y= d.password_recovery()
 print("Password Recovery Result:", y)
+
+ac = account_creation(username, usersurname, id_no, acc_type)
+result = ac.store_account(username, usersurname, id_no, acc_type)
+print(result)
 
 
 # f= x.acc_no_generator()
@@ -275,3 +302,5 @@ print("Password Recovery Result:", y)
 # z=x.get_error_message()
 # # t= x.bank()
 # print("\nAccount existence:",y ,"\n error message:",z ,"\nValid account no:",r ,"\n", t )
+
+
