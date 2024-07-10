@@ -503,8 +503,8 @@ class account_creation:
 # f= x.acc_no_generator()
 # c= x.get_error_message()
 # print("c:",c)
-y= d.password_recovery()
-print("Password Recovery Result:", y)
+# y= d.password_recovery()
+# print("Password Recovery Result:", y)
 
 
 # f= x.acc_no_generator()
