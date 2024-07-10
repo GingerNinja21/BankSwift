@@ -330,6 +330,24 @@ class LoginValidation:
             return False
 
 
+# new
+    def password_recovery(self):
+        try:
+            with open("password_records.csv", "r") as csvfile:
+                reader = csv.DictReader(csvfile)
+                for row in reader:
+                    if (self.Username.lower() == row['name'].lower() and 
+                        self.Usersurname.lower() == row['surname'].lower() and
+                        self.id_no == row['id']):
+                        return f"Your password is: {row['password']}"
+                
+            return "Password not found. Please check your details and try again."
+        
+        except FileNotFoundError:
+            return "Password records file not found."
+        except Exception as e:
+            return f"Error retrieving password: {str(e)}"
+        
 class account_creation:
 
     def __init__(self, User_name, User_surname,id_no,pin,password):
@@ -368,7 +386,7 @@ class account_creation:
                 ascii_characters = [
                     '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',
                     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>',
-                    '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                    '?', '@', 'A', 'BF', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
                     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\',
                     ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
                     'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -485,9 +503,15 @@ class account_creation:
 # f= x.acc_no_generator()
 # c= x.get_error_message()
 # print("c:",c)
+y= d.password_recovery()
+print("Password Recovery Result:", y)
+
+
+# f= x.acc_no_generator()
+# c= x.get_error_message()
+# print("c:",c)
 
 # r= x.valid_acc_no()
 # z=x.get_error_message()
 # # t= x.bank()
 # print("\nAccount existence:",y ,"\n error message:",z ,"\nValid account no:",r ,"\n", t )
-
