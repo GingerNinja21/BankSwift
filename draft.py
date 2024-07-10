@@ -66,6 +66,7 @@ class CreateAccountWindow:
         balance = self.balance_entry.get().strip()
         account_type= self.account_type.get().strip().lower()
         validator = file.DataValidation(name, surname, id_no, email,phone_number,pin,balance,account_type)
+        validator.account_existence()
 
         if not name or not surname or not id_no or not email :
             messagebox.showerror("Validation Error", "All fields are required!")
@@ -75,18 +76,24 @@ class CreateAccountWindow:
             messagebox.showerror("Validation Error", validator.error_message)
             return
         
-        if validator.account_existence():
-             if validator.existing_user_id_acc_creation_message:
-                response = messagebox.askyesno("ID number already exists in database", validator.existing_user_id_acc_creation_message) 
-                if response:
-                    file_writer = file.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
-                    file_writer.store_account()
-                else:
-                    validator.error_message += "\nAccount already exists!"
-                    messagebox.showerror("Validation Error", validator.error_message)
-                    return
+
+        if validator.account_existence() and validator.existing_user_id_acc_creation_message:
+            response = messagebox.askyesno("ID number already exists in database", validator.existing_user_id_acc_creation_message) 
+            if response:
+                file_writer = file.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
+                file_writer.store_account()
+                return
+            else:
+                messagebox.showerror("Validation Error", "Account Already Exists!")
+                return
+        
+        # if validator.account_existence():
+        #     messagebox.showerror("Validation Error", "Account Already Exists!")
+        #     return
+        
         else:
-            file_writer = file.account_creation(name,surname,id_no,pin,password,email,balance,str(account_type))
+
+            file_writer = file.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,str(account_type))
             file_writer.store_account()
             file_writer.store_passwords()
             messagebox.showinfo("Success", "Account created successfully.")
@@ -126,10 +133,10 @@ class CreateAccountWindow:
 
         account_type_label = tk.Label(self.create_account, text="Account Type:", bg="#f0f0f0")
         account_type_label.place(relx=0.1, rely=0.35)
-        self.account_type = tk.StringVar(value="Cheque")
-        cheque_radio = tk.Radiobutton(self.create_account, text="Cheque", variable=self.account_type, value="Cheque", bg="#f0f0f0")
+        self.account_type = tk.StringVar(value="")
+        cheque_radio = tk.Radiobutton(self.create_account, text="Cheque", variable=self.account_type, value="cheque", bg="#f0f0f0")
         cheque_radio.place(relx=0.3, rely=0.35)
-        savings_radio = tk.Radiobutton(self.create_account, text="Savings", variable=self.account_type, value="Savings", bg="#f0f0f0")
+        savings_radio = tk.Radiobutton(self.create_account, text="Savings", variable=self.account_type, value="savings", bg="#f0f0f0")
         savings_radio.place(relx=0.5, rely=0.35)
 
 

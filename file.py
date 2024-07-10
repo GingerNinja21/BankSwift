@@ -24,7 +24,8 @@ class DataValidation:
         self.account_type = account_type.strip().lower()
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
-        self.existing_user_id_acc_creation_message= ""
+        self.existing_user_account = False
+        self.existing_user_id_acc_creation_message = ""
 
 
         
@@ -47,38 +48,86 @@ class DataValidation:
                 return
             
     def account_existence(self):
-        account_exists= False
+        account_exists = False
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
 
-                    stored_id = parts[6].strip().lower()
-                    stored_usersurname = parts[2].strip().lower()
-                    stored_username= parts[1].strip().lower()
-                    stored_account_type = parts[5].strip().lower()
-                    
+                    if len(parts) < 7:
+                        print(f"Skipping line due to insufficient columns: {line.strip()}")
+                        continue  # Skip lines that do not have enough columns
 
-                    if (self.id_no == stored_id):
-                        if (self.Username == stored_username) and (self.Usersurname == stored_usersurname) and (self.account_type == stored_account_type) and (self.id_no == stored_id):
+                    stored_username = parts[1].strip().lower()
+                    stored_usersurname = parts[2].strip().lower()
+                    stored_account_type = parts[5].strip().lower()
+                    stored_id = parts[6].strip().lower()
+
+                    print(f"Processing line: {line.strip()}")
+                    print(f"account type: {stored_account_type}, Input acc: {self.account_type}")
+                    
+                    #need to go through whole file before making decision
+                    if (self.Username.lower() == stored_username and 
+                            self.Usersurname.lower() == stored_usersurname and 
+                            self.account_type.lower() == stored_account_type and
+                            self.id_no.lower() == stored_id):
+                            print("Match found: Account already exists!")
                             account_exists= True
                             return account_exists
+                
+                    if self.id_no.lower() == stored_id and not self.account_type == stored_account_type:
+                        self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "
+
+                        print("ID matches but other details do not match.")
+                        account_exists=True
+                        return account_exists
+
+        except FileNotFoundError:
+            self.error_message += "\nError: Accounts file not found!"
+            print("Accounts file not found.")
+            return self.error_message
+        except Exception as e:
+            self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence, Error: {str(e)})"
+            print(f"Error: {str(e)}")
+            return self.error_message
+
+
+
+    # def account_existence(self):
+    #     account_exists= False
+    #     try:
+    #         with open("accounts.csv", "r") as file:
+    #             for line in file:
+    #                 parts = line.strip().split(",")
+
+
+    #                 stored_id = parts[6].strip().lower()
+    #                 stored_usersurname = parts[2].strip().lower()
+    #                 stored_username= parts[1].strip().lower()
+    #                 stored_account_type = parts[5].strip().lower()
+    #                 print("id input:",self.id_no , "stored_id:",stored_id)
+    #                 if (self.id_no == stored_id):
+    #                     print("problem where")
+    #                     if (self.Username == stored_username and self.Usersurname == stored_usersurname and self.account_type == stored_account_type and self.id_no == stored_id):
+    #                         account_exists= True
+    #                         print("here byra stuff" )
+    #                         return account_exists
                     
-                      
-                    self.existing_user_id_acc_creation_message += "\nAn account already exists for the provided ID number! \n Would you like to create a new account? "
-                    return self.existing_user_id_acc_creation_message
+    #                 print("byra ara stuff")  
+    #                 self.existing_user_id_acc_creation_message += "\nAn account already exists for the provided ID number! \n Would you like to create a new account? "
+    #                 return account_exists
                     
-            if not account_exists:
-                self.error_message += "\nAccount does not Exist!"  
+    #         if not account_exists:
+    #             self.error_message += "\nAccount does not Exist!"  
         
-            # return account_exists
+    #         # return account_exists
 
            
                     
-        except FileNotFoundError:
-            self.error_message += "\nError: Accounts file not found!"
-        except :
-            self.error_message+="Something went wrong! \nContact Administrator\n(Error location: account_existence)"
+    #     except FileNotFoundError:
+    #         self.error_message += "\nError: Accounts file not found!"
+    #     except :
+    #         self.error_message+="Something went wrong! \nContact Administrator\n(Error location: account_existence)"
 
     def valid_acc_no(self):  
         global stored_account_no
@@ -198,7 +247,6 @@ class DataValidation:
 
         except:
              print()
-
 
     def id_validation(self):
         try:
