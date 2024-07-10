@@ -63,9 +63,9 @@ class CreateAccountWindow:
         email = self.email_entry.get().strip().lower()
         password = self.password_entry.get()
         pin = self.pin_entry.get().strip()
-        balance= self.balance_entry.get().strip
-        
-        validator = file.DataValidation(name, surname, id_no, email,phone_number,pin)
+        balance = self.balance_entry.get().strip()
+        account_type= self.account_type.get().strip()
+        validator = file.DataValidation(name, surname, id_no, email,phone_number,pin,balance)
 
         if not name or not surname or not id_no or not email :
             messagebox.showerror("Validation Error", "All fields are required!")
@@ -80,7 +80,7 @@ class CreateAccountWindow:
              messagebox.showerror("Validation Error", validator.error_message)
              return
         else:
-            file_writer = file.account_creation(name,surname,id_no,pin,password,email)
+            file_writer = file.account_creation(name,surname,id_no,pin,password,email,balance,account_type)
             file_writer.store_account()
             file_writer.store_passwords()
             messagebox.showinfo("Success", "Account created successfully.")

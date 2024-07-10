@@ -293,25 +293,23 @@ class LoginValidation:
         
 class account_creation:
 
-    def __init__(self, User_name, User_surname,id_no,pin,password,email, balance):
+    def __init__(self, User_name, User_surname,id_no,pin,password,email, balance,account_type):
         self.Username = User_name.strip().lower()
         self.Usersurname = User_surname.strip().lower()
         self.id_no = id_no.strip() 
         self.pin= pin.strip()
         self.password= password.strip()
-        self.email= email
-        self.balance= balance
+        self.email= email.strip()
+        self.balance= balance.strip()
+        self.account_type= account_type.strip().lower()
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
-
-        # self.new_account = DataValidation(self.Username,self.Usersurname,self.id_no,) 
         
         global valid_acc_no
         global valid_id
         global existing_account
 
-        # valid_id = self.new_account.id_validation()
-        # existing_account = self.new_account.account_existence()
+        
         
     def get_error_message(self):
         x= self.error_message
@@ -370,7 +368,7 @@ class account_creation:
             
             df = pd.read_csv("accounts.csv")
             Uid = df['uid'].max() + 1 if not df.empty else 0
-            stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": "savings", "Id_no": self.id_no, "Linked_accounts": ""})
+            stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": self.account_type, "Id_no": self.id_no, "Linked_accounts": ""})
 
             file_name = "accounts.csv"
             fields = ["uid", "Name", "Surname", "Account_no", "Balance", "Account_type", "Id_no", "Linked_accounts"]
