@@ -67,20 +67,21 @@ class DataValidation:
                     print(f"account type: {stored_account_type}, Input acc: {self.account_type}")
                     
                     #need to go through whole file before making decision
-                    if (self.Username.lower() == stored_username and 
-                            self.Usersurname.lower() == stored_usersurname and 
-                            self.account_type.lower() == stored_account_type and
-                            self.id_no.lower() == stored_id):
-                            print("Match found: Account already exists!")
-                            account_exists= True
-                            return account_exists
-                
-                    if self.id_no.lower() == stored_id and not self.account_type == stored_account_type:
-                        self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "
+                    if self.id_no.lower() == stored_id and self.Username.lower()== stored_username and self.Usersurname.lower() == stored_usersurname :
+                        if (self.Username.lower() == stored_username and 
+                                self.Usersurname.lower() == stored_usersurname and 
+                                self.account_type.lower() == stored_account_type and
+                                self.id_no.lower() == stored_id):
+                                print("Match found: Account already exists!")
+                                account_exists= True
 
-                        print("ID matches but other details do not match.")
-                        account_exists=True
-                        return account_exists
+                        else:
+                             account_exists= True
+                             self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
+                    
+                
+                return account_exists
+            
 
         except FileNotFoundError:
             self.error_message += "\nError: Accounts file not found!"
@@ -236,13 +237,13 @@ class DataValidation:
                 for line in file:
                     parts = line.strip().split(",")
 
-                    
+                    stored_username = parts[1]
+                    stored_usersurname = parts[2]
                     stored_id = parts[6].strip().lower()
-                    if self.id_no == stored_id:
+                    if self.id_no == stored_id and self.Username.lower() == stored_username and self.Usersurname.lower() == stored_usersurname:
                         uid = parts[0]
                         return uid
                 
-                print(uid)
 
 
         except:
@@ -446,9 +447,11 @@ class account_creation:
             df = pd.read_csv("accounts.csv")
             if validator.account_existence():
                 Uid = validator.get_uid()
+                print("account exists UID")
             else:
                 Uid = df['uid'].max() + 1 if not df.empty else 0
-
+                print("account doesnt exist UID")
+            print("UID:" , Uid)
             stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": self.account_type, "Id_no": self.id_no, "Linked_accounts": ""})
 
             file_name = "accounts.csv"
@@ -509,12 +512,7 @@ class account_creation:
         except:
                 self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
 
-    # def existing_user_new_account(self):
-    #     try:
-             
-    #     except:
-    #          print()          
-         
+   
          
 ### Testing area ###
 # username="john"
