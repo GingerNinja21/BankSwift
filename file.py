@@ -57,7 +57,6 @@ class DataValidation:
                     parts = line.strip().split(",")
 
                     if len(parts) < 7:
-                        print(f"Skipping line due to insufficient columns: {line.strip()}")
                         continue  # Skip lines that do not have enough columns
 
                     stored_username = parts[1].strip().lower()
@@ -65,11 +64,20 @@ class DataValidation:
                     stored_account_type = parts[5].strip().lower()
                     stored_id = parts[6].strip().lower()
 
+
+                    if  (self.id_no.lower() == stored_id) and (not (self.Username.lower()== stored_username) or not(self.Usersurname.lower() == stored_usersurname)):
+                        self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username} and {self.Usersurname} does not match the Name and Surname linked to the provided ID number in our database!"
+                       
+
                     print(f"Processing line: {line.strip()}")
                     print(f"account type: {stored_account_type}, Input acc: {self.account_type}")
                     
                     #need to go through whole file before making decision
                     if self.id_no.lower() == stored_id and self.Username.lower()== stored_username and self.Usersurname.lower() == stored_usersurname :
+                        account_exists= True
+                        self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
+
+                    
                         if (self.Username.lower() == stored_username and 
                                 self.Usersurname.lower() == stored_usersurname and 
                                 self.account_type.lower() == stored_account_type and
@@ -87,11 +95,9 @@ class DataValidation:
 
         except FileNotFoundError:
             self.error_message += "\nError: Accounts file not found!"
-            print("Accounts file not found.")
             return self.error_message
         except Exception as e:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence, Error: {str(e)})"
-            print(f"Error: {str(e)}")
             return self.error_message
 
     def valid_acc_no(self):  
@@ -211,7 +217,7 @@ class DataValidation:
 
 
         except:
-             print()
+             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: get_uid)"
 
     def id_validation(self):
         try:
@@ -226,9 +232,6 @@ class DataValidation:
                 return True
         except:
             self.error_message+="Something went wrong! \nContact Administrator\n(Error location: id_validation)"
-    
-    def transaction_validation(self):
-         print()
 
     def validate_opening_balance(self):
             
@@ -322,36 +325,6 @@ class LoginValidation:
         except Exception as e:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence)\n{str(e)}"
             return False     
-        
-
-    # def password_recovery(self):
-    #     try:
-    #         with open("password_records.csv", "r") as csvfile:
-    #             reader = csv.DictReader(csvfile)
-    #             for row in reader:
-    #                 if (self.em.lower() == row['name'].lower() and 
-    #                     self.Usersurname.lower() == row['surname'].lower() and
-    #                     self.id_no == row['id']):
-    #                     password = row['password']
-    #                     subject = "Password Recovery"
-    #                     message_text = (
-    #                         f"Dear {self.Username}\n\n"
-    #                         f"We have received a request to recover your password for your account registered with us.\n\n"
-    #                         f"Your account details are as follows:\n"
-    #                         f"Password: {password}\n\n"
-    #                         f"Please make sure to keep your account information secure and do not share it with anyone.\n\n"
-    #                         f"If you did not request a password recovery, please contact our support team immediately.\n\n"
-    #                         "Best regards,\nBankSwift Team"
-    #                     )
-    #                     main("bankswift05@gmail.com", email, subject, message_text)
-    #                     return f"Password sent to {email}"
-
-    #         return "Password not found. Please check your details and try again."
-
-    #     except FileNotFoundError:
-    #         return "Password records file not found."
-    #     except Exception as e:
-    #         return f"Error retrieving password: {str(e)}"
      
     def password_recovery(self):
         try:
@@ -361,7 +334,7 @@ class LoginValidation:
                     if (self.email.lower() == row['email'].lower() and 
                         self.id_no == row['id']):
                         password = row['password']
-                        username = row['name']  # Assuming 'name' is the field for user's name
+                        username = row['name'] 
                         subject = "Password Recovery"
                         message_text = (
                             f"Dear {username},\n\n"
@@ -459,11 +432,8 @@ class account_creation:
             df = pd.read_csv("accounts.csv")
             if validator.account_existence():
                 Uid = validator.get_uid()
-                print("account exists UID")
             else:
                 Uid = df['uid'].max() + 1 if not df.empty else 0
-                print("account doesnt exist UID")
-            print("UID:" , Uid)
             stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": self.account_type, "Id_no": self.id_no, "Linked_accounts": ""})
 
             file_name = "accounts.csv"
@@ -486,20 +456,18 @@ class account_creation:
         try:
             while len(gen_acc_no) != 9 :
                     gen_acc_no += random.choice(valid_char)
-
             stored_account_no = gen_acc_no
             with open("accounts.csv", "r") as file:
                 while valid_acc == False:    
                     for line in file:
                         parts = line.strip().split(",")
-
                         if stored_account_no == parts[3]:
-                            # self.new_account.error_message += "\nCannot create new account. Account number not unique.\n Attempting new account number generation..."
-                            print()
+                            continue
                         else:
                             valid_acc = True 
-
-                return gen_acc_no
+                            return gen_acc_no
+            
+                            
     
         except:
              self.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
