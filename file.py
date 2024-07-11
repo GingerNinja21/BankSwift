@@ -1,3 +1,4 @@
+from emails_utils import main
 import pandas as pd
 import requests
 import csv
@@ -51,7 +52,7 @@ class DataValidation:
                         
             if not account_exists:
                 self.error_message += "\nAccount does not Exist!"  
-        
+       
             return account_exists
 
            
@@ -141,26 +142,8 @@ class DataValidation:
                 return True
         except:
             self.error_message+="Something went wrong! \nContact Administrator\n(Error location: id_validation)"
-
-# new
-    # def password_recovery(self):
-    #     try:
-    #         with open("password_records.csv", "r") as csvfile:
-    #             reader = csv.DictReader(csvfile)
-    #             for row in reader:
-    #                 if (self.Username.lower() == row['name'].lower() and 
-    #                     self.Usersurname.lower() == row['surname'].lower() and
-    #                     self.id_no == row['id']):
-    #                     return f"Your password is: {row['password']}"
-                
-    #         return "Password not found. Please check your details and try again."
         
-    #     except FileNotFoundError:
-    #         return "Password records file not found."
-    #     except Exception as e:
-    #         return f"Error retrieving password: {str(e)}"
-
-    def password_recovery(self):
+    def password_recovery(self, email):
         try:
             with open("password_records.csv", "r") as csvfile:
                 reader = csv.DictReader(csvfile)
@@ -169,17 +152,26 @@ class DataValidation:
                         self.Usersurname.lower() == row['surname'].lower() and
                         self.id_no == row['id']):
                         password = row['password']
-                        message_text = f"Your password is: {password}"
-                        send_email("bankswift05@gmail.com", "user@example.com", "Password Recovery", message_text)
-                        return "Password has been sent to your email address."
-                
+                        subject = "Password Recovery"
+                        message_text = (
+                            f"Dear {self.Username}\n\n"
+                            f"We have received a request to recover your password for your account registered with us.\n\n"
+                            f"Your account details are as follows:\n"
+                            f"Password: {password}\n\n"
+                            f"Please make sure to keep your account information secure and do not share it with anyone.\n\n"
+                            f"If you did not request a password recovery, please contact our support team immediately.\n\n"
+                            "Best regards,\nBankSwift Team"
+                        )
+                        main("bankswift05@gmail.com", email, subject, message_text)
+                        return f"Password sent to {email}"
+
             return "Password not found. Please check your details and try again."
-        
+
         except FileNotFoundError:
             return "Password records file not found."
         except Exception as e:
             return f"Error retrieving password: {str(e)}"
-     
+      
 class account_creation:
 
     def __init__(self, User_name, User_surname,id_no,acc_type):
@@ -297,52 +289,25 @@ class account_creation:
         except:
              self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
 
-    def store_account_from_gui(self, User_name, User_surname, id_no, acc_type):
-        try:
-            new_account_no = self.acc_no_generator()
-            stored_data = []
-            df = pd.read_csv("accounts.csv")
-            Uid = [df['uid'].max() + 1 if not df.empty else 0]
-            stored_data.append({"uid": Uid, "Name": User_name.strip().lower(), "Surname": User_surname.strip().lower(), "Account_no": new_account_no, "Balance": "0", "Account_type": acc_type.strip().lower(), "Id_no": id_no.strip(), "Linked_accounts": ""})
-
-            file_name = "accounts.csv"
-            fields = ["uid", "Name", "Surname", "Account_no", "Balance", "Account_type", "Id_no", "Linked_accounts"]
-
-            with open(file_name, "a", newline="") as csvfile:
-                scribe = csv.DictWriter(csvfile, fieldnames=fields)
-                if csvfile.tell() == 0:
-                    scribe.writeheader()
-                scribe.writerows(stored_data)
-            return "Account created successfully!"
-        except Exception as e:
-            return f"Something went wrong! Contact Administrator!\n(Error location: store_account_from_gui)\n{str(e)}"
-
-# Example usage
-username = "john"
-usersurname = "doe"
-id_no = "0214536241543"
-acc_type = "savings"
-
-ac = account_creation(username, usersurname, id_no, acc_type)
-result = ac.store_account_from_gui(username, usersurname, id_no, acc_type)
-print(result)
 
 
 ### Testing area ###
-username="john"
-usersurname= "doe"
+username="andrea"
+usersurname= "goodall"
 id_no="0214536241543"
 acc_type = "savings"
+email = "goodall.andrea.ag.ag@gmail.com"
 
 d= DataValidation(username,usersurname,id_no)
 x= account_creation(username,usersurname,id_no,"bankswift")
 
-y= d.password_recovery()
+
+y = d.password_recovery(email)
 print("Password Recovery Result:", y)
 
-ac = account_creation(username, usersurname, id_no, acc_type)
-result = ac.store_account(username, usersurname, id_no, acc_type)
-print(result)
+# ac = account_creation(username, usersurname, id_no, acc_type)
+# result = ac.store_account(username, usersurname, id_no, acc_type)
+# print(result)
 
 
 # f= x.acc_no_generator()
