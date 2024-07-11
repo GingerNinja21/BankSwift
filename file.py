@@ -28,7 +28,8 @@ class DataValidation:
         self.error_message = ""  
         self.existing_user_account = False
         self.existing_user_id_acc_creation_message = ""
-
+        self.invalid_username_id_pair = ""
+        self.invalid_username_id_pair = ""
 
         
         self.validate_username_and_surname()
@@ -99,6 +100,7 @@ class DataValidation:
         except Exception as e:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence, Error: {str(e)})"
             return self.error_message
+
 
     def valid_acc_no(self):  
         global stored_account_no
@@ -325,6 +327,7 @@ class LoginValidation:
         except Exception as e:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence)\n{str(e)}"
             return False     
+        
      
     def password_recovery(self):
         try:
