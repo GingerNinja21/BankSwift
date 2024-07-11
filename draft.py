@@ -2,10 +2,10 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import random
 import string
-
 import file
-# from banking import BankingApplication
+import csv
 
+from file import LoginValidation
 
 class WelcomeWindow:
     def __init__(self):
@@ -45,7 +45,6 @@ class WelcomeWindow:
     def open_login(self):
         self.root.withdraw()
         LoginWindow(self)
- 
  
 class CreateAccountWindow:
     def __init__(self, welcome_window):
@@ -212,8 +211,7 @@ class CreateAccountWindow:
     #def create_account_function(self):
         #if self.validate_entries():
             #messagebox.showinfo("Success", "Account created successfully.")
- 
- 
+       
 class LoginWindow:
     def __init__(self, welcome_window):
         self.welcome_window = welcome_window
@@ -224,12 +222,11 @@ class LoginWindow:
         self.create_widgets()
  
     def create_widgets(self):
-        username_label = tk.Label(self.login, text="Username:", bg="#f0f0f0")
-        username_label.place(relx=0.1, rely=0.3)
-        self.username_entry = tk.Entry(self.login)
-        self.username_entry.place(relx=0.3, rely=0.3)
+        email_label = tk.Label(self.login, text="Email:", bg="#f0f0f0")
+        email_label.place(relx=0.1, rely=0.3)
+        self.email_entry = tk.Entry(self.login)
+        self.email_entry.place(relx=0.3, rely=0.3)
 
- 
         pin_label = tk.Label(self.login, text="Pin:", bg="#f0f0f0")
         pin_label.place(relx=0.1, rely=0.4)
         self.pin_entry = tk.Entry(self.login, show="*")
@@ -239,86 +236,75 @@ class LoginWindow:
         id_label.place(relx=0.1, rely=0.5)
         self.id_entry = tk.Entry(self.login)
         self.id_entry.place(relx=0.3, rely=0.5)
- 
- 
+
         login_btn = tk.Button(self.login, text="Login", command=self.login_function, bg="#4CAF50", fg="white", padx=20, pady=10)
         login_btn.place(relx=0.5, rely=0.7, anchor="center")
- 
+
         forgot_pin_link = tk.Label(self.login, text="Forgot Pin?", fg="blue", cursor="hand2")
         forgot_pin_link.place(relx=0.6, rely=0.4)
         forgot_pin_link.bind("<Button-1>", lambda event: self.forgot_pin())
- 
-        self.new_pin_label = tk.Label(self.login, text="New Pin:", bg="#f0f0f0")
-        self.new_pin_entry = tk.Entry(self.login, show="*")
- 
-        self.confirm_pin_label = tk.Label(self.login, text="Confirm Pin:", bg="#f0f0f0")
-        self.confirm_pin_entry = tk.Entry(self.login, show="*")
- 
-        change_pin_btn = tk.Button(self.login, text="Change Pin", command=self.change_pin, bg="#2196F3", fg="white", padx=10, pady=5)
- 
+
         back_btn = tk.Button(self.login, text="Back", command=self.go_back, bg="#FF5722", fg="white", padx=20, pady=10)
         back_btn.place(relx=0.3, rely=0.7, anchor="center")
- 
+
         self.login.protocol("WM_DELETE_WINDOW", self.on_close)
         self.login.mainloop()
- 
+
     def on_close(self):
         self.login.destroy()
         self.welcome_window.root.deiconify()
- 
+
     def go_back(self):
         self.login.destroy()
         self.welcome_window.root.deiconify()
- 
+
     def validate_entries(self):
-        username = self.username_entry.get().strip()
+        email = self.email_entry.get().strip().lower()
         pin = self.pin_entry.get().strip()
- 
-        if not username or not pin:
-            messagebox.showerror("Error", "Username and Pin are required")
+        id_no = self.id_entry.get().strip()
+
+        if not email or not pin or not id_no:
+            messagebox.showerror("Error", "Email, Pin, and ID Number are required")
             return False
         return True
- 
+
     def forgot_pin(self):
-        self.new_pin_label.place(relx=0.1, rely=0.5)
-        self.new_pin_entry.place(relx=0.3, rely=0.5)
-        self.confirm_pin_label.place(relx=0.1, rely=0.6)
-        self.confirm_pin_entry.place(relx=0.3, rely=0.6)
- 
-        # Hide login button temporarily
-        self.login_btn = tk.Button(self.login, text="Login", command=self.login_function, bg="#4CAF50", fg="white", padx=20, pady=10)
-        self.login_btn.place_forget()
- 
-        self.change_pin_btn.place(relx=0.5, rely=0.7, anchor="center")
- 
-    def change_pin(self):
-        new_pin = self.new_pin_entry.get()
-        confirm_new_pin = self.confirm_pin_entry.get()
-        if new_pin == confirm_new_pin:
-            self.new_pin_entry.delete(0, tk.END)
-            self.confirm_pin_entry.delete(0, tk.END)
-            messagebox.showinfo("Success", "Pin changed successfully.")
-        else:
-            messagebox.showerror("Error", "New pin and confirm pin do not match.")
- 
+        email = self.email_entry.get().strip().lower()
+        id_no = self.id_entry.get().strip()
+
+        if not email or not id_no:
+            messagebox.showerror("Error", "Email and ID Number are required to recover pin.")
+            return
+
+        validator = LoginValidation(email, id_no, "")
+
+        recovery_result = validator.password_recovery()
+        messagebox.showinfo("Password Recovery", recovery_result)
+
     def login_function(self):
-        username = self.username_entry.get().strip()
-        pin= self.pin_entry.get().strip()
-        id_no= self.id_entry.get().strip()
+        email = self.email_entry.get().strip().lower()
+        pin = self.pin_entry.get().strip()
+        id_no = self.id_entry.get().strip()
 
         if self.validate_entries():
-            validator= file.LoginValidation(username,id_no,pin)
-            if validator.account_existence():
-                messagebox.showinfo("Success", "Login successful.")
-                self.login.destroy()
-                DashboardWindow(self.welcome_window)
-                return
-            if validator.error_message:
-                 messagebox.showerror("Error",validator.error_message)
-            
- 
+            try:
+                with open('password_records.csv', mode='r') as csvfile:
+                    reader = csv.DictReader(csvfile)
+                    for row in reader:
+                        if (email == row['email'].strip().lower() and
+                                pin == row['pin'].strip() and
+                                id_no == row['id'].strip()):
+                            messagebox.showinfo("Success", "Login successful.")
+                            self.login.destroy()
+                            DashboardWindow(self.welcome_window)
+                            return
+                        
+                    messagebox.showerror("Error", "Invalid credentials. Please try again.")
+            except FileNotFoundError:
+                messagebox.showerror("Error", "Password records file not found.")
+            except Exception as e:
+                messagebox.showerror("Error", f"Error: {str(e)}")
 
- 
 class DashboardWindow:
     def __init__(self, welcome_window):
         self.welcome_window = welcome_window
@@ -351,7 +337,6 @@ class DashboardWindow:
     def go_back(self):
         self.dashboard.destroy()
         self.welcome_window.root.deiconify()
- 
  
 if __name__ == "__main__":
     WelcomeWindow()

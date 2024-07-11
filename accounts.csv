@@ -10,3 +10,4 @@ uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
 8,john,doe,,0,savings,0214536241543,
 [np.int64(9)],john,doe,,0,savings,0214536241543,
 
+9,andrea,goodall,54984651849,20000,savings,0101100528088

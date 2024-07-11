@@ -1,3 +1,4 @@
+import email
 from emails_utils import main
 import pandas as pd
 import requests
@@ -7,7 +8,7 @@ import re
 from io import StringIO
 import pandas as pd
 from email_validator import validate_email, EmailNotValidError
-
+from file import validate_email, EmailNotValidError  
 
 stored_account_no=""
 account_bank=""
@@ -92,44 +93,6 @@ class DataValidation:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence, Error: {str(e)})"
             print(f"Error: {str(e)}")
             return self.error_message
-
-
-
-    # def account_existence(self):
-    #     account_exists= False
-    #     try:
-    #         with open("accounts.csv", "r") as file:
-    #             for line in file:
-    #                 parts = line.strip().split(",")
-
-
-    #                 stored_id = parts[6].strip().lower()
-    #                 stored_usersurname = parts[2].strip().lower()
-    #                 stored_username= parts[1].strip().lower()
-    #                 stored_account_type = parts[5].strip().lower()
-    #                 print("id input:",self.id_no , "stored_id:",stored_id)
-    #                 if (self.id_no == stored_id):
-    #                     print("problem where")
-    #                     if (self.Username == stored_username and self.Usersurname == stored_usersurname and self.account_type == stored_account_type and self.id_no == stored_id):
-    #                         account_exists= True
-    #                         print("here byra stuff" )
-    #                         return account_exists
-                    
-    #                 print("byra ara stuff")  
-    #                 self.existing_user_id_acc_creation_message += "\nAn account already exists for the provided ID number! \n Would you like to create a new account? "
-    #                 return account_exists
-                    
-    #         if not account_exists:
-    #             self.error_message += "\nAccount does not Exist!"  
-        
-    #         # return account_exists
-
-           
-                    
-    #     except FileNotFoundError:
-    #         self.error_message += "\nError: Accounts file not found!"
-    #     except :
-    #         self.error_message+="Something went wrong! \nContact Administrator\n(Error location: account_existence)"
 
     def valid_acc_no(self):  
         global stored_account_no
@@ -282,16 +245,16 @@ class DataValidation:
                 self.error_message += "\nSomething went wrong! \nContact Administrator\n(Error location: validate_opening_balance)"
 
 class LoginValidation:
-    def __init__(self, username, id_no, pin):
-        self.username = username.strip().lower()
+    def __init__(self, email, id_no, pin):
+        self.email = email.strip().lower()
         self.id_no = id_no.strip().lower()
         self.pin = pin.strip().lower()
         self.special_chars = ["-", "^", "'"]  
         self.error_message = ""
         
-        self.validate_username()
         self.validate_pin() 
         self.id_validation()
+        self.validate_email()
 
     def validate_pin(self):
         try:       
@@ -321,59 +284,98 @@ class LoginValidation:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: id_validation)\n{str(e)}"
             return False
 
-    def validate_username(self):
-        try:
-            for char in self.username:
-                if not (char.isalpha() or char in self.special_chars):
-                    self.error_message += "\nPlease remove any special characters or numbers when entering your Name and Surname!"
-                    return False
+    def validate_email(self):
+        try:    
+            valid = validate_email(self.email)
+            email = valid.email
             return True
-        except Exception as e:
-            self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: validate_username)\n{str(e)}"
+        
+        except EmailNotValidError as e:
+            self.error_message += "\n" + str((e))
             return False
-     
+
     def account_existence(self):
         account_exists = False
         try:
-            with open("accounts.csv", "r") as file:
+            with open("password_records.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
+
+                    if len(parts) < 7:
+                        continue  # Skip lines that do not have enough columns
+
                     stored_id = parts[6].strip().lower()
-                    stored_name = parts[1].strip().lower()
-                    if self.id_no == stored_id and self.username == stored_name:
+                    stored_email = parts[3].strip().lower()
+                    
+                    print(f"Checking against stored email: {stored_email}, id: {stored_id}")
+
+                    if self.email == stored_email and self.id_no == stored_id:
                         account_exists = True
                         break
+
             if not account_exists:
-                self.error_message += "\nAccount does not exist!"  
+                self.error_message += "\nAccount does not exist!"
             return account_exists
+
         except FileNotFoundError:
             self.error_message += "\nError: Accounts file not found!"
         except Exception as e:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence)\n{str(e)}"
-            return False
+            return False     
+        
 
+    # def password_recovery(self):
+    #     try:
+    #         with open("password_records.csv", "r") as csvfile:
+    #             reader = csv.DictReader(csvfile)
+    #             for row in reader:
+    #                 if (self.em.lower() == row['name'].lower() and 
+    #                     self.Usersurname.lower() == row['surname'].lower() and
+    #                     self.id_no == row['id']):
+    #                     password = row['password']
+    #                     subject = "Password Recovery"
+    #                     message_text = (
+    #                         f"Dear {self.Username}\n\n"
+    #                         f"We have received a request to recover your password for your account registered with us.\n\n"
+    #                         f"Your account details are as follows:\n"
+    #                         f"Password: {password}\n\n"
+    #                         f"Please make sure to keep your account information secure and do not share it with anyone.\n\n"
+    #                         f"If you did not request a password recovery, please contact our support team immediately.\n\n"
+    #                         "Best regards,\nBankSwift Team"
+    #                     )
+    #                     main("bankswift05@gmail.com", email, subject, message_text)
+    #                     return f"Password sent to {email}"
 
+    #         return "Password not found. Please check your details and try again."
+
+    #     except FileNotFoundError:
+    #         return "Password records file not found."
+    #     except Exception as e:
+    #         return f"Error retrieving password: {str(e)}"
+     
     def password_recovery(self):
         try:
             with open("password_records.csv", "r") as csvfile:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
-                    if (self.Username.lower() == row['name'].lower() and 
-                        self.Usersurname.lower() == row['surname'].lower() and
+                    if (self.email.lower() == row['email'].lower() and 
                         self.id_no == row['id']):
                         password = row['password']
+                        username = row['name']  # Assuming 'name' is the field for user's name
                         subject = "Password Recovery"
                         message_text = (
-                            f"Dear {self.Username}\n\n"
+                            f"Dear {username},\n\n"
                             f"We have received a request to recover your password for your account registered with us.\n\n"
                             f"Your account details are as follows:\n"
+                            f"Email: {self.email}\n"
+                            f"PIN: {self.pin}\n"
                             f"Password: {password}\n\n"
                             f"Please make sure to keep your account information secure and do not share it with anyone.\n\n"
                             f"If you did not request a password recovery, please contact our support team immediately.\n\n"
                             "Best regards,\nBankSwift Team"
                         )
-                        main("bankswift05@gmail.com", email, subject, message_text)
-                        return f"Password sent to {email}"
+                        main("bankswift05@gmail.com", self.email, subject, message_text)
+                        return f"Password sent to {self.email}"
 
             return "Password not found. Please check your details and try again."
 
@@ -381,7 +383,6 @@ class LoginValidation:
             return "Password records file not found."
         except Exception as e:
             return f"Error retrieving password: {str(e)}"
-      
 class account_creation:
 
     def __init__(self, User_name, User_surname,id_no,pin, phone_number,password,email, balance,account_type):
@@ -399,7 +400,6 @@ class account_creation:
         self.error_message = ""  
     
     
-        
     def get_error_message(self):
         x= self.error_message
         return x
@@ -524,26 +524,5 @@ class account_creation:
         except:
                 self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
 
-   
-         
-### Testing area ###
-# username="john"
-# usersurname= "doe"
-# id_no="0214536241543"
-# d= DataValidation(username,usersurname,id_no,"person@gmail.com","0712663977","12345")
-# x= account_creation(username,usersurname,id_no,"bankswift")
-
-# acc_type = "savings"
-
-
-# # f= x.acc_no_generator()
-# # c= x.get_error_message()
-# # print("c:",c)
-# # y= d.pas
-# # print("Password Recovery Result:", y)
-
-# ac = account_creation(username, usersurname, id_no, acc_type)
-# result = ac.store_account(username, usersurname, id_no, acc_type)
-# print(result)
 
 
