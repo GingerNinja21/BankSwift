@@ -58,7 +58,6 @@ class DataValidation:
                     parts = line.strip().split(",")
 
                     if len(parts) < 7:
-                        print(f"Skipping line due to insufficient columns: {line.strip()}")
                         continue  
 
                     stored_username = parts[1].strip().lower()
@@ -66,31 +65,24 @@ class DataValidation:
                     stored_account_type = parts[5].strip().lower()
                     stored_id = parts[6].strip().lower()
 
-                    print("Input",":","Output\n",self.Username,stored_username,"\n",self.Usersurname, stored_usersurname,"\n", self.id_no , stored_id,"\n",self.account_type,stored_account_type)
 
                     if  (self.id_no.lower() == stored_id) and (not (self.Username.lower()== stored_username) or not(self.Usersurname.lower() == stored_usersurname)):
-                        print("debug2")
                         self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username} and {self.Usersurname} does not match the Name and Surname linked to the provided ID number in our database!"
                        
 
                     if self.id_no.lower() == stored_id and self.Username.lower()== stored_username and self.Usersurname.lower() == stored_usersurname :
                         account_exists= True
                         self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
-                        print("debug1")
 
                     
-                    
-
                 return account_exists
             
 
         except FileNotFoundError:
             self.error_message += "\nError: Accounts file not found!"
-            print("Accounts file not found.")
             return self.error_message
         except Exception as e:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence, Error: {str(e)})"
-            print(f"Error: {str(e)}")
             return self.error_message
 
 
@@ -211,7 +203,7 @@ class DataValidation:
 
 
         except:
-             print()
+             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: get_uid)"
 
     def id_validation(self):
         try:
@@ -227,9 +219,6 @@ class DataValidation:
                 return True
         except:
             self.error_message+="Something went wrong! \nContact Administrator\n(Error location: id_validation)"
-    
-    def transaction_validation(self):
-         print()
 
     def validate_opening_balance(self):
             
@@ -420,11 +409,8 @@ class account_creation:
             df = pd.read_csv("accounts.csv")
             if validator.account_existence():
                 Uid = validator.get_uid()
-                print("account exists UID")
             else:
                 Uid = df['uid'].max() + 1 if not df.empty else 0
-                print("account doesnt exist UID")
-            print("UID:" , Uid)
             stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": self.account_type, "Id_no": self.id_no, "Linked_accounts": ""})
 
             file_name = "accounts.csv"
@@ -447,20 +433,18 @@ class account_creation:
         try:
             while len(gen_acc_no) != 9 :
                     gen_acc_no += random.choice(valid_char)
-
             stored_account_no = gen_acc_no
             with open("accounts.csv", "r") as file:
                 while valid_acc == False:    
                     for line in file:
                         parts = line.strip().split(",")
-
                         if stored_account_no == parts[3]:
-                            # self.new_account.error_message += "\nCannot create new account. Account number not unique.\n Attempting new account number generation..."
-                            print()
+                            continue
                         else:
                             valid_acc = True 
-
-                return gen_acc_no
+                            return gen_acc_no
+            
+                            
     
         except:
              self.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
@@ -491,20 +475,11 @@ class account_creation:
 # username="john"
 # usersurname= "doe"
 # id_no="0214536241543"
-# d= DataValidation(username,usersurname,id_no,"person@gmail.com","0712663977","12345")
-# x= account_creation(username,usersurname,id_no,"bankswift")
-
-# acc_type = "savings"
 
 
-# # f= x.acc_no_generator()
-# # c= x.get_error_message()
-# # print("c:",c)
-# # y= d.pas
-# # print("Password Recovery Result:", y)
-
-# ac = account_creation(username, usersurname, id_no, acc_type)
+# ac = account_creation(username, usersurname, id_no,"0210085197080","0840523857","asdfqwertyui","test@gmail.com","500","cheque")
 # result = ac.store_account(username, usersurname, id_no, acc_type)
 # print(result)
-
+# x= ac.acc_no_generator()
+# print(x)
 

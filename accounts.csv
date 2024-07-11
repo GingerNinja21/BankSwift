@@ -3,3 +3,4 @@ uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
 1,john,doe,151692356,500,cheque,0210085197080,
 1,john,doe,151512943,500,savings,0210085197080,
 
+3,john,doe,151911564,200,savings,0210085197082,
