@@ -14,7 +14,9 @@ class AnimatedGIF(tk.Label):
         self.master = master
         self.delay = delay
         self.gif_path = gif_path
+        self.gif_path = "BANKSWIFT.gif"
         self.static_image_path = static_image_path
+        self.static_image_path="logo.png"
         self.width = width
         self.height = height
         self.frames = []
@@ -38,6 +40,7 @@ class AnimatedGIF(tk.Label):
         return ImageTk.PhotoImage(image)
 
     def animate(self):
+
         if self.current_frame < len(self.frames) - 1:
             self.current_frame += 2  # Increase by 2 frames to speed up the animation
             if self.current_frame >= len(self.frames):
@@ -52,7 +55,7 @@ class WelcomeWindow:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("BankSwift")
-        self.root.configure(bg="#01204E")
+        self.root.configure(bg="#071952")
         self.logo_gif="BANKSWIFT.gif"
         self.logo_static = "logo.png"
        
@@ -67,17 +70,27 @@ class WelcomeWindow:
 
         self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.create_widgets()
-        
+
+    
+
         self.root.mainloop()
+        
 
     def initialize_logo(self):
-        self.animated_gif = AnimatedGIF(self.root, "BANKSWIFT.gif", "logo.png", 200, 200, 100)
-        self.animated_gif.grid(row=2 , column=3)
+        self.animated_gif = AnimatedGIF(self.root, self.logo_gif, self.logo_static, 200, 200, 100)
+        self.animated_gif.grid(row=5 , column=2)
         self.animated_gif.pack()
     
     def create_widgets(self):
+        # if all fails
+        # image = Image.open("logo.png")  # Replace with your image file path
+        # resized_image=image.resize((200, 200),)
+        # photo = ImageTk.PhotoImage(resized_image)
+        # self_logo = tk.Label(self.root,image=photo)
+        # self_logo.grid(row=5 ,column=2)
+        # self_logo.pack()
         self.initialize_logo()
-        Register = tk.Label(self.root, text="Dont have an Account?", fg="#028391" , bg="#01204E")
+        Register = tk.Label(self.root, text="Dont have an Account?", fg="#37B7C3" , bg="#071952")
         Register.place(relx=0.1 , rely=0.8)
 
         forgot_pin_link = tk.Label(self.root, text="Register here.", fg="white", bg = "#01204E" ,cursor="hand2")
@@ -106,7 +119,7 @@ class WelcomeWindow:
         self.root.mainloop()
  
     def on_close(self):
-        self.root.destroy()
+        self.root.withdraw()
  
     def open_create_account(self):
         self.root.withdraw()
@@ -115,6 +128,9 @@ class WelcomeWindow:
     def open_login(self):
         self.root.withdraw()
         LoginWindow(self)
+
+    def reopen(self):
+        self.root.wm_attributes("-alpha", 1.0)
  
 class CreateAccountWindow:
     def __init__(self, welcome_window):
@@ -122,7 +138,7 @@ class CreateAccountWindow:
         self.create_account = tk.Toplevel()
         self.create_account.title("Create Account")
         self.create_account.geometry("600x600")
-        self.create_account.configure(bg="#f0f0f0")
+        self.create_account.configure(bg="#071952")
         window_width = 800
         window_height = 600
 
@@ -207,60 +223,60 @@ class CreateAccountWindow:
             
 
     def create_widgets(self):
-        name_label = tk.Label(self.create_account, text="Name:", bg="#f0f0f0")
+        name_label = tk.Label(self.create_account, text="Name:", fg="#37B7C3" , bg="#071952")
         name_label.place(relx=0.1, rely=0.1)
         self.name_entry = tk.Entry(self.create_account)
         self.name_entry.place(relx=0.3, rely=0.1)
  
-        surname_label = tk.Label(self.create_account, text="Surname:", bg="#f0f0f0")
+        surname_label = tk.Label(self.create_account, text="Surname:", fg="#37B7C3" , bg="#071952")
         surname_label.place(relx=0.1, rely=0.15)
         self.surname_entry = tk.Entry(self.create_account)
         self.surname_entry.place(relx=0.3, rely=0.15)
  
-        id_label = tk.Label(self.create_account, text="ID No.:", bg="#f0f0f0")
+        id_label = tk.Label(self.create_account, text="ID No.:", fg="#37B7C3" , bg="#071952")
         id_label.place(relx=0.1, rely=0.2)
         self.id_entry = tk.Entry(self.create_account)
         self.id_entry.place(relx=0.3, rely=0.2)
  
-        phone_label = tk.Label(self.create_account, text="Phone:", bg="#f0f0f0")
+        phone_label = tk.Label(self.create_account, text="Phone:", fg="#37B7C3" , bg="#071952")
         phone_label.place(relx=0.1, rely=0.25)
         self.phone_entry = tk.Entry(self.create_account)
         self.phone_entry.place(relx=0.3, rely=0.25)
  
-        email_label = tk.Label(self.create_account, text="Email:", bg="#f0f0f0")
+        email_label = tk.Label(self.create_account, text="Email:", fg="#37B7C3" , bg="#071952")
         email_label.place(relx=0.1, rely=0.3)
         self.email_entry = tk.Entry(self.create_account)
         self.email_entry.place(relx=0.3, rely=0.3)
         
 
-        account_type_label = tk.Label(self.create_account, text="Account Type:", bg="#f0f0f0")
+        account_type_label = tk.Label(self.create_account, text="Account Type:", fg="#37B7C3" , bg="#071952")
         account_type_label.place(relx=0.1, rely=0.35)
         self.account_type = tk.StringVar(value="Cheque")
-        cheque_radio = tk.Radiobutton(self.create_account, text="Cheque", variable=self.account_type, value="cheque", bg="#f0f0f0")
+        cheque_radio = tk.Radiobutton(self.create_account, text="Cheque", variable=self.account_type, value="cheque",fg ="#37B7C3" , bg="#071952")
         cheque_radio.place(relx=0.3, rely=0.35)
-        savings_radio = tk.Radiobutton(self.create_account, text="Savings", variable=self.account_type, value="savings", bg="#f0f0f0")
+        savings_radio = tk.Radiobutton(self.create_account, text="Savings", variable=self.account_type, value="savings", fg = "#37B7C3" , bg="#071952")
         savings_radio.place(relx=0.5, rely=0.35)
 
 
-        balance_label = tk.Label(self.create_account, text="Opening Balance:", bg="#f0f0f0")
+        balance_label = tk.Label(self.create_account, text="Opening Balance:", fg="#37B7C3" , bg="#071952")
         balance_label.place(relx=0.1, rely=0.4)
         self.balance_entry = tk.Entry(self.create_account)
         self.balance_entry.place(relx=0.3, rely=0.4)
  
-        pin_label = tk.Label(self.create_account, text="Pin Number:", bg="#f0f0f0")
+        pin_label = tk.Label(self.create_account, text="Pin Number:", fg="#37B7C3" , bg="#071952")
         pin_label.place(relx=0.1, rely=0.45)
         self.pin_entry = tk.Entry(self.create_account, show="*")
         self.pin_entry.place(relx=0.3, rely=0.45)
  
-        password_label = tk.Label(self.create_account, text="Password:", bg="#f0f0f0")
+        password_label = tk.Label(self.create_account, text="Password:", fg="#37B7C3" , bg="#071952")
         password_label.place(relx=0.1, rely=0.5)
         self.password_entry = tk.Entry(self.create_account)
         self.password_entry.place(relx=0.3, rely=0.5)
        
-        generate_btn = tk.Button(self.create_account, text="Generate", command=self.generate_password, bg="#4CAF50", fg="white", padx=1, pady=1)
+        generate_btn = tk.Button(self.create_account, text="Generate", command=self.generate_password, bg="#2196F3", fg="white", padx=1, pady=1)
         generate_btn.place(relx=0.6, rely=0.5)
  
-        self.strength_label = tk.Label(self.create_account, text="Password Strength:", bg="#f0f0f0")
+        self.strength_label = tk.Label(self.create_account, text="Password Strength:",fg="#37B7C3" , bg="#071952")
         self.strength_label.place(relx=0.1, rely=0.55)
         self.strength_bar = ttk.Progressbar(self.create_account, mode="determinate", length=200)
         self.strength_bar.place(relx=0.3, rely=0.55)
@@ -279,13 +295,13 @@ class CreateAccountWindow:
    
     def on_close(self):
         self.create_account.destroy()
-        WelcomeWindow()
+        WelcomeWindow().__init__
+         
         
- 
+
     def go_back(self):
         self.create_account.destroy()
-        WelcomeWindow()
-        WelcomeWindow.initialize_logo()
+        WelcomeWindow().__init__
  
     def generate_password(self):
         characters = string.ascii_letters + string.digits + string.punctuation
@@ -319,7 +335,7 @@ class LoginWindow:
         self.login = tk.Toplevel()
         self.login.title("Login")
         
-        self.login.configure(bg="#f0f0f0")
+        self.login.configure(bg="#071952")
 
         window_width = 800
         window_height = 600
@@ -335,17 +351,17 @@ class LoginWindow:
         self.login.mainloop()
  
     def create_widgets(self):
-        email_label = tk.Label(self.login, text="Email:", bg="#f0f0f0",)
+        email_label = tk.Label(self.login, text="Email:", fg="#37B7C3" , bg="#071952")
         email_label.place(relx=0.1, rely=0.3)
-        self.email_entry = tk.Entry(self.login)
+        self.email_entry = tk.Entry(self.login,width=30)
         self.email_entry.place(relx=0.3, rely=0.3)
 
-        pin_label = tk.Label(self.login, text="Pin:", bg="#f0f0f0")
+        pin_label = tk.Label(self.login, text="Pin:", fg="#37B7C3" , bg="#071952")
         pin_label.place(relx=0.1, rely=0.4)
         self.pin_entry = tk.Entry(self.login, show="*")
         self.pin_entry.place(relx=0.3, rely=0.4)
 
-        id_label = tk.Label(self.login, text="ID Number:", bg="#f0f0f0")
+        id_label = tk.Label(self.login, text="ID Number:", fg="#37B7C3" , bg="#071952")
         id_label.place(relx=0.1, rely=0.5)
         self.id_entry = tk.Entry(self.login)
         self.id_entry.place(relx=0.3, rely=0.5)
@@ -353,7 +369,7 @@ class LoginWindow:
         login_btn = tk.Button(self.login, text="Login", command=self.login_function, bg="#4CAF50", fg="white", padx=20, pady=10)
         login_btn.place(relx=0.5, rely=0.7, anchor="center")
 
-        forgot_pin_link = tk.Label(self.login, text="Forgot Pin?", fg="blue", cursor="hand2")
+        forgot_pin_link = tk.Label(self.login, text="Forgot Pin?", fg="#EBF4F6" , bg="#071952", cursor="hand2")
         forgot_pin_link.place(relx=0.6, rely=0.4)
         forgot_pin_link.bind("<Button-1>", lambda event: self.forgot_pin())
 
@@ -424,7 +440,7 @@ class DashboardWindow:
         self.dashboard = tk.Toplevel()
         self.dashboard.title("Dashboard")
         self.dashboard.geometry("600x600")
-        self.dashboard.configure(bg="#f0f0f0")
+        self.dashboard.configure(bg="#071952")
         self.create_widgets()
  
     def create_widgets(self):
@@ -445,11 +461,11 @@ class DashboardWindow:
  
     def on_close(self):
         self.dashboard.destroy()
-        self.welcome_window.root.deiconify()
+        WelcomeWindow()
  
     def go_back(self):
         self.dashboard.destroy()
-        self.welcome_window.root.deiconify()
+        WelcomeWindow()
  
 if __name__ == "__main__":
     WelcomeWindow()
