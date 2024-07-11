@@ -93,9 +93,7 @@ class CreateAccountWindow:
                     messagebox.showerror("Validation Error", "Account Already Exists!")
                     return
 
-        # if validator.account_existence():
-        #     messagebox.showerror("Validation Error", "Account Already Exists!")
-        #     return
+    
         
         
         else:
@@ -140,7 +138,7 @@ class CreateAccountWindow:
 
         account_type_label = tk.Label(self.create_account, text="Account Type:", bg="#f0f0f0")
         account_type_label.place(relx=0.1, rely=0.35)
-        self.account_type = tk.StringVar(value="")
+        self.account_type = tk.StringVar(value="Cheque")
         cheque_radio = tk.Radiobutton(self.create_account, text="Cheque", variable=self.account_type, value="cheque", bg="#f0f0f0")
         cheque_radio.place(relx=0.3, rely=0.35)
         savings_radio = tk.Radiobutton(self.create_account, text="Savings", variable=self.account_type, value="savings", bg="#f0f0f0")
