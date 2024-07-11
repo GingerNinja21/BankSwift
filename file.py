@@ -59,7 +59,7 @@ class DataValidation:
                 for line in file:
                     parts = line.strip().split(",")
 
-                    if len(parts) < 7:
+                    if len(parts) < 6:
                         continue  
 
                     stored_username = parts[1].strip().lower()
@@ -292,7 +292,7 @@ class LoginValidation:
                 for line in file:
                     parts = line.strip().split(",")
 
-                    if len(parts) < 7:
+                    if len(parts) < 6:
                         continue  # Skip lines that do not have enough columns
 
                     stored_id = parts[6].strip().lower()
