@@ -1,14 +1,11 @@
 uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
-2,test,data,151236545,500,cheque,0210085197089,
-1,john,doe,151512943,500,savings,0210085197080,
-1,john,doe,151692356,500,cheque,0210085197080,
+0,john,doe,151876453,14980,cheque,123456789,
+1,samantha,laqua,151569748,6100,Cheque,541984161,
+2,jaq,beniptorf,151968429,9500,Cheque,6516545,
+3,alexa,jackson,151649738,2100,Savings,652984654,
+5,annie,unknown,1000,200,,,
+6,man,unknown,,100,savings,101100528088,
+7,test,unknown,151031684,200,savings,101100528088,
 
-
-1,john,doe,,500,savings,0210085197080,
-0,john,doe,151876453.0,14980,cheque,123456789.0,
-1,samantha,laqua,151569748.0,6100,Cheque,541984161.0,
-2,jaq,beniptorf,151968429.0,9500,Cheque,6516545.0,
-3,alexa,jackson,151649738.0,2100,Savings,652984654.0,
-5,annie,unknown,1000.0,200,,,
-6,man,unknown,,100,savings,101100528088.0,
-7,test,unknown,151031684.0,400,savings,101100528088.0,
+8,john,doe,,0,savings,0214536241543,
+[np.int64(9)],john,doe,,0,savings,0214536241543,
