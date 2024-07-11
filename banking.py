@@ -9,6 +9,14 @@ class BankingApplication:
         self.banks_file = "banks.csv"
         self.transactions_log = "transactionslog.txt"
         self.account_type = self.get_account_type(recipient_name)
+        
+    # def __init__(self, accounts_file):
+    #     self.accounts_file = accounts_file
+
+    # def account_exists(self, account_name):
+    #     df = pd.read_csv(self.accounts_file)
+    #     account_exists = not df[df['name'].str.lower() == account_name.lower()].empty
+    #     return account_exists
 
     def create_new_account(self, username, usersurname, id_no, acc_type):
         # account_creation - create a new account
@@ -310,3 +318,4 @@ if __name__ == "__main__":
             options[option]()
         else:
             print("Invalid option selected.")
+
