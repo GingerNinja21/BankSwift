@@ -9,3 +9,4 @@ uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
 
 8,john,doe,,0,savings,0214536241543,
 [np.int64(9)],john,doe,,0,savings,0214536241543,
+
