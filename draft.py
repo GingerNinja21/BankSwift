@@ -4,6 +4,8 @@ import random
 import string
 
 import file
+# from banking import BankingApplication
+
 
 class WelcomeWindow:
     def __init__(self):

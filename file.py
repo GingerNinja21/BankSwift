@@ -38,13 +38,6 @@ class DataValidation:
         self.validate_opening_balance()
             
     def validate_username_and_surname(self):
-
-        self.validate_username()
-        self.validate_usersurname()
-        
-        # self.stored_account().account.creation
-    
-    def validate_username(self):
         for char in self.Username:
             if not (char.isalpha() or char in self.special_chars):
                 self.error_message += "\nPlease remove any special characters or numbers when entering your Name and Surname!"
@@ -90,17 +83,6 @@ class DataValidation:
                         account_exists=True
                         return account_exists
 
-                    if self.Username.lower() == stored_username and self.Usersurname.lower() == stored_usersurname:
-                        account_exists= True
-                        break
-                        
-            if not account_exists:
-                self.error_message += "\nAccount does not Exist!"  
-       
-            return account_exists
-
-           
-                    
         except FileNotFoundError:
             self.error_message += "\nError: Accounts file not found!"
             print("Accounts file not found.")
@@ -371,8 +353,6 @@ class LoginValidation:
 
 
     def password_recovery(self):
-        
-    def password_recovery(self, email):
         try:
             with open("password_records.csv", "r") as csvfile:
                 reader = csv.DictReader(csvfile)
@@ -548,24 +528,12 @@ class account_creation:
     #          print()          
          
          
-             self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
-
-
-
 ### Testing area ###
 # username="john"
 # usersurname= "doe"
 # id_no="0214536241543"
 # d= DataValidation(username,usersurname,id_no,"person@gmail.com","0712663977","12345")
 # x= account_creation(username,usersurname,id_no,"bankswift")
-username="andrea"
-usersurname= "goodall"
-id_no="0214536241543"
-acc_type = "savings"
-email = "goodall.andrea.ag.ag@gmail.com"
-
-d= DataValidation(username,usersurname,id_no)
-x= account_creation(username,usersurname,id_no,"bankswift")
 
 # acc_type = "savings"
 
@@ -576,24 +544,8 @@ x= account_creation(username,usersurname,id_no,"bankswift")
 # # y= d.pas
 # # print("Password Recovery Result:", y)
 
-y = d.password_recovery(email)
-print("Password Recovery Result:", y)
-
 # ac = account_creation(username, usersurname, id_no, acc_type)
 # result = ac.store_account(username, usersurname, id_no, acc_type)
 # print(result)
-# ac = account_creation(username, usersurname, id_no, acc_type)
-# result = ac.store_account(username, usersurname, id_no, acc_type)
-# print(result)
-
-
-# f= x.acc_no_generator()
-# c= x.get_error_message()
-# print("c:",c)
-
-# r= x.valid_acc_no()
-# z=x.get_error_message()
-# # t= x.bank()
-# print("\nAccount existence:",y ,"\n error message:",z ,"\nValid account no:",r ,"\n", t )
 
 
