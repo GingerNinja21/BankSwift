@@ -26,6 +26,7 @@ class DataValidation:
         self.error_message = ""  
         self.existing_user_account = False
         self.existing_user_id_acc_creation_message = ""
+        self.invalid_username_id_pair = ""
 
 
         
@@ -49,6 +50,8 @@ class DataValidation:
             
     def account_existence(self):
         account_exists = False
+        self.existing_user_id_acc_creation_message =""
+        self.invalid_username_id_pair = ""
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:
@@ -56,30 +59,28 @@ class DataValidation:
 
                     if len(parts) < 7:
                         print(f"Skipping line due to insufficient columns: {line.strip()}")
-                        continue  # Skip lines that do not have enough columns
+                        continue  
 
                     stored_username = parts[1].strip().lower()
                     stored_usersurname = parts[2].strip().lower()
                     stored_account_type = parts[5].strip().lower()
                     stored_id = parts[6].strip().lower()
 
-                    print(f"Processing line: {line.strip()}")
-                    print(f"account type: {stored_account_type}, Input acc: {self.account_type}")
-                    
-                    #need to go through whole file before making decision
-                    if self.id_no.lower() == stored_id and self.Username.lower()== stored_username and self.Usersurname.lower() == stored_usersurname :
-                        if (self.Username.lower() == stored_username and 
-                                self.Usersurname.lower() == stored_usersurname and 
-                                self.account_type.lower() == stored_account_type and
-                                self.id_no.lower() == stored_id):
-                                print("Match found: Account already exists!")
-                                account_exists= True
+                    print("Input",":","Output\n",self.Username,stored_username,"\n",self.Usersurname, stored_usersurname,"\n", self.id_no , stored_id,"\n",self.account_type,stored_account_type)
 
-                        else:
-                             account_exists= True
-                             self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
+                    if  (self.id_no.lower() == stored_id) and (not (self.Username.lower()== stored_username) or not(self.Usersurname.lower() == stored_usersurname)):
+                        print("debug2")
+                        self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username} and {self.Usersurname} does not match the Name and Surname linked to the provided ID number in our database!"
+                       
+
+                    if self.id_no.lower() == stored_id and self.Username.lower()== stored_username and self.Usersurname.lower() == stored_usersurname :
+                        account_exists= True
+                        self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
+                        print("debug1")
+
                     
-                
+                    
+
                 return account_exists
             
 
@@ -92,43 +93,6 @@ class DataValidation:
             print(f"Error: {str(e)}")
             return self.error_message
 
-
-
-    # def account_existence(self):
-    #     account_exists= False
-    #     try:
-    #         with open("accounts.csv", "r") as file:
-    #             for line in file:
-    #                 parts = line.strip().split(",")
-
-
-    #                 stored_id = parts[6].strip().lower()
-    #                 stored_usersurname = parts[2].strip().lower()
-    #                 stored_username= parts[1].strip().lower()
-    #                 stored_account_type = parts[5].strip().lower()
-    #                 print("id input:",self.id_no , "stored_id:",stored_id)
-    #                 if (self.id_no == stored_id):
-    #                     print("problem where")
-    #                     if (self.Username == stored_username and self.Usersurname == stored_usersurname and self.account_type == stored_account_type and self.id_no == stored_id):
-    #                         account_exists= True
-    #                         print("here byra stuff" )
-    #                         return account_exists
-                    
-    #                 print("byra ara stuff")  
-    #                 self.existing_user_id_acc_creation_message += "\nAn account already exists for the provided ID number! \n Would you like to create a new account? "
-    #                 return account_exists
-                    
-    #         if not account_exists:
-    #             self.error_message += "\nAccount does not Exist!"  
-        
-    #         # return account_exists
-
-           
-                    
-    #     except FileNotFoundError:
-    #         self.error_message += "\nError: Accounts file not found!"
-    #     except :
-    #         self.error_message+="Something went wrong! \nContact Administrator\n(Error location: account_existence)"
 
     def valid_acc_no(self):  
         global stored_account_no
@@ -338,14 +302,23 @@ class LoginValidation:
             with open("accounts.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
+                    
+
+                    if len(parts) < 7:
+                        continue  # Skip 
+
                     stored_id = parts[6].strip().lower()
                     stored_name = parts[1].strip().lower()
+
                     if self.id_no == stored_id and self.username == stored_name:
                         account_exists = True
                         break
+
             if not account_exists:
                 self.error_message += "\nAccount does not exist!"  
             return account_exists
+        
+
         except FileNotFoundError:
             self.error_message += "\nError: Accounts file not found!"
         except Exception as e:
@@ -392,7 +365,7 @@ class account_creation:
         x= self.error_message
         return x
     
-    def password_generation(self):
+    # def password_generation(self):
         try:
             if existing_account == True:
                self.error_message += "\nAccount already exists!" 

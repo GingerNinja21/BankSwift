@@ -66,18 +66,23 @@ class CreateAccountWindow:
         balance = self.balance_entry.get().strip()
         account_type= self.account_type.get().strip().lower()
         validator = file.DataValidation(name, surname, id_no, email,phone_number,pin,balance,account_type)
-        validator.account_existence()
+        
 
         if not name or not surname or not id_no or not email :
             messagebox.showerror("Validation Error", "All fields are required!")
             return
         
+        validator.account_existence()
+
         if validator.error_message :
             messagebox.showerror("Validation Error", validator.error_message)
             return
         
-        if validator.account_existence():
-            if validator.account_existence() and validator.existing_user_id_acc_creation_message:
+        if validator.invalid_username_id_pair:
+            messagebox.showerror("Validation Error", validator.invalid_username_id_pair)
+            return
+
+        if validator.existing_user_id_acc_creation_message:
                 response = messagebox.askyesno("ID number already exists in database", validator.existing_user_id_acc_creation_message) 
                 if response:
                     file_writer = file.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
@@ -87,10 +92,10 @@ class CreateAccountWindow:
                     messagebox.showerror("Validation Error", "Account Already Exists!")
                     return
 
+        # if validator.account_existence():
+        #     messagebox.showerror("Validation Error", "Account Already Exists!")
+        #     return
         
-            else:
-                messagebox.showerror("Validation Error", "Account Already Exists!")
-                return
         
         else:
 
