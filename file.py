@@ -3,20 +3,41 @@ import pandas as pd
 import requests
 import csv
 import random
+import re
 from io import StringIO
+import pandas as pd
+from email_validator import validate_email, EmailNotValidError
 
 
 stored_account_no=""
-account_bank="test"
+account_bank=""
 ### Initialization ###
 class DataValidation:
 
-    def __init__(self, User_name, User_surname,id_no):
+    def __init__(self, User_name, User_surname,id_no,email,phone_number,pin ,balance, account_type):
         self.Username = User_name.strip()
         self.Usersurname = User_surname.strip()
-        self.id_no = id_no.strip() 
+        self.id_no = id_no.strip()
+        self.pin= pin.strip()
+        self.phone_number= phone_number.strip()
+        self.email = email.strip()
+        self.balance = balance.strip()
+        self.account_type = account_type.strip().lower()
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
+        self.existing_user_account = False
+        self.existing_user_id_acc_creation_message = ""
+
+
+        
+        self.validate_username_and_surname()
+        self.id_validation()
+        self.validate_phone_number()
+        self.validate_email()
+        self.validate_pin()
+        self.validate_opening_balance()
+            
+    def validate_username_and_surname(self):
 
         self.validate_username()
         self.validate_usersurname()
@@ -26,26 +47,49 @@ class DataValidation:
     def validate_username(self):
         for char in self.Username:
             if not (char.isalpha() or char in self.special_chars):
-                self.error_message += "\nPlease remove any special characters or numbers when entering your Name!"
-                break
-
-    def validate_usersurname(self):
+                self.error_message += "\nPlease remove any special characters or numbers when entering your Name and Surname!"
+                return
+        
         for char in self.Usersurname:
             if not (char.isalpha() or char in self.special_chars):
-                self.error_message += "\nPlease remove any special characters or numbers when entering your Surname!"
-                break
-
+                self.error_message += "\nPlease remove any special characters or numbers when entering your Name and Surname!"
+                return
+            
     def account_existence(self):
-        global stored_username
-        global stored_usersurname
-        account_exists= False
+        account_exists = False
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
 
+                    if len(parts) < 7:
+                        print(f"Skipping line due to insufficient columns: {line.strip()}")
+                        continue  # Skip lines that do not have enough columns
+
                     stored_username = parts[1].strip().lower()
                     stored_usersurname = parts[2].strip().lower()
+                    stored_account_type = parts[5].strip().lower()
+                    stored_id = parts[6].strip().lower()
+
+                    print(f"Processing line: {line.strip()}")
+                    print(f"account type: {stored_account_type}, Input acc: {self.account_type}")
+                    
+                    #need to go through whole file before making decision
+                    if (self.Username.lower() == stored_username and 
+                            self.Usersurname.lower() == stored_usersurname and 
+                            self.account_type.lower() == stored_account_type and
+                            self.id_no.lower() == stored_id):
+                            print("Match found: Account already exists!")
+                            account_exists= True
+                            return account_exists
+                
+                    if self.id_no.lower() == stored_id and not self.account_type == stored_account_type:
+                        self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "
+
+                        print("ID matches but other details do not match.")
+                        account_exists=True
+                        return account_exists
+
                     if self.Username.lower() == stored_username and self.Usersurname.lower() == stored_usersurname:
                         account_exists= True
                         break
@@ -59,8 +103,50 @@ class DataValidation:
                     
         except FileNotFoundError:
             self.error_message += "\nError: Accounts file not found!"
-        except :
-            self.error_message+="Something went wrong! \nContact Administrator\n(Error location: account_existence)"
+            print("Accounts file not found.")
+            return self.error_message
+        except Exception as e:
+            self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence, Error: {str(e)})"
+            print(f"Error: {str(e)}")
+            return self.error_message
+
+
+
+    # def account_existence(self):
+    #     account_exists= False
+    #     try:
+    #         with open("accounts.csv", "r") as file:
+    #             for line in file:
+    #                 parts = line.strip().split(",")
+
+
+    #                 stored_id = parts[6].strip().lower()
+    #                 stored_usersurname = parts[2].strip().lower()
+    #                 stored_username= parts[1].strip().lower()
+    #                 stored_account_type = parts[5].strip().lower()
+    #                 print("id input:",self.id_no , "stored_id:",stored_id)
+    #                 if (self.id_no == stored_id):
+    #                     print("problem where")
+    #                     if (self.Username == stored_username and self.Usersurname == stored_usersurname and self.account_type == stored_account_type and self.id_no == stored_id):
+    #                         account_exists= True
+    #                         print("here byra stuff" )
+    #                         return account_exists
+                    
+    #                 print("byra ara stuff")  
+    #                 self.existing_user_id_acc_creation_message += "\nAn account already exists for the provided ID number! \n Would you like to create a new account? "
+    #                 return account_exists
+                    
+    #         if not account_exists:
+    #             self.error_message += "\nAccount does not Exist!"  
+        
+    #         # return account_exists
+
+           
+                    
+    #     except FileNotFoundError:
+    #         self.error_message += "\nError: Accounts file not found!"
+    #     except :
+    #         self.error_message+="Something went wrong! \nContact Administrator\n(Error location: account_existence)"
 
     def valid_acc_no(self):  
         global stored_account_no
@@ -92,6 +178,38 @@ class DataValidation:
                             
         except:
                 self.error_message+="Something went wrong! \nContact Administrator\n(Error location: valid_acc_no)"
+
+    def validate_pin(self):
+        try:       
+            if len(self.pin) != 5 :
+                 self.error_message += "\nPin does not meet the minimum requirements!\nYour pin needs to contain 5 digits!"
+                 return False    
+            
+            if not(self.pin.isdigit()):
+                 self.error_message += "\nPin does not meet the minimum requirements!\nYour cannot contain Letters or Special characters!"
+                 return False
+            else:
+                 return True
+        except: 
+                self.error_message+="Something went wrong! \nContact Administrator\n(Error location: validate_pin)"
+
+    def validate_phone_number(self):
+        regex = r'^(\+27|0)\d{9}$'
+        if re.match(regex, self.phone_number):
+            return True
+        else:
+            self.error_message +="\nInvalid phone number!"
+            return False
+
+    def validate_email(self):
+        try:    
+                valid = validate_email(self.email)
+                email = valid.email
+                return True
+        
+        except EmailNotValidError as e:
+                self.error_message += "\n" + str((e))
+                return False
 
     def bank(self):
         global account_bank
@@ -127,8 +245,28 @@ class DataValidation:
                 self.error_message+="Something went wrong! \nContact Administrator\n(Error location: bank() function)"
 
     def get_error_message(self):
-        return self.error_message
-                          
+        error_message= self.error_message
+        return error_message
+
+    def get_uid(self):
+        try:
+            uid = ""
+            with open("accounts.csv", "r") as file:
+                for line in file:
+                    parts = line.strip().split(",")
+
+                    
+                    stored_id = parts[6].strip().lower()
+                    if self.id_no == stored_id:
+                        uid = parts[0]
+                        return uid
+                
+                print(uid)
+
+
+        except:
+             print()
+
     def id_validation(self):
         try:
             if len(self.id_no) != 13 :
@@ -142,6 +280,97 @@ class DataValidation:
                 return True
         except:
             self.error_message+="Something went wrong! \nContact Administrator\n(Error location: id_validation)"
+    
+    def transaction_validation(self):
+         print()
+
+    def validate_opening_balance(self):
+            
+            try:
+                opening_balance = self.balance
+                amount = int(opening_balance)
+                if not (amount) or not (amount>= 100) :
+                    self.error_message += "\nInsufficient opening balance!\nMinimum amount: R100"
+                    return False
+                else:
+                    return True
+            
+            except:
+                self.error_message += "\nSomething went wrong! \nContact Administrator\n(Error location: validate_opening_balance)"
+
+class LoginValidation:
+    def __init__(self, username, id_no, pin):
+        self.username = username.strip().lower()
+        self.id_no = id_no.strip().lower()
+        self.pin = pin.strip().lower()
+        self.special_chars = ["-", "^", "'"]  
+        self.error_message = ""
+        
+        self.validate_username()
+        self.validate_pin() 
+        self.id_validation()
+
+    def validate_pin(self):
+        try:       
+            if len(self.pin) != 5:
+                self.error_message += "\nPin does not meet the minimum requirements!\nYour pin needs to contain 5 digits!"
+                return False    
+            
+            if not self.pin.isdigit():
+                self.error_message += "\nPin does not meet the minimum requirements!\nYour pin cannot contain letters or special characters!"
+                return False
+            return True
+        except Exception as e: 
+            self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: validate_pin)\n{str(e)}"
+            return False
+    
+    def id_validation(self):
+        try:
+            if len(self.id_no) != 13:
+                self.error_message += "\nInvalid ID number!"
+                return False
+            
+            if not self.id_no.isdigit():
+                self.error_message += "\nInvalid ID number! Remove any characters that are not numbers!"
+                return False
+            return True
+        except Exception as e:
+            self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: id_validation)\n{str(e)}"
+            return False
+
+    def validate_username(self):
+        try:
+            for char in self.username:
+                if not (char.isalpha() or char in self.special_chars):
+                    self.error_message += "\nPlease remove any special characters or numbers when entering your Name and Surname!"
+                    return False
+            return True
+        except Exception as e:
+            self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: validate_username)\n{str(e)}"
+            return False
+     
+    def account_existence(self):
+        account_exists = False
+        try:
+            with open("accounts.csv", "r") as file:
+                for line in file:
+                    parts = line.strip().split(",")
+                    stored_id = parts[6].strip().lower()
+                    stored_name = parts[1].strip().lower()
+                    if self.id_no == stored_id and self.username == stored_name:
+                        account_exists = True
+                        break
+            if not account_exists:
+                self.error_message += "\nAccount does not exist!"  
+            return account_exists
+        except FileNotFoundError:
+            self.error_message += "\nError: Accounts file not found!"
+        except Exception as e:
+            self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence)\n{str(e)}"
+            return False
+
+
+    def password_recovery(self):
         
     def password_recovery(self, email):
         try:
@@ -174,34 +403,33 @@ class DataValidation:
       
 class account_creation:
 
-    def __init__(self, User_name, User_surname,id_no,acc_type):
+    def __init__(self, User_name, User_surname,id_no,pin, phone_number,password,email, balance,account_type):
         self.Username = User_name.strip().lower()
         self.Usersurname = User_surname.strip().lower()
         self.id_no = id_no.strip() 
-        self.acc_type = acc_type.strip().lower()
+        self.pin= pin.strip()
+        self.password= password.strip()
+        self.email= email.strip()
+        self.balance= balance.strip()
+        self.account_type= account_type.strip().lower()
+        self.phone_number = phone_number.strip()
+
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
-
-        self.new_account = DataValidation(self.Username,self.Usersurname,self.id_no) 
-        
-        global valid_acc_no
-        global valid_id
-        global existing_account
-
-        valid_id = self.new_account.id_validation()
-        existing_account = self.new_account.account_existence()
+    
+    
         
     def get_error_message(self):
-        x= self.new_account.error_message
+        x= self.error_message
         return x
     
     def password_generation(self):
         try:
             if existing_account == True:
-               self.new_account.error_message += "\nAccount already exists!" 
+               self.error_message += "\nAccount already exists!" 
 
             elif valid_id == False:
-                  self.new_account.error_message+=""
+                  self.error_message+=""
 
             else:        
                 password = ""
@@ -239,16 +467,21 @@ class account_creation:
                 
                 return password
         except Exception as e:
-                self.new_account.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: password_generation)"  
+                self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: password_generation)"  
 
-
-    def store_account(self, User_name, User_surname, id_no, acc_type):
+    def store_account(self):
         try:
             new_account_no = self.acc_no_generator()
             stored_data = []
+            
+            validator = DataValidation(self.Username,self.Usersurname,self.id_no,self.email,self.phone_number,self.pin,self.balance,self.account_type)
             df = pd.read_csv("accounts.csv")
-            Uid = df['uid'].max() + 1 if not df.empty else 0
-            stored_data.append({"uid": Uid, "Name": User_name.strip().lower(), "Surname": User_surname.strip().lower(), "Account_no": new_account_no, "Balance": "0", "Account_type": acc_type.strip().lower(), "Id_no": id_no.strip(), "Linked_accounts": ""})
+            if validator.account_existence():
+                Uid = validator.get_uid()
+            else:
+                Uid = df['uid'].max() + 1 if not df.empty else 0
+
+            stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": self.account_type, "Id_no": self.id_no, "Linked_accounts": ""})
 
             file_name = "accounts.csv"
             fields = ["uid", "Name", "Surname", "Account_no", "Balance", "Account_type", "Id_no", "Linked_accounts"]
@@ -262,7 +495,6 @@ class account_creation:
         except Exception as e:
             return f"Something went wrong! Contact Administrator!\n(Error location: store_account)\n{str(e)}"
            
-
     def acc_no_generator(self):
         valid_char= ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',]
 
@@ -279,19 +511,53 @@ class account_creation:
                         parts = line.strip().split(",")
 
                         if stored_account_no == parts[3]:
-                            self.new_account.error_message += "\nCannot create new account. Account number not unique.\n Attempting new account number generation..."
-
+                            # self.new_account.error_message += "\nCannot create new account. Account number not unique.\n Attempting new account number generation..."
+                            print()
                         else:
                             valid_acc = True 
 
                 return gen_acc_no
     
         except:
+             self.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
+
+    def store_passwords(self):
+        try:
+            stored_passwords=[]
+            stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"id":self.id_no ,"email":self.email ,"Password" : self.password ,"Pin":self.pin})
+                        
+            file_name = "password_records.csv"
+            fields= ["Name" ,"Surname","id","email", "Password","Pin"]
+                        
+            with open(file_name , "a" , newline="") as csvfile:
+                    scribe = csv.DictWriter(csvfile , fieldnames = fields )
+                        ## Checks if file is empty ###
+                    if csvfile.tell () == 0:
+                        scribe.writeheader()
+                        
+                    scribe.writerows(stored_passwords)
+                    return 
+        
+        except:
+                self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
+
+    # def existing_user_new_account(self):
+    #     try:
+             
+    #     except:
+    #          print()          
+         
+         
              self.new_account.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
 
 
 
 ### Testing area ###
+# username="john"
+# usersurname= "doe"
+# id_no="0214536241543"
+# d= DataValidation(username,usersurname,id_no,"person@gmail.com","0712663977","12345")
+# x= account_creation(username,usersurname,id_no,"bankswift")
 username="andrea"
 usersurname= "goodall"
 id_no="0214536241543"
@@ -301,10 +567,21 @@ email = "goodall.andrea.ag.ag@gmail.com"
 d= DataValidation(username,usersurname,id_no)
 x= account_creation(username,usersurname,id_no,"bankswift")
 
+# acc_type = "savings"
+
+
+# # f= x.acc_no_generator()
+# # c= x.get_error_message()
+# # print("c:",c)
+# # y= d.pas
+# # print("Password Recovery Result:", y)
 
 y = d.password_recovery(email)
 print("Password Recovery Result:", y)
 
+# ac = account_creation(username, usersurname, id_no, acc_type)
+# result = ac.store_account(username, usersurname, id_no, acc_type)
+# print(result)
 # ac = account_creation(username, usersurname, id_no, acc_type)
 # result = ac.store_account(username, usersurname, id_no, acc_type)
 # print(result)

@@ -1,4 +1,10 @@
 uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
+2,test,data,151236545,500,cheque,0210085197089,
+1,john,doe,151512943,500,savings,0210085197080,
+1,john,doe,151692356,500,cheque,0210085197080,
+
+
+1,john,doe,,500,savings,0210085197080,
 0,john,doe,151876453.0,14980,cheque,123456789.0,
 1,samantha,laqua,151569748.0,6100,Cheque,541984161.0,
 2,jaq,beniptorf,151968429.0,9500,Cheque,6516545.0,
