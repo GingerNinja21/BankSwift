@@ -4,6 +4,7 @@ import datetime
 import pandas as pd
 from file import DataValidation, account_creation
 
+
 class BankingApplicationGUI(tk.Tk):
     def __init__(self, recipient_name, accounts_file, banks_file, transactions_log):
         super().__init__()
@@ -11,7 +12,7 @@ class BankingApplicationGUI(tk.Tk):
         self.accounts_file = accounts_file
         self.banks_file = banks_file
         self.transactions_log = transactions_log
-        self.account_type = self.get_account_type(recipient_name)
+        # self.account_type = self.get_account_type(recipient_name)
 
         self.title("BankSwift")
         self.geometry("400x300")
@@ -42,7 +43,7 @@ class BankingApplicationGUI(tk.Tk):
             if not account.empty:
                 return account['balance'].values[0]
             else:
-                return 0.0  # Handle case where account is not found
+                return 0.0  # Handle account is not found
         except FileNotFoundError:
             messagebox.showerror("Error", "Accounts file not found.")
             return 0.0
@@ -94,7 +95,7 @@ class BankingApplicationGUI(tk.Tk):
     def get_account_type(self, account_name):
         try:
             df = pd.read_csv(self.accounts_file)
-            account = df[df['name'].str.lower() == account_name.lower()]
+            account = df[df['name'].str.lower() == account_name.lower() and df["id_no"]]
             if not account.empty:
                 return account['account_type'].values[0]
             else:
@@ -152,7 +153,7 @@ class BankingApplicationGUI(tk.Tk):
         try:
             df = pd.read_csv(self.accounts_file)
             mask = df['name'].str.lower() == self.recipient_name.lower()
-            if mask.any():
+            if mask():
                 df.loc[mask, 'balance'] += amount
                 df.to_csv(self.accounts_file, index=False)
             else:
@@ -160,12 +161,13 @@ class BankingApplicationGUI(tk.Tk):
         except FileNotFoundError:
             messagebox.showerror("Error", "Accounts file not found.")
 
-if __name__ == "__main__":
-    recipient_name = simpledialog.askstring("Login", "Enter your account name:")
-    app = BankingApplicationGUI(
-        recipient_name,
-        accounts_file="accounts.csv",
-        banks_file="banks.csv",
-        transactions_log="transactionslog.txt"
-    )
-    app.mainloop()
+# if __name__ == "__main__":
+#     # recipient_name = simpledialog.askstring("Login", "Enter your account name:")
+#     # app = BankingApplicationGUI(
+#         recipient_name,
+#         accounts_file="accounts.csv",
+#         banks_file="banks.csv",
+#         transactions_log="transactionslog.txt"
+#     )
+    # app.mainloop()
+# 

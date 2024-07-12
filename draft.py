@@ -45,7 +45,6 @@ class WelcomeWindow:
     def open_login(self):
         self.root.withdraw()
         LoginWindow(self)
- 
 class CreateAccountWindow:
     def __init__(self, welcome_window):
         self.welcome_window = welcome_window
@@ -211,8 +210,7 @@ class CreateAccountWindow:
  
     #def create_account_function(self):
         #if self.validate_entries():
-            #messagebox.showinfo("Success", "Account created successfully.")
-       
+            #messagebox.showinfo("Success", "Account created successfully.")    
 class LoginWindow:
     def __init__(self, welcome_window):
         self.welcome_window = welcome_window
@@ -305,7 +303,39 @@ class LoginWindow:
                 messagebox.showerror("Error", "Password records file not found.")
             except Exception as e:
                 messagebox.showerror("Error", f"Error: {str(e)}")
-
+# class DashboardWindow:
+#     def __init__(self, welcome_window):
+#         self.welcome_window = welcome_window
+#         self.dashboard = tk.Toplevel()
+#         self.dashboard.title("Dashboard")
+#         self.dashboard.geometry("600x600")
+#         self.dashboard.configure(bg="#f0f0f0")
+#         self.create_widgets()
+ 
+#     def create_widgets(self):
+#         view_transactions_btn = tk.Button(self.dashboard, text="View Transactions", bg="#2196F3", fg="white", padx=20, pady=10)
+#         view_transactions_btn.place(relx=0.5, rely=0.2, anchor="center")
+ 
+#         balance_inquiry_btn = tk.Button(self.dashboard, text="Balance Inquiry", bg="#2196F3", fg="white", padx=20, pady=10)
+#         balance_inquiry_btn.place(relx=0.5, rely=0.4, anchor="center")
+ 
+#         credit_debit_btn = tk.Button(self.dashboard, text="Credit/Debit Amount", bg="#2196F3", fg="white", padx=20, pady=10)
+#         credit_debit_btn.place(relx=0.5, rely=0.6, anchor="center")
+ 
+#         back_btn = tk.Button(self.dashboard, text="Back", command=self.go_back, bg="#FF5722", fg="white", padx=20, pady=10)
+#         back_btn.place(relx=0.3, rely=0.7, anchor="center")
+ 
+#         self.dashboard.protocol("WM_DELETE_WINDOW", self.on_close)
+#         self.dashboard.mainloop()
+ 
+#     def on_close(self):
+#         self.dashboard.destroy()
+#         self.welcome_window.root.deiconify()
+ 
+#     def go_back(self):
+#         self.dashboard.destroy()
+#         self.welcome_window.root.deiconify()
+ 
 class DashboardWindow:
     def __init__(self, welcome_window):
         self.welcome_window = welcome_window
@@ -314,30 +344,45 @@ class DashboardWindow:
         self.dashboard.geometry("600x600")
         self.dashboard.configure(bg="#f0f0f0")
         self.create_widgets()
- 
+
     def create_widgets(self):
-        view_transactions_btn = tk.Button(self.dashboard, text="View Transactions", bg="#2196F3", fg="white", padx=20, pady=10)
+        view_transactions_btn = tk.Button(self.dashboard, text="View Transactions", command=self.view_transactions, bg="#2196F3", fg="white", padx=20, pady=10)
         view_transactions_btn.place(relx=0.5, rely=0.2, anchor="center")
- 
-        balance_inquiry_btn = tk.Button(self.dashboard, text="Balance Inquiry", bg="#2196F3", fg="white", padx=20, pady=10)
-        balance_inquiry_btn.place(relx=0.5, rely=0.4, anchor="center")
- 
-        credit_debit_btn = tk.Button(self.dashboard, text="Credit/Debit Amount", bg="#2196F3", fg="white", padx=20, pady=10)
-        credit_debit_btn.place(relx=0.5, rely=0.6, anchor="center")
- 
+
+        balance_inquiry_btn = tk.Button(self.dashboard, text="Balance Inquiry", command=self.balance_inquiry, bg="#2196F3", fg="white", padx=20, pady=10)
+        balance_inquiry_btn.place(relx=0.5, rely=0.3, anchor="center")
+
+        transfer_btn = tk.Button(self.dashboard, text="Transfer", command=self.transfer, bg="#2196F3", fg="white", padx=20, pady=10)
+        transfer_btn.place(relx=0.5, rely=0.4, anchor="center")
+
+        withdraw_btn = tk.Button(self.dashboard, text="Withdraw", command=self.withdraw, bg="#2196F3", fg="white", padx=20, pady=10)
+        withdraw_btn.place(relx=0.5, rely=0.5, anchor="center")
+
         back_btn = tk.Button(self.dashboard, text="Back", command=self.go_back, bg="#FF5722", fg="white", padx=20, pady=10)
         back_btn.place(relx=0.3, rely=0.7, anchor="center")
- 
+
         self.dashboard.protocol("WM_DELETE_WINDOW", self.on_close)
         self.dashboard.mainloop()
- 
+
     def on_close(self):
         self.dashboard.destroy()
         self.welcome_window.root.deiconify()
- 
+
     def go_back(self):
         self.dashboard.destroy()
         self.welcome_window.root.deiconify()
+
+    def view_transactions(self):
+        messagebox.showinfo("View Transactions", "Not available.")
+
+    def balance_inquiry(self):
+        messagebox.showinfo("Balance Inquiry", "Not available.")
+
+    def transfer(self):
+        messagebox.showinfo("Transfer", "Not available.")
+
+    def withdraw(self):
+        messagebox.showinfo("Withdraw", "Not available.")
  
 if __name__ == "__main__":
     WelcomeWindow()
