@@ -28,7 +28,6 @@ class BankingApplication:
             new_account_no = creation.acc_no_generator()
             if new_account_no:
                 print(f"New account created with account number: {new_account_no}")
-
     #file.py
     def validate_user_input(self, username, usersurname, id_no):
         # Data Validation - validate user input
@@ -98,7 +97,6 @@ class BankingApplication:
 
             return acc_type
 
-
     def write_transaction(self, transaction_type, amount, to_account=None, to_account_name=None):
         transaction_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         from_account_name = self.recipient_name
@@ -109,7 +107,6 @@ class BankingApplication:
         
         with open(self.transactions_log, "a") as file:
             file.write(transaction_details)
-
 
     def update_balance(self, amount):
         df = pd.read_csv(self.accounts_file)
