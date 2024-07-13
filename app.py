@@ -6,13 +6,14 @@ import file
 import csv
 from PIL import Image, ImageTk
 from file import LoginValidation
-import bankswift
+import bankswift 
 
 recipient_name=""
 accounts_file=""
 accounts_file=""
 banks_file=""
 transaction_log=""
+
 class AnimatedGIF(tk.Label):
     def __init__(self, master, gif_path, static_image_path, width, height, delay=100):
         super().__init__(master)
@@ -75,9 +76,6 @@ class WelcomeWindow:
 
         self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.create_widgets()
-
-    
-
         self.root.mainloop()
         
 
@@ -88,7 +86,7 @@ class WelcomeWindow:
     
     def create_widgets(self):
         # if all fails
-        # image = Image.open("logo.png")  # Replace with your image file path
+        # image = Image.open("logo.png")
         # resized_image=image.resize((200, 200),)
         # photo = ImageTk.PhotoImage(resized_image)
         # self_logo = tk.Label(self.root,image=photo)
@@ -119,19 +117,19 @@ class WelcomeWindow:
         contact_menu.add_command(label="Contact Us")
  
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
-
-
         self.root.mainloop()
  
     def on_close(self):
-        self.root.withdraw()
+        # self.root.withdraw()
+        self.root.destroy()
+        print()
  
     def open_create_account(self):
-        self.root.withdraw()
+        # self.root.withdraw()
         CreateAccountWindow(self)
  
     def open_login(self):
-        self.root.withdraw()
+        # self.root.withdraw()
         LoginWindow(self)
 
     def reopen(self):
@@ -300,13 +298,13 @@ class CreateAccountWindow:
    
     def on_close(self):
         self.create_account.destroy()
-        WelcomeWindow().__init__
+        # WelcomeWindow().__init__
          
         
 
     def go_back(self):
         self.create_account.destroy()
-        WelcomeWindow().__init__
+        # WelcomeWindow().__init__
  
     def generate_password(self):
         characters = string.ascii_letters + string.digits + string.punctuation
@@ -402,11 +400,11 @@ class LoginWindow:
 
     def on_close(self):
         self.login.destroy()
-        WelcomeWindow()
+        # WelcomeWindow()
 
     def go_back(self):
         self.login.destroy()
-        WelcomeWindow()
+        # WelcomeWindow()
 
     def validate_entries(self):
         email = self.email_entry.get().strip().lower()
@@ -439,6 +437,7 @@ class LoginWindow:
         id_no = self.id_entry.get().strip()
         name = self.name_entry.get().strip()
         account_exists= False
+        
 
         if self.validate_entries():
             try:
@@ -454,7 +453,7 @@ class LoginWindow:
                             
                             if account_exists:
                                 self.login.destroy()
-                                bankswift.BankingApplicationGUI(recipient_name,accounts_file,banks_file,transaction_log)
+                                bankswift.BankingApplicationGUI(recipient_name,accounts_file,banks_file,transaction_log,self.id_entry)
                                 return 
                         
                     messagebox.showerror("Error", "Invalid credentials. Please try again.")

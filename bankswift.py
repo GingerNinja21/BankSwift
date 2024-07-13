@@ -1,3 +1,4 @@
+import csv
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox, simpledialog
 import datetime
@@ -6,10 +7,11 @@ from file import DataValidation, account_creation
 
 
 class BankingApplicationGUI(tk.Tk):
-    def __init__(self, recipient_name, accounts_file, banks_file, transactions_log):
+    def __init__(self, recipient_name, accounts_file, banks_file, transactions_log,id_no):
         super().__init__()
         self.recipient_name = recipient_name
-        self.accounts_file = accounts_file
+        self.id_no= id_no
+        self.accounts_file = "accounts.csv"
         self.banks_file = banks_file
         self.transactions_log = transactions_log
         # self.account_type = self.get_account_type(recipient_name)
@@ -33,19 +35,40 @@ class BankingApplicationGUI(tk.Tk):
         self.view_transactions_button.pack(pady=10)
 
     def view_balance(self):
-        balance = self.get_balance_from_csv()
+        recipient_name = self.entry_recipient_name.get()
+        id_no = self.entry_id_no.get()
+
+        if not recipient_name or not id_no:
+            messagebox.showerror("Error", "Please enter recipient name and ID number.")
+            return
+
+        validator = DataValidation(recipient_name=recipient_name, id_no=id_no)
+        balance = validator.get_balance_from_csv()
+
+        self.label_balance.config(text=f"Balance: R{balance:.2f}")
         messagebox.showinfo("Balance", f"Your balance is R{balance:.2f}")
 
     def get_balance_from_csv(self):
         try:
-            df = pd.read_csv(self.accounts_file)
-            account = df[df['name'].str.lower() == self.recipient_name.lower()]
-            if not account.empty:
-                return account['balance'].values[0]
-            else:
-                return 0.0  # Handle account is not found
+            with open("accounts.csv", "r") as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    stored_id = row["id_number"].strip().lower()
+                    stored_name = row["name"].strip().lower()
+                    stored_surname = row["surname"].strip().lower()
+                    stored_balance = float(row["balance"]) 
+                    if self.id_no == stored_id and self.recipient_name == stored_name and self.recipient_surname == stored_surname:
+                        return stored_balance
+
+            messagebox.showerror("Error", "Account not found.")
+            return 0.0
+
         except FileNotFoundError:
             messagebox.showerror("Error", "Accounts file not found.")
+            return 0.0
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Error retrieving balance: {str(e)}")
             return 0.0
 
     def withdraw(self):
@@ -55,12 +78,12 @@ class BankingApplicationGUI(tk.Tk):
                 messagebox.showerror("Error", "Invalid amount.")
                 return
 
-            self.update_balance(-amount)
-            self.write_transaction("Withdraw", amount)
-            messagebox.showinfo("Withdraw", f"R{amount:.2f} successfully withdrawn.")
+            if self.update_balance(-amount):
+                self.write_transaction("Withdraw", amount)
+                messagebox.showinfo("Withdraw", f"R{amount:.2f} successfully withdrawn.")
         except ValueError:
             messagebox.showerror("Error", "Invalid amount.")
-
+            
     def transfer(self):
         recipient_name = simpledialog.askstring("Transfer", "Enter recipient account name:")
         amount = simpledialog.askfloat("Transfer", "Enter amount to transfer:")
@@ -70,9 +93,9 @@ class BankingApplicationGUI(tk.Tk):
                 messagebox.showerror("Error", "Invalid input.")
                 return
 
-            self.update_balance(-amount)
-            self.write_transaction("Transfer", amount, recipient_name)
-            messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {recipient_name}.")
+            if self.update_balance(-amount):
+                self.write_transaction("Transfer", amount, recipient_name)
+                messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {recipient_name}.")
         except ValueError:
             messagebox.showerror("Error", "Invalid amount.")
 
