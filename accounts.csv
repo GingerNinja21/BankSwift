@@ -7,9 +7,3 @@ uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
 6,man,unknown,,100,savings,101100528088,
 7,test,unknown,151031684,200,savings,101100528088,
 9,andrea,goodall,54984651849,20000,savings,0101100528088
-10,john,doe,151137062,500,cheque,0210085197080,
-10,john,doe,151337866,500,cheque,0210085197080,
-10,john,doe,151130932,500,cheque,0210085197080,
-11,john,doe,151409080,500,cheque,0210085197082,
-12,john,doew,151583953,500,savings,0210085197084,
-13,raees,samsodien,151200239,150,savings,0210045377087,

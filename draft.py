@@ -7,16 +7,17 @@ import csv
 from PIL import Image, ImageTk
 from file import LoginValidation
 
-
+logo_gif="BANKSWIFT.gif"
+logo_static = "logo.png"
 class AnimatedGIF(tk.Label):
     def __init__(self, master, gif_path, static_image_path, width, height, delay=100):
         super().__init__(master)
         self.master = master
         self.delay = delay
         self.gif_path = gif_path
-        self.gif_path = "BANKSWIFT.gif"
+        self.gif_path = gif_path
         self.static_image_path = static_image_path
-        self.static_image_path="logo.png"
+        self.static_image_path=static_image_path
         self.width = width
         self.height = height
         self.frames = []
@@ -51,6 +52,7 @@ class AnimatedGIF(tk.Label):
             self.config(image=self.static_image)
 
 
+
 class WelcomeWindow:
     def __init__(self):
         self.root = tk.Tk()
@@ -77,7 +79,7 @@ class WelcomeWindow:
         
 
     def initialize_logo(self):
-        self.animated_gif = AnimatedGIF(self.root, self.logo_gif, self.logo_static, 200, 200, 100)
+        self.animated_gif = AnimatedGIF(self.root, logo_gif, logo_static, 200, 200, 100)
         self.animated_gif.grid(row=5 , column=2)
         self.animated_gif.pack()
     
@@ -89,40 +91,75 @@ class WelcomeWindow:
         # self_logo = tk.Label(self.root,image=photo)
         # self_logo.grid(row=5 ,column=2)
         # self_logo.pack()
-        self.initialize_logo()
-        Register = tk.Label(self.root, text="Dont have an Account?", fg="#37B7C3" , bg="#071952")
-        Register.place(relx=0.1 , rely=0.8)
+        try :
+            self.initialize_logo()
+            Register = tk.Label(self.root, text="Dont have an Account?", fg="#37B7C3" , bg="#071952")
+            Register.place(relx=0.1 , rely=0.8)
 
-        forgot_pin_link = tk.Label(self.root, text="Register here.", fg="white", bg = "#01204E" ,cursor="hand2")
-        forgot_pin_link.place(relx=0.54, rely=0.8)
-        forgot_pin_link.bind("<Button-1>", lambda event: self.open_create_account())
+            forgot_pin_link = tk.Label(self.root, text="Register here.", fg="white", bg = "#01204E" ,cursor="hand2")
+            forgot_pin_link.place(relx=0.54, rely=0.8)
+            forgot_pin_link.bind("<Button-1>", lambda event: self.open_create_account())
 
-        # create_account_btn = tk.Button(self.root, text="Create Account", command=self.open_create_account, bg="#4CAF50", fg="white", padx=20, pady=10)
-        # create_account_btn.place(relx=0.5, rely=0.6, anchor="center")
- 
-        login_btn = tk.Button(self.root, text="Login", command=self.open_login, bg="#2196F3", fg="white", padx=20, pady=10)
-        login_btn.place(relx=0.5, rely=0.65, anchor="center")
- 
-        menubar = tk.Menu(self.root)
-        self.root.config(menu=menubar)
-        about_menu = tk.Menu(menubar)
-        menubar.add_cascade(label="About Us", menu=about_menu)
-        about_menu.add_command(label="About Us")
- 
-        contact_menu = tk.Menu(menubar)
-        menubar.add_cascade(label="Contact Us", menu=contact_menu)
-        contact_menu.add_command(label="Contact Us")
- 
-        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+            login_btn = tk.Button(self.root, text="Login", command=self.open_login, bg="#2196F3", fg="white", padx=20, pady=10)
+            login_btn.place(relx=0.5, rely=0.65, anchor="center")
+    
+            menubar = tk.Menu(self.root)
+            self.root.config(menu=menubar)
+            about_menu = tk.Menu(menubar)
+            menubar.add_cascade(label="About Us", menu=about_menu)
+            about_menu.add_command(label="About Us")
+    
+            contact_menu = tk.Menu(menubar)
+            menubar.add_cascade(label="Contact Us", menu=contact_menu)
+            contact_menu.add_command(label="Contact Us")
+    
+            self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
 
-        self.root.mainloop()
- 
+            self.root.mainloop()
+
+        except tk.TclError:
+            # image = Image.open("logo.png")  # Replace with your image file path
+            # resized_image=image.resize((200, 200),)
+            # photo = ImageTk.PhotoImage(resized_image)
+            # self_logo = tk.Label(self.root,image=photo)
+            # self_logo.grid(row=5 ,column=2)
+            # self_logo.pack()
+            # Register = tk.Label(self.root, text="Dont have an Account?", fg="#37B7C3" , bg="#071952")
+            # Register.place(relx=0.1 , rely=0.8)
+            self.animated_gif = AnimatedGIF(self.root, logo_gif, logo_static, 200, 200, 100)
+            print(logo_gif, logo_static)
+            print("here:",tk.TclError )
+            self.animated_gif.grid(row=5 , column=2)
+            self.animated_gif.pack()
+
+            forgot_pin_link = tk.Label(self.root, text="Register here.", fg="white", bg = "#01204E" ,cursor="hand2")
+            forgot_pin_link.place(relx=0.54, rely=0.8)
+            forgot_pin_link.bind("<Button-1>", lambda event: self.open_create_account())
+
+            login_btn = tk.Button(self.root, text="Login", command=self.open_login, bg="#2196F3", fg="white", padx=20, pady=10)
+            login_btn.place(relx=0.5, rely=0.65, anchor="center")
+    
+            menubar = tk.Menu(self.root)
+            self.root.config(menu=menubar)
+            about_menu = tk.Menu(menubar)
+            menubar.add_cascade(label="About Us", menu=about_menu)
+            about_menu.add_command(label="About Us")
+    
+            contact_menu = tk.Menu(menubar)
+            menubar.add_cascade(label="Contact Us", menu=contact_menu)
+            contact_menu.add_command(label="Contact Us")
+    
+            self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+
+
+            self.root.mainloop()
+
     def on_close(self):
-        self.root.withdraw()
+        self.root.destroy()
  
     def open_create_account(self):
-        self.root.withdraw()
+        # self.root.withdraw()
         CreateAccountWindow(self)
  
     def open_login(self):
@@ -130,7 +167,7 @@ class WelcomeWindow:
         LoginWindow(self)
 
     def reopen(self):
-        self.root.wm_attributes("-alpha", 1.0)
+        self.root.deiconify()
  
 class CreateAccountWindow:
     def __init__(self, welcome_window):
@@ -295,14 +332,13 @@ class CreateAccountWindow:
    
     def on_close(self):
         self.create_account.destroy()
-        WelcomeWindow().__init__
+        WelcomeWindow()
          
         
 
     def go_back(self):
         self.create_account.destroy()
-        WelcomeWindow().__init__
- 
+
     def generate_password(self):
         characters = string.ascii_letters + string.digits + string.punctuation
         password = ''.join(random.choice(characters) for i in range(12))
@@ -465,7 +501,7 @@ class DashboardWindow:
  
     def go_back(self):
         self.dashboard.destroy()
-        WelcomeWindow()
+        LoginWindow()
  
 if __name__ == "__main__":
     WelcomeWindow()
