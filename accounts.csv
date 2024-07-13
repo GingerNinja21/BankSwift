@@ -1,9 +1,2 @@
 uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
-0,john,doe,151876453,14980,cheque,123456789,
-1,samantha,laqua,151569748,6100,Cheque,541984161,
-2,jaq,beniptorf,151968429,9500,Cheque,6516545,
-3,alexa,jackson,151649738,2100,Savings,652984654,
-5,annie,unknown,1000,200,,,
-6,man,unknown,,100,savings,101100528088,
-7,test,unknown,151031684,200,savings,101100528088,
-9,andrea,goodall,54984651849,20000,savings,0101100528088
+0,andrea,goodall,151810268,100,savings,0101100528088,

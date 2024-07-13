@@ -52,15 +52,13 @@ class DataValidation:
             
     def account_existence(self):
         account_exists = False
-        self.existing_user_id_acc_creation_message =""
-        self.invalid_username_id_pair = ""
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
 
-                    if len(parts) < 6:
-                        continue  
+                    if len(parts) < 7:
+                        continue  # Skip lines that do not have enough columns
 
                     stored_username = parts[1].strip().lower()
                     stored_usersurname = parts[2].strip().lower()
@@ -72,11 +70,27 @@ class DataValidation:
                         self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username} and {self.Usersurname} does not match the Name and Surname linked to the provided ID number in our database!"
                        
 
+                    print(f"Processing line: {line.strip()}")
+                    print(f"account type: {stored_account_type}, Input acc: {self.account_type}")
+                    
+                    #need to go through whole file before making decision
                     if self.id_no.lower() == stored_id and self.Username.lower()== stored_username and self.Usersurname.lower() == stored_usersurname :
                         account_exists= True
                         self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
 
                     
+                        if (self.Username.lower() == stored_username and 
+                                self.Usersurname.lower() == stored_usersurname and 
+                                self.account_type.lower() == stored_account_type and
+                                self.id_no.lower() == stored_id):
+                                print("Match found: Account already exists!")
+                                account_exists= True
+
+                        else:
+                             account_exists= True
+                             self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
+                    
+                
                 return account_exists
             
 
@@ -323,7 +337,7 @@ class LoginValidation:
                     if (self.email.lower() == row['email'].lower() and 
                         self.id_no == row['id']):
                         password = row['password']
-                        username = row['name']  # Assuming 'name' is the field for user's name
+                        username = row['name'] 
                         subject = "Password Recovery"
                         message_text = (
                             f"Dear {username},\n\n"
@@ -366,7 +380,7 @@ class account_creation:
         x= self.error_message
         return x
     
-    # def password_generation(self):
+    def password_generation(self):
         try:
             if existing_account == True:
                self.error_message += "\nAccount already exists!" 
@@ -481,17 +495,5 @@ class account_creation:
         except:
                 self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: store_account)"  
 
-   
-         
-### Testing area ###
-# username="john"
-# usersurname= "doe"
-# id_no="0214536241543"
 
-
-# ac = account_creation(username, usersurname, id_no,"0210085197080","0840523857","asdfqwertyui","test@gmail.com","500","cheque")
-# result = ac.store_account(username, usersurname, id_no, acc_type)
-# print(result)
-# x= ac.acc_no_generator()
-# print(x)
 
