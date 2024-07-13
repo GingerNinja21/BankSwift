@@ -85,6 +85,21 @@ class WelcomeWindow:
         center_y = int(screen_height / 2 - window_height / 2)
 
         self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+
+        self.root.grab_set()
+
+        self.canvas = tk.Canvas(self.root, width=800, height=600)
+        self.canvas.pack(fill="both", expand=True)
+        
+        self.background_image = Image.open("background.png")
+        self.logo_image = Image.open("logo_transparent.png")
+        self.banner_image = Image.open("Create_Account_Banner.png")
+        
+        self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
+        
+
+        self.canvas.create_image(0, 0, image=self.background_photo, anchor=tk.NW)
+
         self.create_widgets()
 
     
@@ -106,7 +121,7 @@ class WelcomeWindow:
             self.initialize_logo()
         except Exception as e:
             print(f"Error initializing logo: {e}")
-            image = Image.open("logo.pn")  # Replace with your image file path
+            image = Image.open("logo.png")  # Replace with your image file path
             resized_image = image.resize((200, 200))
             photo = ImageTk.PhotoImage(resized_image)
             self_logo = tk.Label(self.root, image=photo, bg="#052944",fg="#052944")
@@ -146,9 +161,11 @@ class WelcomeWindow:
         self.root.destroy()
  
     def open_create_account(self):
+        self.root.lower()
         CreateAccountWindow()
  
     def open_login(self):
+        self.root.lower()
         LoginWindow()
 
 class CreateAccountWindow:
@@ -170,23 +187,21 @@ class CreateAccountWindow:
         self.create_account.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         
         self.create_account.resizable(False, False)
+        self.create_account.grab_set()
 
         self.canvas = tk.Canvas(self.create_account, width=800, height=600)
         self.canvas.pack(fill="both", expand=True)
         
-        # Load images
         self.background_image = Image.open("background.png")
         self.logo_image = Image.open("logo_transparent.png")
         self.banner_image = Image.open("Create_Account_Banner.png")
         
-        # Resize images
         self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
         self.logo_photo = ImageTk.PhotoImage(self.logo_image.resize((100,100)))
         self.banner_photo = ImageTk.PhotoImage(self.banner_image.resize((600, 100)))
         
-        # Place images on the canvas
+
         self.canvas.create_image(0, 0, image=self.background_photo, anchor=tk.NW)
-        # self.canvas.create_image(400, 50, image=self.banner_photo, anchor=tk.CENTER)
         self.canvas.create_image(750, 550, image=self.logo_photo, anchor=tk.SE)
 
         self.create_widgets()
@@ -260,70 +275,93 @@ class CreateAccountWindow:
             else:
                 self.go_back()
             
+    def disable_entry(self,entry_):
+        entry=entry_
+        entry.configure(state=tk.DISABLED)
+        entry.configure(bg="#2c3747")
 
     def create_widgets(self):
-    
-        name_label = tk.Label(self.create_account, text="Name:",font=("Trebuchet MS", 16) ,fg="#FFFFFF" , bg="#052944")
-        name_label.place(relx=0.2, rely=0.2, anchor="center")
+        
+        banner_label=tk.Label(self.create_account, text="CREATE ACCOUNT:",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#142133")
+        banner_label.place(relx=0.5, rely=0.1 ,anchor="center")
+
+        name_label = tk.Label(self.create_account, text="Name:",font=("Trebuchet MS", 16) ,fg="#FFFFFF" , bg="#142133")
+        name_label.place(relx=0.3, rely=0.2, anchor="center")
         self.name_entry = tk.Entry(self.create_account)
+        self.name_entry.configure(bg="#2c3747")
+        self.name_entry.configure(fg="#FFFFFF")
         self.name_entry.place(relx=0.6, rely=0.2,anchor="center")
  
-        surname_label = tk.Label(self.create_account,text="Surname:", fg="#FFFFFF",font=("Trebuchet MS", 16)  , bg="#052944")
-        surname_label.place(relx=0.2, rely=0.25,anchor="center")
+        surname_label = tk.Label(self.create_account,text="Surname:", fg="#FFFFFF",font=("Trebuchet MS", 16)  , bg="#142133")
+        surname_label.place(relx=0.3, rely=0.25,anchor="center")
         self.surname_entry = tk.Entry(self.create_account)
+        self.surname_entry.configure(bg="#2c3747")
+        self.surname_entry.configure(fg="#FFFFFF")
         self.surname_entry.place(relx=0.6, rely=0.25,anchor="center")
  
-        id_label = tk.Label(self.create_account, text="ID No.:", fg="#FFFFFF",font=("Trebuchet MS", 16)  , bg="#052944")
-        id_label.place(relx=0.2, rely=0.3,anchor="center")
+        id_label = tk.Label(self.create_account, text="ID No.:", fg="#FFFFFF",font=("Trebuchet MS", 16)  , bg="#142133")
+        id_label.place(relx=0.3, rely=0.3,anchor="center")
         self.id_entry = tk.Entry(self.create_account)
+        self.id_entry.configure(bg="#2c3747")
+        self.id_entry.configure(fg="#FFFFFF")
         self.id_entry.place(relx=0.6, rely=0.3,anchor="center")
  
-        phone_label = tk.Label(self.create_account, text="Phone:", fg="#FFFFFF" ,font=("Trebuchet MS", 16) , bg="#052944")
-        phone_label.place(relx=0.2, rely=0.35,anchor="center")
+        phone_label = tk.Label(self.create_account, text="Phone:", fg="#FFFFFF" ,font=("Trebuchet MS", 16) , bg="#142133")
+        phone_label.place(relx=0.3, rely=0.35,anchor="center")
         self.phone_entry = tk.Entry(self.create_account)
+        self.phone_entry.configure(bg="#2c3747")
+        self.phone_entry.configure(fg="#FFFFFF")
         self.phone_entry.place(relx=0.6, rely=0.35,anchor="center")
  
-        email_label = tk.Label(self.create_account, text="Email:",font=("Trebuchet MS", 16) , fg="#FFFFFF" , bg="#052944")
-        email_label.place(relx=0.2, rely=0.4,anchor="center")
+        email_label = tk.Label(self.create_account, text="Email:",font=("Trebuchet MS", 16) , fg="#FFFFFF" , bg="#142133")
+        email_label.place(relx=0.3, rely=0.4,anchor="center")
         self.email_entry = tk.Entry(self.create_account)
+        self.email_entry.configure(bg="#2c3747")
+        self.email_entry.configure(fg="#FFFFFF")
         self.email_entry.place(relx=0.6, rely=0.4,anchor="center")
         
 
-        account_type_label = tk.Label(self.create_account, text="Account Type:",font=("Trebuchet MS", 16)  , fg="#FFFFFF" , bg="#052944")
-        account_type_label.place(relx=0.2, rely=0.45,anchor="center")
+        account_type_label = tk.Label(self.create_account, text="Account Type:",font=("Trebuchet MS", 16)  , fg="#FFFFFF" , bg="#142133")
+        account_type_label.place(relx=0.3, rely=0.45,anchor="center")
         self.account_type = tk.StringVar(value="Cheque")
-        cheque_radio = tk.Radiobutton(self.create_account, text="Cheque", variable=self.account_type, value="cheque",fg ="#37B7C3" , bg="#052944")
+        cheque_radio = tk.Radiobutton(self.create_account, text="Cheque",font=("Times New Roman", 14 ,"bold"), variable=self.account_type, value="cheque",fg ="#727a85" , bg="#142133")
         cheque_radio.place(relx=0.5, rely=0.45,anchor="center")
-        savings_radio = tk.Radiobutton(self.create_account, text="Savings", variable=self.account_type, value="savings", fg = "#37B7C3" , bg="#052944")
+        savings_radio = tk.Radiobutton(self.create_account, text="Savings",font=("Times New Roman", 14 ,"bold"),variable=self.account_type, value="savings", fg = "#727a85" , bg="#142133")
         savings_radio.place(relx=0.7, rely=0.45,anchor="center")
 
 
-        balance_label = tk.Label(self.create_account, text="Opening Balance:",font=("Trebuchet MS", 16) , fg="#FFFFFF" , bg="#052944")
-        balance_label.place(relx=0.2, rely=0.5,anchor="center")
+        balance_label = tk.Label(self.create_account, text="Opening Balance:",font=("Trebuchet MS", 16) , fg="#FFFFFF" , bg="#142133")
+        balance_label.place(relx=0.3, rely=0.5,anchor="center")
         self.balance_entry = tk.Entry(self.create_account)
+        self.balance_entry.configure(bg="#2c3747")
+        self.balance_entry.configure(fg="#FFFFFF")
         self.balance_entry.place(relx=0.6, rely=0.5,anchor="center")
  
-        pin_label = tk.Label(self.create_account, text="Pin Number:",font=("Trebuchet MS", 16) , fg="#FFFFFF" , bg="#052944")
-        pin_label.place(relx=0.2, rely=0.55,anchor="center")
+        pin_label = tk.Label(self.create_account, text="Pin Number:",font=("Trebuchet MS", 16) , fg="#FFFFFF" , bg="#142133")
+        pin_label.place(relx=0.3, rely=0.55,anchor="center")
         self.pin_entry = tk.Entry(self.create_account, show="*")
+        self.pin_entry.configure(bg="#2c3747")
+        self.pin_entry.configure(fg="#FFFFFF")
         self.pin_entry.place(relx=0.6, rely=0.55,anchor="center")
  
-        password_label = tk.Label(self.create_account, text="Password:",font=("Trebuchet MS", 16) , fg="#FFFFFF" , bg="#052944")
-        password_label.place(relx=0.2, rely=0.6,anchor="center")
-        self.password_entry = tk.Entry(self.create_account,state = "readonly" )
+        password_label = tk.Label(self.create_account, text="Password:",font=("Trebuchet MS", 16) , fg="#FFFFFF" , bg="#142133")
+
+        password_label.place(relx=0.3, rely=0.6,anchor="center")
+        self.password_entry = tk.Entry(self.create_account,bg="#2c3747")
         self.password_entry.place(relx=0.6, rely=0.6,anchor="center")
+        
        
         generate_btn = tk.Button(self.create_account, text="Generate" , command=self.generate_password, bg="#37B7C3", fg="white", padx=1, pady=1)
         generate_btn.place(relx=0.8, rely=0.6,anchor="center")
  
-        self.strength_label = tk.Label(self.create_account, text="Password Strength:",font=("Trebuchet MS", 16) ,fg="#FFFFFF" , bg="#052944")
-        self.strength_label.place(relx=0.2, rely=0.65,anchor="center")
+        self.strength_label = tk.Label(self.create_account, text="Password Strength:",font=("Trebuchet MS", 16) ,fg="#FFFFFF" , bg="#142133")
+        self.strength_label.place(relx=0.3, rely=0.65,anchor="center")
         self.strength_bar = ttk.Progressbar(self.create_account, mode="determinate", length=200)
         self.strength_bar.place(relx=0.6, rely=0.65,anchor="center")
  
-   
+
  
-        create_btn = tk.Button(self.create_account, text="Create Account", command=self.create_account_function, bg="#4CAF50", fg="white", padx=20, pady=10)
+        create_btn = tk.Button(self.create_account, text="Create Account",font=("Trebuchet MS", 16 , "bold") , command=self.create_account_function, bg="#8a9099", fg="#142133", padx=20, pady=10)
         create_btn.place(relx=0.5, rely=0.8, anchor="center")
  
         back_btn = tk.Button(self.create_account, text="Back", command=self.go_back, bg="#FF5722", fg="white", padx=20, pady=10)
@@ -348,9 +386,11 @@ class CreateAccountWindow:
         characters = string.ascii_letters + string.digits + string.punctuation
         password = ''.join(random.choice(characters) for i in range(12))
         self.password_entry.config(state="normal")
+        
         self.password_entry.delete(0, tk.END)
         self.password_entry.insert(0, password)
         self.password_entry.config(state="readonly")
+        self.password_entry.configure(background="#2c3747")
         strength = self.calculate_strength(password)
         self.strength_bar['value'] = strength
  
@@ -400,7 +440,7 @@ class CreateAccountWindow:
 
 
 class LoginWindow:
-    def __init__(self, ):
+    def __init__(self):
         # self.welcome_window = welcome_window
         self.login = tk.Toplevel()
         self.login.title("Login")
@@ -417,6 +457,25 @@ class LoginWindow:
         center_y = int(screen_height / 2 - window_height / 2)
 
         self.login.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+
+        self.login.resizable(False, False)
+        self.login.grab_set()
+
+        self.canvas = tk.Canvas(self.login, width=800, height=600)
+        self.canvas.pack(fill="both", expand=True)
+        
+        self.background_image = Image.open("background.png")
+        self.logo_image = Image.open("logo_transparent.png")
+        self.banner_image = Image.open("Create_Account_Banner.png")
+        
+        self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
+        self.logo_photo = ImageTk.PhotoImage(self.logo_image.resize((100,100)))
+        self.banner_photo = ImageTk.PhotoImage(self.banner_image.resize((600, 100)))
+        
+
+        self.canvas.create_image(0, 0, image=self.background_photo, anchor=tk.NW)
+        self.canvas.create_image(750, 550, image=self.logo_photo, anchor=tk.SE)
+
         self.create_widgets()
         self.login.mainloop()
  
@@ -451,6 +510,7 @@ class LoginWindow:
 
     def on_close(self):
         self.login.destroy()
+        
 
     def go_back(self):
         self.login.destroy()
