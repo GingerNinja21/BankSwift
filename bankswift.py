@@ -14,11 +14,9 @@ class BankingApplicationGUI(tk.Tk):
         self.accounts_file = "accounts.csv"
         self.banks_file = banks_file
         self.transactions_log = transactions_log
-        # self.account_type = self.get_account_type(recipient_name)
-
+        
         self.title("BankSwift")
         self.geometry("400x300")
-
         self.create_widgets()
 
     def create_widgets(self):
@@ -35,41 +33,28 @@ class BankingApplicationGUI(tk.Tk):
         self.view_transactions_button.pack(pady=10)
 
     def view_balance(self):
-        recipient_name = self.entry_recipient_name.get()
-        id_no = self.entry_id_no.get()
+        balance = self.get_balance_from_csv()
 
-        if not recipient_name or not id_no:
-            messagebox.showerror("Error", "Please enter recipient name and ID number.")
-            return
-
-        validator = DataValidation(recipient_name=recipient_name, id_no=id_no)
-        balance = validator.get_balance_from_csv()
-
-        self.label_balance.config(text=f"Balance: R{balance:.2f}")
-        messagebox.showinfo("Balance", f"Your balance is R{balance:.2f}")
-
+        if balance is not None:
+            messagebox.showinfo("Balance", f"Your balance is R{balance:.2f}")
+        else:
+            messagebox.showerror("Error", "Failed to retrieve balance.")
+            
     def get_balance_from_csv(self):
         try:
-            with open("accounts.csv", "r") as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    stored_id = row["id_number"].strip().lower()
-                    stored_name = row["name"].strip().lower()
-                    stored_surname = row["surname"].strip().lower()
-                    stored_balance = float(row["balance"]) 
-                    if self.id_no == stored_id and self.recipient_name == stored_name and self.recipient_surname == stored_surname:
-                        return stored_balance
-
-            messagebox.showerror("Error", "Account not found.")
-            return 0.0
-
+            df = pd.read_csv(self.accounts_file)
+            account = df[(df['name'].str.lower() == self.recipient_name.lower())]
+            if not account.empty:
+                return account['balance'].values[0]
+            else:
+                messagebox.showerror("Error", f"Account '{self.recipient_name}' not found.")
+                return None
         except FileNotFoundError:
             messagebox.showerror("Error", "Accounts file not found.")
-            return 0.0
-
+            return None
         except Exception as e:
             messagebox.showerror("Error", f"Error retrieving balance: {str(e)}")
-            return 0.0
+            return None
 
     def withdraw(self):
         amount = simpledialog.askfloat("Withdraw", "Enter amount to withdraw:")
@@ -176,21 +161,15 @@ class BankingApplicationGUI(tk.Tk):
         try:
             df = pd.read_csv(self.accounts_file)
             mask = df['name'].str.lower() == self.recipient_name.lower()
-            if mask():
+            
+            if mask.any(): 
                 df.loc[mask, 'balance'] += amount
                 df.to_csv(self.accounts_file, index=False)
+                return True
             else:
                 messagebox.showerror("Error", f"Account '{self.recipient_name}' not found.")
+                return False
+                
         except FileNotFoundError:
             messagebox.showerror("Error", "Accounts file not found.")
-
-# if __name__ == "__main__":
-#     # recipient_name = simpledialog.askstring("Login", "Enter your account name:")
-#     # app = BankingApplicationGUI(
-#         recipient_name,
-#         accounts_file="accounts.csv",
-#         banks_file="banks.csv",
-#         transactions_log="transactionslog.txt"
-#     )
-    # app.mainloop()
-# 
+            return False
