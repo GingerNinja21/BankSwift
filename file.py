@@ -13,6 +13,7 @@ from file import validate_email, EmailNotValidError
 stored_account_no=""
 account_bank=""
 ### Initialization ###
+
 class DataValidation:
 
     def __init__(self, User_name, User_surname,id_no,email,phone_number,pin ,balance, account_type):
@@ -58,7 +59,7 @@ class DataValidation:
                     parts = line.strip().split(",")
 
                     if len(parts) < 7:
-                        continue  # Skip lines that do not have enough columns
+                        continue  
 
                     stored_username = parts[1].strip().lower()
                     stored_usersurname = parts[2].strip().lower()
@@ -70,10 +71,7 @@ class DataValidation:
                         self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username} and {self.Usersurname} does not match the Name and Surname linked to the provided ID number in our database!"
                        
 
-                    print(f"Processing line: {line.strip()}")
-                    print(f"account type: {stored_account_type}, Input acc: {self.account_type}")
-                    
-                    #need to go through whole file before making decision
+                
                     if self.id_no.lower() == stored_id and self.Username.lower()== stored_username and self.Usersurname.lower() == stored_usersurname :
                         account_exists= True
                         self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
@@ -83,7 +81,6 @@ class DataValidation:
                                 self.Usersurname.lower() == stored_usersurname and 
                                 self.account_type.lower() == stored_account_type and
                                 self.id_no.lower() == stored_id):
-                                print("Match found: Account already exists!")
                                 account_exists= True
 
                         else:
@@ -311,7 +308,6 @@ class LoginValidation:
                     stored_id = parts[6].strip().lower()
                     stored_email = parts[3].strip().lower()
                     
-                    print(f"Checking against stored email: {stored_email}, id: {stored_id}")
 
                     if self.email == stored_email and self.id_no == stored_id:
                         account_exists = True
@@ -378,53 +374,7 @@ class account_creation:
     
     def get_error_message(self):
         x= self.error_message
-        return x
-    
-    def password_generation(self):
-        try:
-            if existing_account == True:
-               self.error_message += "\nAccount already exists!" 
-
-            elif valid_id == False:
-                  self.error_message+=""
-
-            else:        
-                password = ""
-                ascii_characters = [
-                    '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',
-                    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>',
-                    '?', '@', 'A', 'BF', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\',
-                    ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-                    'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                    '{', '|', '}', '~'
-                ]
-                
-
-
-                while len(password) <= 11:
-                    password += random.choice(ascii_characters)
-                    
-
-                    ## Storing Passwords ##
-                stored_passwords=[]
-                stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"Password" : password})
-                    
-                file_name = "password_records.csv"
-                fields= ["Name" ,"Surname", "Password"]
-                    
-                with open(file_name , "a" , newline="") as csvfile:
-                    scribe = csv.DictWriter(csvfile , fieldnames = fields )
-                    ## Checks if file is empty ###
-                    if csvfile.tell () == 0:
-                        scribe.writeheader()
-                    
-                    scribe.writerows(stored_passwords)
-                    
-                
-                return password
-        except Exception as e:
-                self.error_message += "\nSomthing went wrong! Contact Administrator!\n(Error location: password_generation)"  
+        return x 
 
     def store_account(self):
         try:

@@ -170,7 +170,6 @@ class WelcomeWindow:
 
 class CreateAccountWindow:
     def __init__(self, ):
-        # self.welcome_window = welcome_window
         self.create_account = tk.Toplevel()
         self.create_account.title("Create Account")
         self.create_account.geometry("600x600")

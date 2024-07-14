@@ -47,9 +47,9 @@ class AnimatedGIF(tk.Label):
     def animate(self):
 
         if self.current_frame < len(self.frames) - 1:
-            self.current_frame += 2  # Increase by 2 frames to speed up the animation
+            self.current_frame += 2  
             if self.current_frame >= len(self.frames):
-                self.current_frame = len(self.frames) - 1  # Ensure it doesn't go out of bounds
+                self.current_frame = len(self.frames) - 1  
             self.config(image=self.frames[self.current_frame])
             self.after(self.delay, self.animate)
         else:
@@ -103,8 +103,8 @@ class WelcomeWindow:
 
         register_link = tk.Label(self.root, text="Register here.", fg="white", bg = "#052944" ,cursor="hand2")
         register_link.place(relx=0.5, rely=0.9,anchor="center")
-        register_link.bind("<Button-1>", lambda event, self=self: self.open_create_account())
-        # register_link.bind("<Button-1>", lambda event: self.open_create_account())
+        register_link.bind("<Button-1>", lambda event: self.open_create_account())
+
 
         login_btn = tk.Button(self.root, text="Login", command=self.open_login, bg="#2196F3", fg="white", padx=20, pady=10)
         login_btn.place(relx=0.5, rely=0.65, anchor="center")
@@ -119,6 +119,7 @@ class WelcomeWindow:
         menubar.add_cascade(label="Contact Us", menu=contact_menu)
         contact_menu.add_command(label="Contact Us")
 
+
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
 
@@ -126,6 +127,7 @@ class WelcomeWindow:
 
 
     def on_close(self):
+        self.root.destroy()
         self.root.destroy()
  
     def open_create_account(self):
@@ -335,7 +337,6 @@ class CreateAccountWindow:
         self.create_account.protocol("WM_DELETE_WINDOW", self.on_close)
         self.create_account.mainloop()
  
-   
     def on_close(self):
         self.create_account.destroy()
          
