@@ -4,33 +4,80 @@ from tkinter import ttk, scrolledtext, messagebox, simpledialog
 import datetime
 import pandas as pd
 from file import DataValidation, account_creation
+from PIL import Image, ImageTk
 
-
-class BankingApplicationGUI(tk.Tk):
-    def __init__(self, recipient_name, accounts_file, banks_file, transactions_log,id_no):
-        super().__init__()
+class BankingApplicationGUI(tk.Toplevel):
+    def __init__(self, parent,recipient_name,id_no,banks_file,transactions_log):
+        super().__init__(parent)
+        self.parent= parent
+        self.title("Banking GUI")
+    
         self.recipient_name = recipient_name
         self.id_no= id_no
         self.accounts_file = "accounts.csv"
         self.banks_file = banks_file
         self.transactions_log = transactions_log
+        self.display_name = self.recipient_name.capitalize()
         
-        self.title("BankSwift")
-        self.geometry("400x300")
+
+        window_width = 800
+        window_height = 600
+
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        center_x = int(screen_width / 2 - window_width / 2)
+        center_y = int(screen_height / 2 - window_height / 2)
+
+        self.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+
+        self.resizable(False, False)
+        self.grab_set()
+
+        self.canvas = tk.Canvas(self, width=800, height=600)
+        self.canvas.pack(fill="both", expand=True)
+        
+        self.background_image = Image.open("background.png")
+        self.logo_image = Image.open("logo_transparent.png")
+        self.banner_image = Image.open("Create_Account_Banner.png")
+        
+        self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
+        self.logo_photo = ImageTk.PhotoImage(self.logo_image.resize((100,100)))
+        self.banner_photo = ImageTk.PhotoImage(self.banner_image.resize((600, 100)))
+        
+
+        self.canvas.create_image(0, 0, image=self.background_photo, anchor=tk.NW)
+        self.canvas.create_image(750, 550, image=self.logo_photo, anchor=tk.SE)
+
+        self.protocol("WM_DELETE_WINDOW", self.go_back)
+
         self.create_widgets()
 
     def create_widgets(self):
-        self.view_balance_button = tk.Button(self, text="View Balance", command=self.view_balance)
-        self.view_balance_button.pack(pady=10)
 
-        self.withdraw_button = tk.Button(self, text="Withdraw", command=self.withdraw)
-        self.withdraw_button.pack(pady=10)
+        login_banner_label=tk.Label(self.canvas, text=f"Welcome\n{self.display_name}",font=("Times New Roman", 30,"bold") ,fg="#a1c8ff" , bg="#0a1627")
+        login_banner_label.place(relx=0.5, rely=0.1 ,anchor="center", width=790)
 
-        self.transfer_button = tk.Button(self, text="Transfer", command=self.transfer)
-        self.transfer_button.pack(pady=10)
+        self.view_balance_button = tk.Button(self.canvas, text="View Balance", command=self.view_balance ,font=("Times New Roman", 17,"bold"),bg="#090f16", fg="#FFFFFF")
+        self.view_balance_button.place(relx=0.3, rely=0.3, anchor="center", width=150 , height=100)
 
-        self.view_transactions_button = tk.Button(self, text="View Transactions", command=self.view_transactions)
-        self.view_transactions_button.pack(pady=10)
+        self.withdraw_button = tk.Button(self.canvas, text="Withdraw", command=self.withdraw,font=("Times New Roman", 17,"bold"),bg="#090f16", fg="#FFFFFF")
+        self.withdraw_button.place(relx=0.65, rely=0.3, anchor="center", width=150 , height=100)
+
+        self.transfer_button = tk.Button(self.canvas, text="Transfer", command=self.transfer,font=("Times New Roman", 17,"bold"), bg="#090f16", fg="#FFFFFF")
+        self.transfer_button.place(relx=0.3, rely=0.6, anchor="center", width=150 , height=100)
+
+        self.view_transactions_button = tk.Button(self.canvas, text="View\nTransactions", command=self.view_transactions ,font=("Times New Roman", 15,"bold"),bg="#090f16", fg="#FFFFFF")
+        self.view_transactions_button.place(relx=0.65, rely=0.6, anchor="center", width=150 , height=100)
+        
+        self.back_btn= tk.Button(self.canvas, text="Close", command=self.go_back,font=("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
+        self.back_btn.place(relx=0.47, rely=0.8, anchor="center", width=100 , height=60)
+    
+    def go_back(self):
+        self.destroy()
+        self.parent.deiconify()
+     
+        
 
     def view_balance(self):
         balance = self.get_balance_from_csv()

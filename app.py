@@ -9,47 +9,7 @@ from file import LoginValidation
 from bankswift import BankingApplicationGUI
 
 
-# class AnimatedGIF(tk.Label):
-#     def __init__(self, master, gif_path, static_image_path, width, height, delay=100):
-#         super().__init__(master)
-#         self.master = master
-#         self.delay = delay
-#         self.gif_path = gif_path
-#         self.gif_path = "BANKSWIFT.gif"
-#         self.static_image_path = static_image_path
-#         self.static_image_path="logo.png"
-#         self.width = width
-#         self.height = height
-#         self.frames = []
-#         self.load_frames()
-#         self.static_image = self.load_static_image()
-#         self.current_frame = 0
-#         self.image = self.frames[self.current_frame]
-#         self.config(image=self.image)
-#         self.animate()
 
-#     def load_frames(self):
-#         image = Image.open(self.gif_path)
-#         for frame in range(0, image.n_frames):
-#             image.seek(frame)
-#             frame_image = ImageTk.PhotoImage(image.copy().resize((self.width, self.height), Image.Resampling.LANCZOS))
-#             self.frames.append(frame_image)
-
-#     def load_static_image(self):
-#         image = Image.open(self.static_image_path)
-#         image = image.resize((self.width, self.height), Image.Resampling.LANCZOS)
-#         return ImageTk.PhotoImage(image)
-
-#     def animate(self):
-
-#         if self.current_frame < len(self.frames) - 1:
-#             self.current_frame += 2  # Increase by 2 frames to speed up the animation
-#             if self.current_frame >= len(self.frames):
-#                 self.current_frame = len(self.frames) - 1  # Ensure it doesn't go out of bounds
-#             self.config(image=self.frames[self.current_frame])
-#             self.after(self.delay, self.animate)
-#         else:
-#             self.config(image=self.static_image)
 class AnimatedGIF(tk.Label):
     def __init__(self, master, gif_path, static_image_path, width, height, delay=100):
         super().__init__(master)
@@ -363,11 +323,9 @@ class CreateAccountWindow:
         self.create_account.protocol("WM_DELETE_WINDOW", self.on_close)
         self.create_account.mainloop()
  
-   
     def on_close(self):
         self.create_account.destroy()
          
-        
 
     def go_back(self):
         self.create_account.destroy()
