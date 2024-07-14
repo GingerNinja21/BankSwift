@@ -344,7 +344,6 @@ class LoginValidation:
                             f"We have received a request to recover your password for your account registered with us.\n\n"
                             f"Your account details are as follows:\n"
                             f"Email: {self.email}\n"
-                            f"PIN: {self.pin}\n"
                             f"Password: {password}\n\n"
                             f"Please make sure to keep your account information secure and do not share it with anyone.\n\n"
                             f"If you did not request a password recovery, please contact our support team immediately.\n\n"

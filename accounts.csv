@@ -1,3 +1,3 @@
 uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
-0,andrea,goodall,151810268,100,savings,0101100528088,
-1,
+0,andrea,goodall,151810268,1000,savings,101100528088,
+1,john,doe,151810268,500,cheque,101100548714,
