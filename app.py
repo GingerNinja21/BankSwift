@@ -47,9 +47,9 @@ class AnimatedGIF(tk.Label):
     def animate(self):
 
         if self.current_frame < len(self.frames) - 1:
-            self.current_frame += 2  # Increase by 2 frames to speed up the animation
+            self.current_frame += 2  
             if self.current_frame >= len(self.frames):
-                self.current_frame = len(self.frames) - 1  # Ensure it doesn't go out of bounds
+                self.current_frame = len(self.frames) - 1  
             self.config(image=self.frames[self.current_frame])
             self.after(self.delay, self.animate)
         else:
@@ -138,7 +138,6 @@ class WelcomeWindow:
  
 class CreateAccountWindow:
     def __init__(self, ):
-        # self.welcome_window = welcome_window
         self.create_account = tk.Toplevel()
         self.create_account.title("Create Account")
         self.create_account.geometry("600x600")
@@ -169,7 +168,6 @@ class CreateAccountWindow:
         self.banner_photo = ImageTk.PhotoImage(self.banner_image.resize((600, 100)))
         
         self.canvas.create_image(0, 0, image=self.background_photo, anchor=tk.NW)
-        # self.canvas.create_image(400, 50, image=self.banner_photo, anchor=tk.CENTER)
         self.canvas.create_image(750, 550, image=self.logo_photo, anchor=tk.SE)
 
         self.create_widgets()
@@ -366,10 +364,7 @@ class CreateAccountWindow:
             strength += 20
         return strength
  
-    #def create_account_function(self):
-        #if self.validate_entries():
-            #messagebox.showinfo("Success", "Account created successfully.")
-       
+
 class LoginWindow:
     def __init__(self):
         global recipient_name
