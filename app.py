@@ -6,17 +6,22 @@ import file
 import csv
 from PIL import Image, ImageTk
 from file import LoginValidation
-from bankswift import BankingApplicationGUI
+import bankswift
 
-
-
+recipient_name=""
+accounts_file=""
+accounts_file=""
+banks_file=""
+transaction_log=""
 class AnimatedGIF(tk.Label):
     def __init__(self, master, gif_path, static_image_path, width, height, delay=100):
         super().__init__(master)
         self.master = master
         self.delay = delay
         self.gif_path = gif_path
+        self.gif_path = "BANKSWIFT.gif"
         self.static_image_path = static_image_path
+        self.static_image_path="logo.png"
         self.width = width
         self.height = height
         self.frames = []
@@ -31,15 +36,16 @@ class AnimatedGIF(tk.Label):
         image = Image.open(self.gif_path)
         for frame in range(0, image.n_frames):
             image.seek(frame)
-            frame_image = ImageTk.PhotoImage(image.copy().resize((self.width, self.height), Image.LANCZOS))
+            frame_image = ImageTk.PhotoImage(image.copy().resize((self.width, self.height), Image.Resampling.LANCZOS))
             self.frames.append(frame_image)
 
     def load_static_image(self):
         image = Image.open(self.static_image_path)
-        image = image.resize((self.width, self.height), Image.LANCZOS)
+        image = image.resize((self.width, self.height), Image.Resampling.LANCZOS)
         return ImageTk.PhotoImage(image)
 
     def animate(self):
+
         if self.current_frame < len(self.frames) - 1:
             self.current_frame += 2  
             if self.current_frame >= len(self.frames):
@@ -49,8 +55,7 @@ class AnimatedGIF(tk.Label):
         else:
             self.config(image=self.static_image)
 
-
-class WelcomeWindow:     
+class WelcomeWindow:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("BankSwift")
@@ -69,6 +74,9 @@ class WelcomeWindow:
 
         self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.create_widgets()
+
+    
+
         self.root.mainloop()
         
 
@@ -95,8 +103,8 @@ class WelcomeWindow:
 
         register_link = tk.Label(self.root, text="Register here.", fg="white", bg = "#052944" ,cursor="hand2")
         register_link.place(relx=0.5, rely=0.9,anchor="center")
-        register_link.bind("<Button-1>", lambda event: self.open_create_account())
-
+        register_link.bind("<Button-1>", lambda event, self=self: self.open_create_account())
+        # register_link.bind("<Button-1>", lambda event: self.open_create_account())
 
         login_btn = tk.Button(self.root, text="Login", command=self.open_login, bg="#2196F3", fg="white", padx=20, pady=10)
         login_btn.place(relx=0.5, rely=0.65, anchor="center")
@@ -129,43 +137,45 @@ class WelcomeWindow:
     def open_login(self):
         self.root.lower()
         LoginWindow()
- 
+
 class CreateAccountWindow:
-    def __init__(self, ):
+    def __init__(self):
         self.create_account = tk.Toplevel()
         self.create_account.title("Create Account")
         self.create_account.geometry("600x600")
         self.create_account.configure(bg="#052944")
+        self.create_account.resizable(False, False)
+
+        # Centering the window on screen
         window_width = 800
         window_height = 600
-
         screen_width = self.create_account.winfo_screenwidth()
         screen_height = self.create_account.winfo_screenheight()
-
         center_x = int(screen_width / 2 - window_width / 2)
         center_y = int(screen_height / 2 - window_height / 2)
-
         self.create_account.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
-        
-        self.create_account.resizable(False, False)
-        self.create_account.grab_set()
 
-        self.canvas = tk.Canvas(self.create_account, width=800, height=600)
-        self.canvas.pack(fill="both", expand=True)
-        
+        # Load images and other resources
         self.background_image = Image.open("background.png")
         self.logo_image = Image.open("logo_transparent.png")
         self.banner_image = Image.open("Create_Account_Banner.png")
-        
+
+        self.canvas = tk.Canvas(self.create_account, width=800, height=600)
+        self.canvas.pack(fill="both", expand=True)
+
+        # Create image photo objects
         self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
-        self.logo_photo = ImageTk.PhotoImage(self.logo_image.resize((100,100)))
+        self.logo_photo = ImageTk.PhotoImage(self.logo_image.resize((100, 100)))
         self.banner_photo = ImageTk.PhotoImage(self.banner_image.resize((600, 100)))
-        
+
+        # Display images on canvas
         self.canvas.create_image(0, 0, image=self.background_photo, anchor=tk.NW)
         self.canvas.create_image(750, 550, image=self.logo_photo, anchor=tk.SE)
 
         self.create_widgets()
-        # self.create_account.mainloop()
+        self.create_account.update_idletasks() 
+        self.create_account.grab_set() 
+        self.create_account.mainloop()
 
     def create_account_function(self):
         name = self.name_entry.get().strip()
@@ -217,7 +227,11 @@ class CreateAccountWindow:
                     
                     else:  
                         messagebox.showerror("Validation Error", "Account Already Exists!")
-                        return      
+                        return
+
+    
+        
+        
         else:
 
             file_writer = file.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,str(account_type))
@@ -351,16 +365,13 @@ class CreateAccountWindow:
         if len(password) >= 12:
             strength += 20
         return strength
- 
-
+       
 class LoginWindow:
     def __init__(self):
         global recipient_name
         global accounts_file
         global banks_file
-        global transaction_log
-
-        
+        global transaction_log   
         
         accounts_file= "accounts.csv"
         banks_file= "banks.csv"
@@ -368,6 +379,7 @@ class LoginWindow:
     
         self.login = tk.Toplevel()
         self.login.title("Login")
+        
         self.login.configure(bg="#071952")
 
         window_width = 800
@@ -381,44 +393,45 @@ class LoginWindow:
 
         self.login.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.create_widgets()
-
+ 
     def create_widgets(self):
-        name_label = tk.Label(self.login, text="Name:", fg="#37B7C3", bg="#071952")
+        name_label = tk.Label(self.login, text="Name:", fg="#37B7C3" , bg="#071952")
         name_label.place(relx=0.1, rely=0.2)
         self.name_entry = tk.Entry(self.login)
         self.name_entry.place(relx=0.3, rely=0.2)
-
-        email_label = tk.Label(self.login, text="Email:", fg="#37B7C3", bg="#071952")
+        recipient_name= self.name_entry
+        
+        email_label = tk.Label(self.login, text="Email:", fg="#37B7C3" , bg="#071952")
         email_label.place(relx=0.1, rely=0.3)
-        self.email_entry = tk.Entry(self.login, width=30)
+        self.email_entry = tk.Entry(self.login,width=30)
         self.email_entry.place(relx=0.3, rely=0.3)
 
-        pin_label = tk.Label(self.login, text="Pin:", fg="#37B7C3", bg="#071952")
+        pin_label = tk.Label(self.login, text="Pin:", fg="#37B7C3" , bg="#071952")
         pin_label.place(relx=0.1, rely=0.4)
         self.pin_entry = tk.Entry(self.login, show="*")
         self.pin_entry.place(relx=0.3, rely=0.4)
 
-        id_label = tk.Label(self.login, text="ID Number:", fg="#37B7C3", bg="#071952")
+        id_label = tk.Label(self.login, text="ID Number:", fg="#37B7C3" , bg="#071952")
         id_label.place(relx=0.1, rely=0.5)
         self.id_entry = tk.Entry(self.login)
         self.id_entry.place(relx=0.3, rely=0.5)
 
-        login_btn = tk.Button(self.login, text="Login", command=self.login_function, bg="#4CAF50", fg="white",
-                              padx=20, pady=10)
+        login_btn = tk.Button(self.login, text="Login", command=self.login_function, bg="#4CAF50", fg="white", padx=20, pady=10)
         login_btn.place(relx=0.5, rely=0.7, anchor="center")
 
-        forgot_pin_link = tk.Label(self.login, text="Forgot Pin?", fg="#EBF4F6", bg="#071952", cursor="hand2")
+        forgot_pin_link = tk.Label(self.login, text="Forgot Pin?", fg="#EBF4F6" , bg="#071952", cursor="hand2")
         forgot_pin_link.place(relx=0.6, rely=0.4)
         forgot_pin_link.bind("<Button-1>", lambda event: self.forgot_pin())
 
         back_btn = tk.Button(self.login, text="Back", command=self.go_back, bg="#FF5722", fg="white", padx=20, pady=10)
         back_btn.place(relx=0.3, rely=0.7, anchor="center")
-        
+
         self.login.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.login.mainloop()
 
     def on_close(self):
         self.login.destroy()
-        
+        WelcomeWindow() 
 
     def go_back(self):
         self.login.destroy()
@@ -454,7 +467,6 @@ class LoginWindow:
         id_no = self.id_entry.get().strip()
         name = self.name_entry.get().strip()
         account_exists= False
-        
 
         if self.validate_entries():
             try:
@@ -479,9 +491,7 @@ class LoginWindow:
             except Exception as e:
                 messagebox.showerror("Error", f"Error: {str(e)}")
 
-
 class DashboardWindow:
-    
     def __init__(self):    
         global id_no
         global name
@@ -490,11 +500,11 @@ class DashboardWindow:
         banks_file = "banks.csv"
         transactions_log = "transactionslog.txt"
         
-        BankingApplicationGUI(name, accounts_file, banks_file, transactions_log, id_no)
+        bankswift.BankingApplicationGUI(name, accounts_file, banks_file, transactions_log, id_no)
 
     def on_close(self):
         self.dashboard.destroy()   
- 
+    
 if __name__ == "__main__":
     app= WelcomeWindow()
     app.root.mainloop()

@@ -98,7 +98,6 @@ class DataValidation:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence, Error: {str(e)})"
             return self.error_message
 
-
     def valid_acc_no(self):  
         global stored_account_no
         global account_bank
@@ -304,7 +303,7 @@ class LoginValidation:
                     parts = line.strip().split(",")
 
                     if len(parts) < 6:
-                        continue  # Skip lines that do not have enough columns
+                        continue 
 
                     stored_id = parts[6].strip().lower()
                     stored_email = parts[3].strip().lower()
@@ -324,7 +323,6 @@ class LoginValidation:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence)\n{str(e)}"
             return False     
         
-     
     def password_recovery(self):
         try:
             with open("password_records.csv", "r") as csvfile:
@@ -333,13 +331,15 @@ class LoginValidation:
                     if (self.email.lower() == row['email'].lower() and 
                         self.id_no == row['id']):
                         password = row['password']
-                        username = row['name'] 
+                        pin = row['pin']
+                        username = row['name']
                         subject = "Password Recovery"
                         message_text = (
                             f"Dear {username},\n\n"
                             f"We have received a request to recover your password for your account registered with us.\n\n"
                             f"Your account details are as follows:\n"
                             f"Email: {self.email}\n"
+                            f"PIN: {pin}\n"
                             f"Password: {password}\n\n"
                             f"Please make sure to keep your account information secure and do not share it with anyone.\n\n"
                             f"If you did not request a password recovery, please contact our support team immediately.\n\n"
