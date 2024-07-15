@@ -4,6 +4,7 @@ import datetime
 import pandas as pd
 from file import DataValidation, account_creation
 from PIL import Image, ImageTk
+
 class BankingApplicationGUI(tk.Toplevel):
     def __init__(self, parent,recipient_name,id_no,banks_file,transactions_log):
         super().__init__(parent)
@@ -14,10 +15,6 @@ class BankingApplicationGUI(tk.Toplevel):
         self.id_no= id_no
         self.accounts_file = "accounts.csv"
         self.banks_file = banks_file
-        self.transactions_log = "transactionslog.txt"
-        
-        self.title("BankSwift")
-        self.geometry("400x300")
         self.transactions_log = transactions_log
         self.display_name = self.recipient_name.capitalize()
         

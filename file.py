@@ -53,6 +53,7 @@ class DataValidation:
             
     def account_existence(self):
         account_exists = False
+        self.invalid_username_id_pair = ""
         try:
             with open("accounts.csv", "r") as file:
                 for line in file:

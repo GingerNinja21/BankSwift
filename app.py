@@ -103,8 +103,8 @@ class WelcomeWindow:
 
         register_link = tk.Label(self.root, text="Register here.", fg="white", bg = "#052944" ,cursor="hand2")
         register_link.place(relx=0.5, rely=0.9,anchor="center")
-        register_link.bind("<Button-1>", lambda event: self.open_create_account())
-
+        register_link.bind("<Button-1>", lambda event, self=self: self.open_create_account())
+        # register_link.bind("<Button-1>", lambda event: self.open_create_account())
 
         login_btn = tk.Button(self.root, text="Login", command=self.open_login, bg="#2196F3", fg="white", padx=20, pady=10)
         login_btn.place(relx=0.5, rely=0.65, anchor="center")

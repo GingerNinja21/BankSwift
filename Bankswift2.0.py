@@ -68,8 +68,8 @@ class app():
         except Exception as e:
             pass  
 
-        slogan_label= tk.Label(self.root, text="Bank Smart , Bank Efficient , BankSwift.",font=("Malgun Gothic", 13 , "bold"), fg="#FFFFFF" , bg="#142133")  
-        slogan_label.place(relx=0.5 , rely=0.9 , anchor="center")   
+        slogan_label= tk.Label(self.root, text="Bank Smart , Bank Efficient , BankSwift.",font=("Lucida Sans Unicode", 12 ,), fg="#0897f3" , bg="#18283b")  
+        slogan_label.place(relx=0.5 , rely=0.95 , anchor="center")   
         
         message_label = tk.Label(self.root, text="Dont have an Account?",font=("Times New Roman", 15), fg="#37B7C3" , bg="#142133")
         message_label.place(relx=0.5 , rely=0.75 , anchor="center")    
@@ -152,12 +152,16 @@ class app():
         validator = file.DataValidation(name, surname, id_no, email,phone_number,pin,balance,account_type)
         validator.account_existence()
 
-        if not name or not surname or not id_no or not email :
+        if not name or not surname or not id_no or not email or not pin or not password or not account_type:
             messagebox.showerror("Validation Error", "All fields are required!")
             return
         
         if validator.error_message :
             messagebox.showerror("Validation Error", validator.error_message)
+            return
+        
+        if validator.invalid_username_id_pair:
+            messagebox.showerror("Validation Error", validator.invalid_username_id_pair)
             return
         
         if validator.account_existence():
@@ -334,7 +338,6 @@ class app():
             strength += 20
         return strength
        
-
     def LoginWindow(self):
         self.login = tk.Toplevel()
         self.login.title("Login")
@@ -476,7 +479,7 @@ class app():
                                 self.DashboardWindow()
                                 return 
                         
-                    messagebox.showerror("Error", "Invalid credentials. Please try again.")
+                    messagebox.showerror("Error", "Account not found . \nCheck your acredentials and try again.")
             except FileNotFoundError:
                 messagebox.showerror("Error", "Password records file not found.")
             except Exception as e:
