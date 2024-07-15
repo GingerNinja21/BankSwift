@@ -479,7 +479,7 @@ class app():
                                 self.DashboardWindow()
                                 return 
                         
-                    messagebox.showerror("Error", "Invalid credentials. Please try again.")
+                    messagebox.showerror("Error", "Account not found . \nCheck your acredentials and try again.")
             except FileNotFoundError:
                 messagebox.showerror("Error", "Password records file not found.")
             except Exception as e:
