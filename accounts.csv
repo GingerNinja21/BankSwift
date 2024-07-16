@@ -1,5 +1,2 @@
-uid,name,surname,account_no
-0000,john,doe,151876453
-0001,samantha,laqua,151569748
-0002,jaq,beniptorf,151968429
-0003,alexa,jackson,151649738
+uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
+0,john,doe,151023100,500,cheque,0210085197087,

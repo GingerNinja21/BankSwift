@@ -125,7 +125,7 @@ class LoginWindow:
         self.pin_entry = Tk.Entry(self.root, show="*")
         self.pin_entry.grid(row=2, column=1, padx=10, pady=5)
 
-        # Frame to hold buttons horizontally
+    
         button_frame = Tk.Frame(self.root)
         button_frame.grid(row=3, column=0, columnspan=2, pady=10)
 
