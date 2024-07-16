@@ -34,11 +34,6 @@ class app():
 
         self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
-        
-        
-
-
-
         self.create_widgets()
         
     def initialize_logo(self):
@@ -81,16 +76,30 @@ class app():
         login_btn = tk.Button(self.root, text="Login", command=self.open_login,  font=("Times New Roman", 15,"bold"), bg="#8a9099", fg="#142133", padx=20, pady=10)
         login_btn.place(relx=0.5, rely=0.65, anchor="center")
     
-        menubar = tk.Menu(self.root)
-        self.root.config(menu=menubar)
-        about_menu = tk.Menu(menubar)
-        menubar.add_cascade(label="About Us", menu=about_menu)
-        about_menu.add_command(label="About Us")
+        # menubar = tk.Menu(self.root)
+        # self.root.config(menu=menubar)
+        # about_menu = tk.Menu(menubar)
+        # menubar.add_cascade(label="About Us", menu=about_menu)
+        # about_menu.add_command(label="About Us")
     
-        contact_menu = tk.Menu(menubar)
-        menubar.add_cascade(label="Contact Us", menu=contact_menu)
-        contact_menu.add_command(label="Contact Us")
+        # contact_menu = tk.Menu(menubar)
+        # menubar.add_cascade(label="Contact Us", menu=contact_menu)
+        # contact_menu.add_command(label="Contact Us")
 
+    def about_us(self):
+        # self.about_image = Image.open("csslay team.png")  
+        # self.about_image = ImageTk.PhotoImage(self.about_image)
+        
+        self.aboutus = tk.Canvas(self, width=800, height=600)
+        self.aboutus.pack(fill="both", expand=True)
+        
+        self.aboutus_image = Image.open("csslay team.png") 
+        self.aboutus = ImageTk.PhotoImage(self.aboutus_image.resize((800, 600)))
+        
+
+        self.aboutus.create_image(0, 0, image=self.about_us, anchor=tk.NW)
+        # self.canvas.create_image(750, 550, image=self.logo_photo, anchor=tk.SE)
+    
     def on_close(self):
         self.root.destroy()
  
@@ -153,25 +162,25 @@ class app():
         validator.account_existence()
 
         if not name or not surname or not id_no or not email or not pin or not password or not account_type:
-            messagebox.showerror("Validation Error", "All fields are required!")
+            messagebox.showerror("Validation Error", "All fields are required!",parent=self.create_account)
             return
         
         if validator.error_message :
-            messagebox.showerror("Validation Error", validator.error_message)
+            messagebox.showerror("Validation Error", validator.error_message, parent=self.create_account)
             return
         
         if validator.invalid_username_id_pair:
-            messagebox.showerror("Validation Error", validator.invalid_username_id_pair)
+            messagebox.showerror("Validation Error", validator.invalid_username_id_pair,parent=self.create_account)
             return
         
         if validator.account_existence():
             if validator.account_existence() and validator.existing_user_id_acc_creation_message:
-                response = messagebox.askyesno("ID number already exists in database", validator.existing_user_id_acc_creation_message) 
+                response = messagebox.askyesno("ID number already exists in database", validator.existing_user_id_acc_creation_message,parent=self.create_account) 
                 if response:
                     file_writer = file.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
                     file_writer.store_account()
                     
-                    login_question = messagebox.askyesno("Log in?", "Would you like to log in?")
+                    login_question = messagebox.askyesno("Log in?", "Would you like to log in?",parent=self.create_account)
                     if login_question:
                         self.create_account.destroy()
                         self.LoginWindow()
@@ -180,20 +189,20 @@ class app():
                         self.go_back_create_account()
                         return
                 else:
-                    login_question = messagebox.askyesno("Log in?", "Would you like to log in instead?")
+                    login_question = messagebox.askyesno("Log in?", "Would you like to log in instead?",parent=self.create_account)
                     if login_question:
                         self.create_account.destroy()
                         self.LoginWindow()
                         return
                     
                     else:  
-                        messagebox.showerror("Validation Error", "Account Already Exists!")
+                        messagebox.showerror("Validation Error", "Account Already Exists!",parent=self.create_account)
                         return
 
     
         
             else:
-                messagebox.showerror("Validation Error", "Account Already Exists!")
+                messagebox.showerror("Validation Error", "Account Already Exists!",parent=self.create_account)
                 return
         
         else:
@@ -201,8 +210,8 @@ class app():
             file_writer = file.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,str(account_type))
             file_writer.store_account()
             file_writer.store_passwords()
-            messagebox.showinfo("Success", "Account created successfully.")
-            response = messagebox.askyesno("Login", "Would you like to log in?") 
+            messagebox.showinfo("Success", "Account created successfully.",parent=self.create_account)
+            response = messagebox.askyesno("Login", "Would you like to log in?",parent=self.create_account) 
             if response:
                 self.create_account.destroy()
                 self.LoginWindow()
@@ -435,7 +444,7 @@ class app():
         id_no = self.login_id_entry.get().strip()
 
         if not email or not pin or not id_no:
-            messagebox.showerror("Error", "Email, Pin, and ID Number are required")
+            messagebox.showerror("Error", "Email, Pin, and ID Number are required", parent=self.login)
             return False
         return True
 
@@ -444,13 +453,13 @@ class app():
         id_no = self.login_id_entry.get().strip()
 
         if not email or not id_no:
-            messagebox.showerror("Error", "Email and ID Number are required to recover pin.")
+            messagebox.showerror("Error", "Email and ID Number are required to recover pin.",parent=self.login)
             return
 
         validator = LoginValidation(email, id_no, "")
 
         recovery_result = validator.password_recovery()
-        messagebox.showinfo("Password Recovery", recovery_result)
+        messagebox.showinfo("Password Recovery", recovery_result, parent= self.login)
 
     def login_function(self):
         email = self.login_email_entry.get().strip().lower()
@@ -472,18 +481,21 @@ class app():
                                 pin == row['pin'].strip() and
                                 login_id_no == row['id'].strip()):
                             account_exists= True
-                            messagebox.showinfo("Success", "Login successful.")
+                            messagebox.showinfo("Success", "Login successful.",parent=self.login)
                             
                             if account_exists:
                                 self.login.destroy()
+                                self.root.iconify()
                                 self.DashboardWindow()
                                 return 
                         
-                    messagebox.showerror("Error", "Account not found . \nCheck your acredentials and try again.")
+                    messagebox.showerror("Error", "Account not found . \nCheck your acredentials and try again.",parent=self.login
+                                                                       
+                                         )
             except FileNotFoundError:
-                messagebox.showerror("Error", "Password records file not found.")
+                messagebox.showerror("Error", "Password records file not found.",parent=self.login)
             except Exception as e:
-                messagebox.showerror("Error", f"Error: {str(e)}")
+                messagebox.showerror("Error", f"Error: {str(e)}",parent=self.login)
 
     def DashboardWindow(self):
         global login_id_no
@@ -502,7 +514,6 @@ class app():
         self.dashboard.destroy()
         self.root.deiconify() 
         self.create_widgets()
-
 
 class AnimatedGIF(tk.Label):
     def __init__(self, master, gif_path, static_image_path, width, height, delay=100):

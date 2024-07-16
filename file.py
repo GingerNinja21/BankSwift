@@ -69,7 +69,7 @@ class DataValidation:
 
 
                     if  (self.id_no.lower() == stored_id) and (not (self.Username.lower()== stored_username) or not(self.Usersurname.lower() == stored_usersurname)):
-                        self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username} and {self.Usersurname} does not match the Name and Surname linked to the provided ID number in our database!"
+                        self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username} {self.Usersurname} does not match the Name and Surname linked to the provided ID number in our database!"
                        
 
                 

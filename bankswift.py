@@ -81,9 +81,9 @@ class BankingApplicationGUI(tk.Toplevel):
     def view_balance(self):
         balance = self.get_balance_from_csv()
         if balance is not None:
-            messagebox.showinfo("Balance", f"Your balance is R{balance:.2f}")
+            messagebox.showinfo("Balance", f"Your balance is R{balance:.2f}",parent=self.canvas)
         else:
-            messagebox.showerror("Error", "Failed to retrieve balance.")
+            messagebox.showerror("Error", "Failed to retrieve balance.",parent=self.canvas)
  
 
     def get_balance_from_csv(self):
@@ -93,12 +93,12 @@ class BankingApplicationGUI(tk.Toplevel):
             if not account.empty:
                 return account['balance'].values[0]
             else:
-                messagebox.showerror("Error", f"Account '{self.recipient_name}' not found.")
+                messagebox.showerror("Error", f"Account '{self.recipient_name}' not found.",parent=self.canvas)
         except FileNotFoundError:
-            messagebox.showerror("Error", "Accounts file not found.")
+            messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
             return None
         except Exception as e:
-            messagebox.showerror("Error", f"Error retrieving balance: {str(e)}")
+            messagebox.showerror("Error", f"Error retrieving balance: {str(e)}",parent=self.canvas)
             return None
 
     def get_account_no(self, account_name):
@@ -108,20 +108,20 @@ class BankingApplicationGUI(tk.Toplevel):
             if not account.empty:
                 return account['account_no'].values[0]
             else:
-                messagebox.showerror("Error", f"Account '{account_name}' not found.")
+                messagebox.showerror("Error", f"Account '{account_name}' not found.",parent=self.canvas)
                 return None
         except FileNotFoundError:
-            messagebox.showerror("Error", "Accounts file not found.")
+            messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
             return None
         except Exception as e:
-            messagebox.showerror("Error", f"Error retrieving account number: {str(e)}")
+            messagebox.showerror("Error", f"Error retrieving account number: {str(e)}",parent=self.canvas)
             return None
         
     def withdraw(self):
-        amount = simpledialog.askfloat("Withdraw", "Enter amount to withdraw:")
+        amount = simpledialog.askfloat("Withdraw", "Enter amount to withdraw:",parent=self.canvas)
         try:
             if amount is None or amount <= 0:
-                messagebox.showerror("Error", "Invalid amount.")
+                messagebox.showerror("Error", "Invalid amount.",parent=self.canvas)
                 return
 
             current_balance = self.get_balance_from_csv()
@@ -129,12 +129,12 @@ class BankingApplicationGUI(tk.Toplevel):
                 return  
 
             if amount > current_balance:
-                messagebox.showerror("Error", "Insufficient funds.")
+                messagebox.showerror("Error", "Insufficient funds.",parent=self.canvas)
                 return
 
             self.update_balance(-amount)
             self.write_transaction("Withdraw", amount)
-            messagebox.showinfo("Withdraw", f"R{amount:.2f} successfully withdrawn.")
+            messagebox.showinfo("Withdraw", f"R{amount:.2f} successfully withdrawn.",parent=self.canvas)
         except ValueError:
             messagebox.showerror("Error", "Invalid amount.")
             
@@ -146,7 +146,7 @@ class BankingApplicationGUI(tk.Toplevel):
 
         try:
             if not recipient_name or not recipient_account_no or not amount or amount <= 0:
-                messagebox.showerror("Error", "Invalid input.")
+                messagebox.showerror("Error", "Invalid input.",parent=self.canvas)
                 return
 
             current_balance = self.get_balance_from_csv()
@@ -154,14 +154,14 @@ class BankingApplicationGUI(tk.Toplevel):
                 return
 
             if amount > current_balance:
-                messagebox.showerror("Error", "Insufficient funds.")
+                messagebox.showerror("Error", "Insufficient funds.",parent=self.canvas)
                 return
 
             if self.update_balance(-amount):
                 self.write_transaction("Transfer", amount, recipient_name, recipient_account_no)
-                messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {recipient_name}.")
+                messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {recipient_name}.", parent=self.canvas)
         except ValueError:
-            messagebox.showerror("Error", "Invalid amount.")
+            messagebox.showerror("Error", "Invalid amount.",parent=self.canvas)
 
     def view_transactions(self):
         try:
@@ -183,9 +183,9 @@ class BankingApplicationGUI(tk.Toplevel):
             transactions_text.configure(state="disabled")  # widget uneditable
 
         except FileNotFoundError:
-            messagebox.showerror("Error", "Transaction log file not found.")
+            messagebox.showerror("Error", "Transaction log file not found.",parent=self)
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to view transactions: {str(e)}")
+            messagebox.showerror("Error", f"Failed to view transactions: {str(e)}",parent=self.canvas)
 
     def get_account_type(self, account_name):
         try:
@@ -194,11 +194,11 @@ class BankingApplicationGUI(tk.Toplevel):
             if not account.empty:
                 return account['account_type'].values[0]
             else:
-                messagebox.showinfo("New Account", f"Account '{account_name}' not found. Creating new account...")
+                messagebox.showinfo("New Account", f"Account '{account_name}' not found. Creating new account...",parent=self.canvas)
                 self.create_new_account(account_name)
                 return ""  # Handle new account creation
         except FileNotFoundError:
-            messagebox.showerror("Error", "Accounts file not found.")
+            messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
             return ""
 
     def create_new_account(self, account_name):
@@ -207,7 +207,7 @@ class BankingApplicationGUI(tk.Toplevel):
 
         creation = account_creation(account_name, "unknown", new_account_id, acc_type)
         if creation.get_error_message():
-            messagebox.showerror("Error", creation.get_error_message())
+            messagebox.showerror("Error", creation.get_error_message(), parent=self.canvas)
         else:
             new_account_no = creation.acc_no_generator()
 
@@ -228,9 +228,9 @@ class BankingApplicationGUI(tk.Toplevel):
                 df = pd.read_csv(self.accounts_file)
                 df = pd.concat([df, new_account_data_df], ignore_index=True)
                 df.to_csv(self.accounts_file, index=False)
-                messagebox.showinfo("New Account", f"New account created for {account_name} with account number {new_account_no}.")
+                messagebox.showinfo("New Account", f"New account created for {account_name} with account number {new_account_no}.",parent=self.canvas)
             except FileNotFoundError:
-                messagebox.showerror("Error", "Accounts file not found.")
+                messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
 
 
     def write_transaction(self, transaction_type, amount, to_account=None, to_account_no=None):
@@ -248,7 +248,7 @@ class BankingApplicationGUI(tk.Toplevel):
                 file.write(transaction_details)
 
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to write transaction: {str(e)}")
+            messagebox.showerror("Error", f"Failed to write transaction: {str(e)}",parent=self.canvas)
 
     def update_balance(self, amount):
         try:
@@ -260,11 +260,11 @@ class BankingApplicationGUI(tk.Toplevel):
                 df.to_csv(self.accounts_file, index=False)
                 return True
             else:
-                messagebox.showerror("Error", f"Account '{self.recipient_name}' not found.")
+                messagebox.showerror("Error", f"Account '{self.recipient_name}' not found.",parent=self.canvas)
                 return False
         except FileNotFoundError:
-            messagebox.showerror("Error", "Accounts file not found.")
+            messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
             return False
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to update balance: {str(e)}")
+            messagebox.showerror("Error", f"Failed to update balance: {str(e)}",parent=self.canvas)
             return False
