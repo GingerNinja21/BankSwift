@@ -6,19 +6,24 @@ from file import DataValidation, account_creation
 from PIL import Image, ImageTk
 
 class BankingApplicationGUI(tk.Toplevel):
-    def __init__(self, parent,recipient_name,id_no,banks_file,transactions_log):
+    def __init__(self, parent,current_user_name,id_no,banks_file,transactions_log):
         super().__init__(parent)
         self.parent= parent
         self.title("Banking GUI")
     
-        self.recipient_name = recipient_name
+        self.recipient_name = current_user_name
         self.id_no= id_no
         self.accounts_file = "accounts.csv"
         self.banks_file = banks_file
         self.transactions_log = transactions_log
         self.display_name = self.recipient_name.capitalize()
         
-
+        self.account_no=""
+        
+                
+        
+        
+        self.account_validator()
         window_width = 800
         window_height = 600
 
@@ -51,6 +56,20 @@ class BankingApplicationGUI(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", self.go_back)
 
         self.create_widgets()
+
+    def account_validator(self):
+        valid_acc= False
+        with open("accounts.csv", "r") as file:
+            for line in file:
+                parts = line.strip().split(",")
+                if len(parts) > 6 and self.recipient_name == parts[1]:
+                    print("Account found:",self.recipient_name, ":", parts[1], "\n", self.id_no, ":", parts[6])
+                    self.account_no = parts[3]
+                    valid_acc= True
+                    return valid_acc
+            
+            messagebox.showerror("Error!","Something went wrong while initiating account numbers.\nContact Support!")
+        
 
     def create_widgets(self):
 
@@ -266,13 +285,13 @@ class BankingApplicationGUI(tk.Toplevel):
         except Exception as e:
             messagebox.showerror("Error", f"Failed to write transaction: {str(e)}",parent=self.canvas)
 
-    def update_balance(self, amount,acc_name):
+    def update_balance(self, amount,acc_no):
         try:
             df = pd.read_csv(self.accounts_file)
-            account = df[df['name'].str.lower() == acc_name.lower()]
+            account = df[df['account_no'].str.lower() == acc_no.lower()]
             if not account.empty:
                 new_balance = account['balance'].values[0] + amount
-                df.loc[df['name'].str.lower() == acc_name, 'balance'] = new_balance
+                df.loc[df['account_no'].str.lower() == acc_no, 'balance'] = new_balance
                 df.to_csv(self.accounts_file, index=False)
                 return True
             else:

@@ -494,8 +494,8 @@ class app():
                                          )
             except FileNotFoundError:
                 messagebox.showerror("Error", "Password records file not found.",parent=self.login)
-            except Exception as e:
-                messagebox.showerror("Error", f"Error: {str(e)}",parent=self.login)
+            # except Exception as e:
+            #     messagebox.showerror("Error", f"Error: {str(e)}",parent=self.login)
 
     def DashboardWindow(self):
         global login_id_no
