@@ -2,4 +2,4 @@ uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
 0,john,doe,151023100,700,cheque,210085197087,
 1,abigail,doe,151154048,500,cheque,0210085197080,
 2,test,dummy,151062422,123,cheque,0210085197081,
-
+5,fool,test,151062469,200,cheque.0210085197084

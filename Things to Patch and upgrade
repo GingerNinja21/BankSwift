@@ -1,4 +1,5 @@
 Fix transactionlog to only show the transactions relevant to the logged in account
+patch loginGUI2.0 update balance
 Store All details correctly - Change order of the details stored
                             - Store Phone number
                             - Bug test Extra account feature
