@@ -132,7 +132,7 @@ class BankingApplicationGUI(tk.Toplevel):
                 messagebox.showerror("Error", "Insufficient funds.",parent=self.canvas)
                 return
 
-            self.update_balance(-amount)
+            self.update_balance(-amount,self.recipient_name)
             self.write_transaction("Withdraw", amount)
             messagebox.showinfo("Withdraw", f"R{amount:.2f} successfully withdrawn.",parent=self.canvas)
         except ValueError:
@@ -140,6 +140,7 @@ class BankingApplicationGUI(tk.Toplevel):
             
 
     def transfer(self):
+        valid_account=False
         recipient_name = simpledialog.askstring("Transfer", "Enter recipient account name:")
         recipient_account_no = simpledialog.askstring("Transfer", "Enter recipient account number:")
         amount = simpledialog.askfloat("Transfer", "Enter amount to transfer:")
@@ -148,18 +149,33 @@ class BankingApplicationGUI(tk.Toplevel):
             if not recipient_name or not recipient_account_no or not amount or amount <= 0:
                 messagebox.showerror("Error", "Invalid input.",parent=self.canvas)
                 return
+            
+            with open("accounts.csv", "r") as file:
+                for line in file:
+                    parts = line.strip().split(",")
+                    print(recipient_name,":",parts[1],"\n",recipient_account_no,":",parts[3])
+                    if recipient_name == parts[1] and recipient_account_no == parts[3]:
+                        valid_account = True
+                    
+                        
 
-            current_balance = self.get_balance_from_csv()
-            if current_balance is None:
+            if valid_account:            
+                current_balance = self.get_balance_from_csv()
+                if current_balance is None:
+                    return
+
+                if amount > current_balance:
+                    messagebox.showerror("Error", "Insufficient funds.",parent=self.canvas)
+                    return
+
+                if self.update_balance(-amount,self.recipient_name):
+                    self.write_transaction("Transfer", amount, recipient_name, recipient_account_no)
+                    self.update_balance(amount,recipient_name)
+                    messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {recipient_name}.", parent=self.canvas)
+                    return
+            else:
+                messagebox.showerror("Error","The account number provided does not match any account in our database!\nPlease try again.")
                 return
-
-            if amount > current_balance:
-                messagebox.showerror("Error", "Insufficient funds.",parent=self.canvas)
-                return
-
-            if self.update_balance(-amount):
-                self.write_transaction("Transfer", amount, recipient_name, recipient_account_no)
-                messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {recipient_name}.", parent=self.canvas)
         except ValueError:
             messagebox.showerror("Error", "Invalid amount.",parent=self.canvas)
 
@@ -240,9 +256,9 @@ class BankingApplicationGUI(tk.Toplevel):
             from_account_no = self.get_account_no(self.recipient_name)
 
             if transaction_type == "Transfer" and to_account and to_account_no:
-                transaction_details = f"{transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no}) to {to_account} ({to_account_no})\n"
+                transaction_details = f"{from_account_name}: {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no}) to {to_account} ({to_account_no})\n"
             else:
-                transaction_details = f"{transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no})\n"
+                transaction_details = f"{from_account_name}: {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no})\n"
 
             with open(self.transactions_log, "a") as file:
                 file.write(transaction_details)
@@ -250,13 +266,13 @@ class BankingApplicationGUI(tk.Toplevel):
         except Exception as e:
             messagebox.showerror("Error", f"Failed to write transaction: {str(e)}",parent=self.canvas)
 
-    def update_balance(self, amount):
+    def update_balance(self, amount,acc_name):
         try:
             df = pd.read_csv(self.accounts_file)
-            account = df[df['name'].str.lower() == self.recipient_name.lower()]
+            account = df[df['name'].str.lower() == acc_name.lower()]
             if not account.empty:
                 new_balance = account['balance'].values[0] + amount
-                df.loc[df['name'].str.lower() == self.recipient_name.lower(), 'balance'] = new_balance
+                df.loc[df['name'].str.lower() == acc_name, 'balance'] = new_balance
                 df.to_csv(self.accounts_file, index=False)
                 return True
             else:

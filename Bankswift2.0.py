@@ -7,7 +7,7 @@ import pandas as pd
 import csv
 from PIL import Image, ImageTk
 from file import LoginValidation,DataValidation, account_creation
-from bankswift import BankingApplicationGUI
+from LoginGUI import BankingApplicationGUI
 import subprocess
 import sys
 

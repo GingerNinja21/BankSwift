@@ -1,2 +1,3 @@
 uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
-0,john,doe,151023100,500,cheque,0210085197087,
+0,john,doe,151023100,700,cheque,210085197087,
+1,abigail,doe,151154048,500,cheque,210085197080,
