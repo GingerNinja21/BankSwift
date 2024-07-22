@@ -11,12 +11,12 @@ class BankingApplicationGUI(tk.Toplevel):
         self.parent= parent
         self.title("Banking GUI")
     
-        self.recipient_name = current_user_name
+        self.current_user = current_user_name
         self.id_no= id_no
         self.accounts_file = "accounts.csv"
         self.banks_file = banks_file
         self.transactions_log = transactions_log
-        self.display_name = self.recipient_name.capitalize()
+        self.display_name = self.current_user.capitalize()
         
         self.account_no=""
         
@@ -62,7 +62,7 @@ class BankingApplicationGUI(tk.Toplevel):
         with open("accounts.csv", "r") as file:
             for line in file:
                 parts = line.strip().split(",")
-                if len(parts) > 6 and self.recipient_name == parts[1]:
+                if len(parts) > 6 and self.current_user == parts[1]:
                     self.account_no = parts[3]
                     valid_acc= True
                     print(self.account_no)
@@ -98,21 +98,23 @@ class BankingApplicationGUI(tk.Toplevel):
         
 
     def view_balance(self):
-        balance = self.get_balance_from_csv()
+        balance = self.get_balance_from_csv(self.account_no)
         if balance is not None:
             messagebox.showinfo("Balance", f"Your balance is R{balance:.2f}",parent=self.canvas)
         else:
             messagebox.showerror("Error", "Failed to retrieve balance.",parent=self.canvas)
  
 
-    def get_balance_from_csv(self):
+    def get_balance_from_csv(self,acc_no):
+        global transfer_recipient_user
         try:
-            df = pd.read_csv(self.accounts_file)
-            account = df[(df['name'].str.lower() == self.recipient_name.lower())]
-            if not account.empty:
-                return account['balance'].values[0]
+            df = pd.read_csv('accounts.csv')
+            account_no=int(acc_no)
+            if account_no in df['account_no'].values:
+                row = df[df['account_no'] == account_no]
+                return row['balance'].values[0]
             else:
-                messagebox.showerror("Error", f"Account '{self.recipient_name}' not found.",parent=self.canvas)
+                messagebox.showerror("Error", f"Account '{acc_no}' not found.",parent=self.canvas)
         except FileNotFoundError:
             messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
             return None
@@ -127,7 +129,7 @@ class BankingApplicationGUI(tk.Toplevel):
             if not account.empty:
                 return account['account_no'].values[0]
             else:
-                messagebox.showerror("Error", f"Account '{account_name}' not found.",parent=self.canvas)
+                messagebox.showerror("Error", f"Account  '{account_name}' not found.",parent=self.canvas)
                 return None
         except FileNotFoundError:
             messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
@@ -143,7 +145,7 @@ class BankingApplicationGUI(tk.Toplevel):
                 messagebox.showerror("Error", "Invalid amount.",parent=self.canvas)
                 return
 
-            current_balance = self.get_balance_from_csv()
+            current_balance = int(self.get_balance_from_csv(self.account_no))
             if current_balance is None:
                 return  
 
@@ -151,7 +153,7 @@ class BankingApplicationGUI(tk.Toplevel):
                 messagebox.showerror("Error", "Insufficient funds.",parent=self.canvas)
                 return
 
-            self.update_balance(-amount,self.recipient_name)
+            self.update_balance(-amount,self.account_no)
             self.write_transaction("Withdraw", amount)
             messagebox.showinfo("Withdraw", f"R{amount:.2f} successfully withdrawn.",parent=self.canvas)
         except ValueError:
@@ -160,25 +162,26 @@ class BankingApplicationGUI(tk.Toplevel):
 
     def transfer(self):
         valid_account=False
-        recipient_name = simpledialog.askstring("Transfer", "Enter recipient account name:")
+        global transfer_recipient_user
+        transfer_recipient_user = simpledialog.askstring("Transfer", "Enter recipient account name:")
         recipient_account_no = simpledialog.askstring("Transfer", "Enter recipient account number:")
         amount = simpledialog.askfloat("Transfer", "Enter amount to transfer:")
 
         try:
-            if not recipient_name or not recipient_account_no or not amount or amount <= 0:
+            if not transfer_recipient_user or not recipient_account_no or not amount or amount <= 0:
                 messagebox.showerror("Error", "Invalid input.",parent=self.canvas)
                 return
             
             with open("accounts.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
-                    if len(parts) > 6 and recipient_name == parts[1] and recipient_account_no == parts[3]:
+                    if len(parts) > 6 and transfer_recipient_user == parts[1] and recipient_account_no == parts[3]:
                         valid_account = True
                     
                         
 
             if valid_account:            
-                current_balance = self.get_balance_from_csv()
+                current_balance = self.get_balance_from_csv(self.account_no)
                 if current_balance is None:
                     return
 
@@ -186,11 +189,18 @@ class BankingApplicationGUI(tk.Toplevel):
                     messagebox.showerror("Error", "Insufficient funds.",parent=self.canvas)
                     return
 
-                if self.update_balance(-amount,recipient_account_no):
-                    self.write_transaction("Transfer", amount, recipient_name, recipient_account_no)
-                    self.update_balance(amount,recipient_account_no)
-                    messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {recipient_name}.", parent=self.canvas)
-                    return
+                with open("accounts.csv", "r") as file:
+                    for line in file:
+                        parts = line.strip().split(",")
+                        if len(parts) > 6 and transfer_recipient_user == parts[1] and recipient_account_no == parts[3]:
+                            stored_balance = parts[4]
+                            updated_balance= updated_balance + amount  
+                
+                # if self.update_balance(-amount,self.account_no):
+                #     self.write_transaction("Transfer", amount, transfer_current_user, recipient_account_no)
+                #     self.update_balance(amount,recipient_account_no)
+                #     messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {transfer_current_user}.", parent=self.canvas)
+                #     return
             else:
                 messagebox.showerror("Error","The account number provided does not match any account in our database!\nPlease try again.")
                 return
@@ -199,6 +209,7 @@ class BankingApplicationGUI(tk.Toplevel):
 
     def view_transactions(self):
         try:
+            account_no =self.account_no
             transactions_window = tk.Toplevel(self)
             transactions_window.title("Transaction History")
             transactions_window.geometry("800x600")
@@ -211,9 +222,14 @@ class BankingApplicationGUI(tk.Toplevel):
 
             formatted_transactions = []
             for transaction in transactions:
-                formatted_transactions.append(transaction.strip() + "\n")
+                if account_no in transaction:
+                    formatted_transactions.append(transaction.strip() + "\n")
 
-            transactions_text.insert(tk.END, "".join(formatted_transactions))
+            if formatted_transactions:
+                transactions_text.insert(tk.END, "".join(formatted_transactions))
+            else:
+                 transactions_text.insert(tk.END, "No transactions found for account number " + account_no)
+            # transactions_text.insert(tk.END, "".join(formatted_transactions))
             transactions_text.configure(state="disabled")  # widget uneditable
 
         except FileNotFoundError:
@@ -221,62 +237,62 @@ class BankingApplicationGUI(tk.Toplevel):
         except Exception as e:
             messagebox.showerror("Error", f"Failed to view transactions: {str(e)}",parent=self.canvas)
 
-    def get_account_type(self, account_name):
-        try:
-            df = pd.read_csv(self.accounts_file)
-            account = df[df['name'].str.lower() == account_name.lower() and df["id_no"]]
-            if not account.empty:
-                return account['account_type'].values[0]
-            else:
-                messagebox.showinfo("New Account", f"Account '{account_name}' not found. Creating new account...",parent=self.canvas)
-                self.create_new_account(account_name)
-                return ""  # Handle new account creation
-        except FileNotFoundError:
-            messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
-            return ""
+    # def get_account_type(self, account_name):
+    #     try:
+    #         df = pd.read_csv(self.accounts_file)
+    #         account = df[df['name'].str.lower() == account_name.lower() and df["id_no"]]
+    #         if not account.empty:
+    #             return account['account_type'].values[0]
+    #         else:
+    #             messagebox.showinfo("New Account", f"Account '{account_name}' not found. Creating new account...",parent=self.canvas)
+    #             self.create_new_account(account_name)
+    #             return ""  # Handle new account creation
+    #     except FileNotFoundError:
+    #         messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
+    #         return 
 
-    def create_new_account(self, account_name):
-        new_account_id = simpledialog.askstring("New Account", "Enter your ID number:")
-        acc_type = simpledialog.askstring("New Account", "Enter account type (Savings/Cheque):")
+    # def create_new_account(self, account_name):
+    #     new_account_id = simpledialog.askstring("New Account", "Enter your ID number:")
+    #     acc_type = simpledialog.askstring("New Account", "Enter account type (Savings/Cheque):")
 
-        creation = account_creation(account_name, "unknown", new_account_id, acc_type)
-        if creation.get_error_message():
-            messagebox.showerror("Error", creation.get_error_message(), parent=self.canvas)
-        else:
-            new_account_no = creation.acc_no_generator()
+    #     creation = account_creation(account_name, "unknown", new_account_id, acc_type)
+    #     if creation.get_error_mnssage():
+    #         messagebox.showerror("Error", creation.get_error_message(), parent=self.canvas)
+    #     else:
+    #         new_account_no = creation.acc_no_generator()
 
-            new_account_data = {
-                'uid': [0],  # Assign UID appropriately
-                'name': [account_name],
-                'surname': ['unknown'],
-                'account_no': [new_account_no],
-                'balance': [100],  # Initial balance
-                'account_type': [acc_type],
-                'id_number': [new_account_id],
-                'linked_accounts': ['']
-            }
+    #         new_account_data = {
+    #             'uid': [0],  # Assign UID appropriately
+    #             'name': [account_name],
+    #             'surname': ['unknown'],
+    #             'account_no': [new_account_no],
+    #             'balance': [100],  # Initial balance
+    #             'account_type': [acc_type],
+    #             'id_number': [new_account_id],
+    #             'linked_accounts': ['']
+    #         }
 
-            new_account_data_df = pd.DataFrame(new_account_data)
+    #         new_account_data_df = pd.DataFrame(new_account_data)
 
-            try:
-                df = pd.read_csv(self.accounts_file)
-                df = pd.concat([df, new_account_data_df], ignore_index=True)
-                df.to_csv(self.accounts_file, index=False)
-                messagebox.showinfo("New Account", f"New account created for {account_name} with account number {new_account_no}.",parent=self.canvas)
-            except FileNotFoundError:
-                messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
+    #         try:
+    #             df = pd.read_csv(self.accounts_file)
+    #             df = pd.concat([df, new_account_data_df], ignore_index=True)
+    #             df.to_csv(self.accounts_file, index=False)
+    #             messagebox.showinfo("New Account", f"New account created for {account_name} with account number {new_account_no}.",parent=self.canvas)
+    #         except FileNotFoundError:
+    #             messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
 
 
     def write_transaction(self, transaction_type, amount, to_account=None, to_account_no=None):
         try:
             transaction_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            from_account_name = self.recipient_name
-            from_account_no = self.get_account_no(self.recipient_name)
+            from_account_name = self.current_user
+            from_account_no = self.account_no
 
             if transaction_type == "Transfer" and to_account and to_account_no:
-                transaction_details = f"{from_account_name}: {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no}) to {to_account} ({to_account_no})\n"
+                transaction_details = f" {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no}) to {to_account} ({to_account_no})\n"
             else:
-                transaction_details = f"{from_account_name}: {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no})\n"
+                transaction_details = f" {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no})\n"
 
             with open(self.transactions_log, "a") as file:
                 file.write(transaction_details)
@@ -286,23 +302,29 @@ class BankingApplicationGUI(tk.Toplevel):
 
     def update_balance(self, amount,acc_no):
         try:
+            account_no= int(acc_no)
+           
             df = pd.read_csv(self.accounts_file)
-            account = df[df["account_no"] == acc_no]
-            print(f"working\n{acc_no} : {account}")
+            account = df[df["account_no"] == account_no]
             
             if not account.empty:
                 new_balance = account['balance'].values[0] + amount
-                print(f"working\n{acc_no} : {df['account_no']}\nNew balance : {new_balance}")
-                df.loc[df['account_no'] == acc_no ,'balance'] = new_balance
+                print("account found " ,account_no)
+                df.loc[df['account_no'] == account_no ,'balance'] = new_balance
                 df.to_csv(self.accounts_file, index=False)
                 return True
             else:
                 messagebox.showerror("Error", f"Account '{acc_no}' not found.",parent=self.canvas)
-                # print(f"Here\n{acc_no} : {df['account_no']}\nNew balance :")
                 return False
         except FileNotFoundError:
             messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
             return False
-        # except Exception as e:
-        #     messagebox.showerror("Error", f"Failed to update balance: {str(e)}",parent=self.canvas)
-            # return False
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to update balance: {str(e)}",parent=self.canvas)
+            return False
+
+if __name__ == "__main__":
+    window= tk.Tk()
+    x= BankingApplicationGUI(window,"abigail","0210085197080","banks.csv","transactionslog.txt",)
+    x.mainloop()
+ 

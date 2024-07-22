@@ -93,7 +93,7 @@ class BankingApplicationGUI(tk.Toplevel):
             if not account.empty:
                 return account['balance'].values[0]
             else:
-                messagebox.showerror("Error", f"Account '{self.recipient_name}' not found.",parent=self.canvas)
+                messagebox.showerror("Error", f"Account '{self.account}' not found.",parent=self.canvas)
         except FileNotFoundError:
             messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
             return None
