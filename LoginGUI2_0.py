@@ -104,8 +104,11 @@ class BankingApplicationGUI(tk.Toplevel):
     def view_balance(self):
         balance = self.get_balance_from_csv(self.account_no)
         if balance is not None:
-            self.view_balance_button = tk.Button(self.LoginMenu_canvas, text=f"Balance:\nR{balance}", state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
+            self.view_balance_button = tk.Button(self.LoginMenu_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
             self.view_balance_button.place(relx=0.5, rely=0.3, anchor="center", width=600 , height=100)
+            login_banner_label=tk.Label(self.LoginMenu_canvas, text=f"Balance:\nR{balance}",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#37B7C3")
+            login_banner_label.place(relx=0.5, rely=0.3 ,anchor="center", width=500)
+
 
 
         else:
