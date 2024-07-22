@@ -187,20 +187,13 @@ class BankingApplicationGUI(tk.Toplevel):
 
                 if amount > current_balance:
                     messagebox.showerror("Error", "Insufficient funds.",parent=self.canvas)
-                    return
-
-                with open("accounts.csv", "r") as file:
-                    for line in file:
-                        parts = line.strip().split(",")
-                        if len(parts) > 6 and transfer_recipient_user == parts[1] and recipient_account_no == parts[3]:
-                            stored_balance = parts[4]
-                            updated_balance= updated_balance + amount  
+                    return 
                 
-                # if self.update_balance(-amount,self.account_no):
-                #     self.write_transaction("Transfer", amount, transfer_current_user, recipient_account_no)
-                #     self.update_balance(amount,recipient_account_no)
-                #     messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {transfer_current_user}.", parent=self.canvas)
-                #     return
+                if self.update_balance(-amount,self.account_no):
+                    self.write_transaction("Transfer", amount , transfer_recipient_user.lower(), recipient_account_no)
+                    self.update_balance(amount,recipient_account_no)
+                    messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {transfer_recipient_user}.", parent=self.canvas)
+                    return
             else:
                 messagebox.showerror("Error","The account number provided does not match any account in our database!\nPlease try again.")
                 return

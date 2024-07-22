@@ -151,7 +151,7 @@ class app():
     def create_account_function(self):
         name = self.name_entry.get().strip()
         surname = self.surname_entry.get().strip()
-        id_no = self.id_entry.get().strip()
+        id_no = str(self.id_entry.get().strip())
         phone_number = self.phone_entry.get().strip()
         email = self.email_entry.get().strip().lower()
         password = self.account_password_entry.get()

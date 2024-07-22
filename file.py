@@ -361,7 +361,7 @@ class account_creation:
     def __init__(self, User_name, User_surname,id_no,pin, phone_number,password,email, balance,account_type):
         self.Username = User_name.strip().lower()
         self.Usersurname = User_surname.strip().lower()
-        self.id_no = id_no.strip() 
+        self.id_no = str(id_no.strip())
         self.pin= pin.strip()
         self.password= password.strip()
         self.email= email.strip()
