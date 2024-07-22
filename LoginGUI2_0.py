@@ -7,9 +7,10 @@ from PIL import Image, ImageTk
 
 class BankingApplicationGUI(tk.Toplevel):
     def __init__(self, parent,current_user_name,id_no,banks_file,transactions_log):
-        super().__init__(parent)
+        super().__init__()
         self.parent= parent
-        self.title("Banking GUI")
+        self.LoginMenu=self
+        self.LoginMenu.title("Banking GUI")
     
         self.current_user = current_user_name
         self.id_no= id_no
@@ -24,39 +25,41 @@ class BankingApplicationGUI(tk.Toplevel):
         
         
         self.account_validator()
+       
         window_width = 800
         window_height = 600
 
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
+        screen_width = self.LoginMenu.winfo_screenwidth()
+        screen_height = self.LoginMenu.winfo_screenheight()
 
         center_x = int(screen_width / 2 - window_width / 2)
         center_y = int(screen_height / 2 - window_height / 2)
 
-        self.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        self.LoginMenu.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
-        self.resizable(False, False)
-        self.grab_set()
+        self.LoginMenu.resizable(False, False)
 
-        self.canvas = tk.Canvas(self, width=800, height=600)
-        self.canvas.pack(fill="both", expand=True)
+
+        self.LoginMenu_canvas = tk.Canvas(self.LoginMenu, width=800, height=600)
+        self.LoginMenu_canvas.pack(fill="both", expand=True)
         
-        self.background_image = Image.open("background.png")
-        self.logo_image = Image.open("logo_transparent.png")
+        self.LoginMenu_background_image = Image.open("background.png")
+        self.LoginMenu_logo_image = Image.open("logo_transparent.png")
     
         
-        self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
-        self.logo_photo = ImageTk.PhotoImage(self.logo_image.resize((100,100)))
+        self.LoginMenu_background_photo = ImageTk.PhotoImage(self.LoginMenu_background_image.resize((2000, 2000)))
+        self.LoginMenu_logo_photo = ImageTk.PhotoImage(self.LoginMenu_logo_image.resize((100,100)))
 
         
 
-        self.canvas.create_image(0, 0, image=self.background_photo, anchor=tk.NW)
-        self.canvas.create_image(750, 550, image=self.logo_photo, anchor=tk.SE)
+        self.LoginMenu_canvas.create_image(0, 0, image=self.LoginMenu_background_photo, anchor=tk.NW)
+        self.LoginMenu_canvas.create_image(750, 550, image=self.LoginMenu_logo_photo, anchor=tk.SE)
 
-        self.protocol("WM_DELETE_WINDOW", self.go_back)
+        self.LoginMenu.protocol("WM_DELETE_WINDOW", self.go_back)
+        
 
         self.create_widgets()
-
+        
     def account_validator(self):
         valid_acc= False
         with open("accounts.csv", "r") as file:
@@ -73,23 +76,24 @@ class BankingApplicationGUI(tk.Toplevel):
 
     def create_widgets(self):
 
-        login_banner_label=tk.Label(self.canvas, text=f"Welcome\n{self.display_name}",font=("Times New Roman", 30,"bold") ,fg="#a1c8ff" , bg="#0a1627")
+        self.view_balance()
+        login_banner_label=tk.Label(self.LoginMenu_canvas, text=f"Welcome\n{self.display_name}",font=("Times New Roman", 30,"bold") ,fg="#a1c8ff" , bg="#0a1627")
         login_banner_label.place(relx=0.5, rely=0.1 ,anchor="center", width=790)
 
-        self.view_balance_button = tk.Button(self.canvas, text="View Balance", command=self.view_balance ,font=("Times New Roman", 17,"bold"),bg="#090f16", fg="#FFFFFF")
-        self.view_balance_button.place(relx=0.3, rely=0.3, anchor="center", width=150 , height=100)
+        # self.view_balance_button = tk.Button(self.LoginMenu_canvas, text="View Balance", command=self.view_balance ,font=("Times New Roman", 17,"bold"),bg="#090f16", fg="#FFFFFF")
+        # self.view_balance_button.place(relx=0.3, rely=0.3, anchor="center", width=150 , height=100)
 
-        self.withdraw_button = tk.Button(self.canvas, text="Withdraw", command=self.withdraw,font=("Times New Roman", 17,"bold"),bg="#090f16", fg="#FFFFFF")
-        self.withdraw_button.place(relx=0.65, rely=0.3, anchor="center", width=150 , height=100)
+        self.withdraw_button = tk.Button(self.LoginMenu_canvas, text="Withdraw", command=self.withdraw,font=("Times New Roman", 17,"bold"),bg="#090f16", fg="#FFFFFF")
+        self.withdraw_button.place(relx=0.7, rely=0.5, anchor="center", width=150 , height=100)
 
-        self.transfer_button = tk.Button(self.canvas, text="Transfer", command=self.transfer,font=("Times New Roman", 17,"bold"), bg="#090f16", fg="#FFFFFF")
-        self.transfer_button.place(relx=0.3, rely=0.6, anchor="center", width=150 , height=100)
+        self.transfer_button = tk.Button(self.LoginMenu_canvas, text="Transfer", command=self.transfer,font=("Times New Roman", 17,"bold"), bg="#090f16", fg="#FFFFFF")
+        self.transfer_button.place(relx=0.3, rely=0.5, anchor="center", width=150 , height=100)
 
-        self.view_transactions_button = tk.Button(self.canvas, text="View\nTransactions", command=self.view_transactions ,font=("Times New Roman", 15,"bold"),bg="#090f16", fg="#FFFFFF")
-        self.view_transactions_button.place(relx=0.65, rely=0.6, anchor="center", width=150 , height=100)
+        self.view_transactions_button = tk.Button(self.LoginMenu_canvas, text="View\nTransactions", command=self.view_transactions ,font=("Times New Roman", 15,"bold"),bg="#090f16", fg="#FFFFFF")
+        self.view_transactions_button.place(relx=0.5, rely=0.6, anchor="center", width=150 , height=100)
         
-        self.back_btn= tk.Button(self.canvas, text="Close", command=self.go_back,font=("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
-        self.back_btn.place(relx=0.47, rely=0.8, anchor="center", width=100 , height=60)
+        self.back_btn= tk.Button(self.LoginMenu_canvas, text="Close", command=self.go_back,font=("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
+        self.back_btn.place(relx=0.5, rely=0.8, anchor="center", width=100 , height=60)
     
     def go_back(self):
         self.destroy()
@@ -100,9 +104,12 @@ class BankingApplicationGUI(tk.Toplevel):
     def view_balance(self):
         balance = self.get_balance_from_csv(self.account_no)
         if balance is not None:
-            messagebox.showinfo("Balance", f"Your balance is R{balance:.2f}",parent=self.canvas)
+            self.view_balance_button = tk.Button(self.LoginMenu_canvas, text=f"Balance:\nR{balance}", state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
+            self.view_balance_button.place(relx=0.5, rely=0.3, anchor="center", width=600 , height=100)
+
+
         else:
-            messagebox.showerror("Error", "Failed to retrieve balance.",parent=self.canvas)
+            messagebox.showerror("Error", "Failed to retrieve balance.",parent=self.LoginMenu_canvas)
  
 
     def get_balance_from_csv(self,acc_no):
@@ -114,12 +121,12 @@ class BankingApplicationGUI(tk.Toplevel):
                 row = df[df['account_no'] == account_no]
                 return row['balance'].values[0]
             else:
-                messagebox.showerror("Error", f"Account '{acc_no}' not found.",parent=self.canvas)
+                messagebox.showerror("Error", f"Account '{acc_no}' not found.",parent=self.LoginMenu_canvas)
         except FileNotFoundError:
-            messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
+            messagebox.showerror("Error", "Accounts file not found.",parent=self.LoginMenu_canvas)
             return None
         except Exception as e:
-            messagebox.showerror("Error", f"Error retrieving balance: {str(e)}",parent=self.canvas)
+            messagebox.showerror("Error", f"Error retrieving balance: {str(e)}",parent=self.LoginMenu_canvas)
             return None
 
     def get_account_no(self, account_name):
@@ -129,33 +136,40 @@ class BankingApplicationGUI(tk.Toplevel):
             if not account.empty:
                 return account['account_no'].values[0]
             else:
-                messagebox.showerror("Error", f"Account  '{account_name}' not found.",parent=self.canvas)
+                messagebox.showerror("Error", f"Account  '{account_name}' not found.",parent=self.LoginMenu_canvas)
                 return None
         except FileNotFoundError:
-            messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
+            messagebox.showerror("Error", "Accounts file not found.",parent=self.LoginMenu_canvas)
             return None
         except Exception as e:
-            messagebox.showerror("Error", f"Error retrieving account number: {str(e)}",parent=self.canvas)
+            messagebox.showerror("Error", f"Error retrieving account number: {str(e)}",parent=self.LoginMenu_canvas)
             return None
         
     def withdraw(self):
-        amount = simpledialog.askfloat("Withdraw", "Enter amount to withdraw:",parent=self.canvas)
+        amount = int(simpledialog.askfloat("Withdraw", "Enter amount to withdraw:",parent=self.LoginMenu_canvas))
         try:
             if amount is None or amount <= 0:
-                messagebox.showerror("Error", "Invalid amount.",parent=self.canvas)
+                messagebox.showerror("Error", "Invalid amount.",parent=self.LoginMenu_canvas)
                 return
 
+            if isinstance(amount,float):
+                messagebox.showerror("Error!","You cannot Withdraw cents!")
+                return
+            
+            if isinstance(amount,int) and not amount %10 == 0:
+                messagebox.showerror("Error!","Please enter a valid amount.\n(Only enter Note values , No coin values.)" )
+                return
             current_balance = int(self.get_balance_from_csv(self.account_no))
             if current_balance is None:
                 return  
 
             if amount > current_balance:
-                messagebox.showerror("Error", "Insufficient funds.",parent=self.canvas)
+                messagebox.showerror("Error", "Insufficient funds.",parent=self.LoginMenu_canvas)
                 return
 
             self.update_balance(-amount,self.account_no)
             self.write_transaction("Withdraw", amount)
-            messagebox.showinfo("Withdraw", f"R{amount:.2f} successfully withdrawn.",parent=self.canvas)
+            messagebox.showinfo("Withdraw", f"R{amount:.2f} successfully withdrawn.",parent=self.LoginMenu_canvas)
         except ValueError:
             messagebox.showerror("Error", "Invalid amount.")
             
@@ -169,7 +183,7 @@ class BankingApplicationGUI(tk.Toplevel):
 
         try:
             if not transfer_recipient_user or not recipient_account_no or not amount or amount <= 0:
-                messagebox.showerror("Error", "Invalid input.",parent=self.canvas)
+                messagebox.showerror("Error", "Invalid input.",parent=self.LoginMenu_canvas)
                 return
             
             with open("accounts.csv", "r") as file:
@@ -186,28 +200,27 @@ class BankingApplicationGUI(tk.Toplevel):
                     return
 
                 if amount > current_balance:
-                    messagebox.showerror("Error", "Insufficient funds.",parent=self.canvas)
+                    messagebox.showerror("Error", "Insufficient funds.",parent=self.LoginMenu_canvas)
                     return 
                 
                 if self.update_balance(-amount,self.account_no):
                     self.write_transaction("Transfer", amount , transfer_recipient_user.lower(), recipient_account_no)
                     self.update_balance(amount,recipient_account_no)
-                    messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {transfer_recipient_user}.", parent=self.canvas)
+                    messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {transfer_recipient_user}.", parent=self.LoginMenu_canvas)
                     return
             else:
                 messagebox.showerror("Error","The account number provided does not match any account in our database!\nPlease try again.")
                 return
         except ValueError:
-            messagebox.showerror("Error", "Invalid amount.",parent=self.canvas)
+            messagebox.showerror("Error", "Invalid amount.",parent=self.LoginMenu_canvas)
 
     def view_transactions(self):
         try:
+            self.LoginMenu.iconify()
             account_no =self.account_no
-            transactions_window = tk.Toplevel(self)
-            # transactions_window_canvas = tk.Canvas(self.root, width=800, height=600)
-            # transactions_window_canvas.pack(fill="both", expand=True)
-            transactions_window.title("Transaction History")
-            # transactions_window.geometry("800x600")
+            self.transactions_window = tk.Toplevel()
+            self.transactions_window.title("Transaction History")
+            self.transactions_window.resizable(False, False)
             window_width = 900
             window_height = 700
 
@@ -217,28 +230,30 @@ class BankingApplicationGUI(tk.Toplevel):
             center_x = int(screen_width / 2 - window_width / 2)
             center_y = int(screen_height / 2 - window_height / 2)
 
-            transactions_window.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+            self.transactions_window.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
-            transactions_window.resizable(False, False)
-            transactions_window.grab_set()
-
-            transactions_window_canvas = tk.Canvas(self, width=800, height=600)
-            transactions_window_canvas.pack(fill="both", expand=True)
+            self.transaction_canvas = tk.Canvas(self.transactions_window, width=800, height=600)
+            self.transaction_canvas.pack(fill="both", expand=True)
             
-            background_image = Image.open("background.png")
-            logo_image = Image.open("logo_transparent.png")
-        
+            self.transaction_background_image = Image.open("background.png")
+            self.transaction_logo_image = Image.open("logo_transparent.png")
+           
             
-            apply_background_photo = ImageTk.PhotoImage(background_image.resize((2000, 2000)))
-            apply_logo_photo = ImageTk.PhotoImage(logo_image.resize((100,100)))
+            self.transaction_background_photo = ImageTk.PhotoImage(self.transaction_background_image.resize((2000, 2000)))
+            self.transaction_logo_photo = ImageTk.PhotoImage(self.transaction_logo_image.resize((100,100)))
 
-            
+            self.view_balance_button = tk.Button(self.transaction_canvas, text="Back", command = self.on_transaction_close ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
+            self.view_balance_button.place(relx=0.5, rely=0.8, anchor="center", width=80 , height=50)
 
-            transactions_window_canvas.create_image(0, 0, image=apply_background_photo, anchor=tk.NW)
-            transactions_window_canvas.create_image(750, 550, image=apply_logo_photo, anchor=tk.SE)
+            self.transaction_canvas.create_image(0, 0, image=self.transaction_background_photo, anchor=tk.NW)
+            self.transaction_canvas.create_image(850,650, image=self.transaction_logo_photo, anchor=tk.SE)
 
-            transactions_text = scrolledtext.ScrolledText(transactions_window, width=100, height=30)
+            transactions_text = scrolledtext.ScrolledText(self.transaction_canvas, width=100, height=30, wrap = tk.WORD)
+            transactions_text.configure(fg="#FFFFFF", bg="#142133")
             transactions_text.pack(padx=20, pady=20)
+            self.transactions_window.protocol("WM_DELETE_WINDOW",self.on_transaction_close)
+
+            
 
             with open(self.transactions_log, "r") as file:
                 transactions = file.readlines()
@@ -252,14 +267,25 @@ class BankingApplicationGUI(tk.Toplevel):
                 transactions_text.insert(tk.END, "".join(formatted_transactions))
             else:
                  transactions_text.insert(tk.END, "No transactions found for account number " + account_no)
-            # transactions_text.insert(tk.END, "".join(formatted_transactions))
-            transactions_text.configure(state="disabled")  # widget uneditable
+            
+            transactions_text.configure(state="disabled") 
+
+            
+            
 
         except FileNotFoundError:
             messagebox.showerror("Error", "Transaction log file not found.",parent=self)
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to view transactions: {str(e)}",parent=self.canvas)
+            messagebox.showerror("Error", f"Failed to view transactions: {str(e)}",parent=self.transaction_canvas)
 
+        
+
+
+    def on_transaction_close(self):
+        self.transactions_window.destroy()
+        self.LoginMenu.deiconify()
+        self.LoginMenu.create_widgets()
+        
     # def get_account_type(self, account_name):
     #     try:
     #         df = pd.read_csv(self.accounts_file)
@@ -327,7 +353,7 @@ class BankingApplicationGUI(tk.Toplevel):
         try:
             account_no= int(acc_no)
            
-            df = pd.read_csv(self.accounts_file)
+            df = pd.read_csv(self.accounts_file, dtype={'id_number': str})
             account = df[df["account_no"] == account_no]
             
             if not account.empty:
