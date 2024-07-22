@@ -43,11 +43,11 @@ class BankingApplicationGUI(tk.Toplevel):
         
         self.background_image = Image.open("background.png")
         self.logo_image = Image.open("logo_transparent.png")
-        self.banner_image = Image.open("Create_Account_Banner.png")
+    
         
         self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
         self.logo_photo = ImageTk.PhotoImage(self.logo_image.resize((100,100)))
-        self.banner_photo = ImageTk.PhotoImage(self.banner_image.resize((600, 100)))
+
         
 
         self.canvas.create_image(0, 0, image=self.background_photo, anchor=tk.NW)
@@ -204,8 +204,38 @@ class BankingApplicationGUI(tk.Toplevel):
         try:
             account_no =self.account_no
             transactions_window = tk.Toplevel(self)
+            # transactions_window_canvas = tk.Canvas(self.root, width=800, height=600)
+            # transactions_window_canvas.pack(fill="both", expand=True)
             transactions_window.title("Transaction History")
-            transactions_window.geometry("800x600")
+            # transactions_window.geometry("800x600")
+            window_width = 900
+            window_height = 700
+
+            screen_width = self.winfo_screenwidth()
+            screen_height = self.winfo_screenheight()
+
+            center_x = int(screen_width / 2 - window_width / 2)
+            center_y = int(screen_height / 2 - window_height / 2)
+
+            transactions_window.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+
+            transactions_window.resizable(False, False)
+            transactions_window.grab_set()
+
+            transactions_window_canvas = tk.Canvas(self, width=800, height=600)
+            transactions_window_canvas.pack(fill="both", expand=True)
+            
+            background_image = Image.open("background.png")
+            logo_image = Image.open("logo_transparent.png")
+        
+            
+            apply_background_photo = ImageTk.PhotoImage(background_image.resize((2000, 2000)))
+            apply_logo_photo = ImageTk.PhotoImage(logo_image.resize((100,100)))
+
+            
+
+            transactions_window_canvas.create_image(0, 0, image=apply_background_photo, anchor=tk.NW)
+            transactions_window_canvas.create_image(750, 550, image=apply_logo_photo, anchor=tk.SE)
 
             transactions_text = scrolledtext.ScrolledText(transactions_window, width=100, height=30)
             transactions_text.pack(padx=20, pady=20)
