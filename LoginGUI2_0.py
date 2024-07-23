@@ -417,11 +417,11 @@ class BankingApplicationGUI(tk.Toplevel):
     def write_transaction(self, transaction_type, amount, to_account=None, to_account_no=None):
         try:
             transaction_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            from_account_name = self.current_user
+            from_account_name = str(self.current_user.capitalize())
             from_account_no = self.account_no
 
             if transaction_type == "Transfer" and to_account and to_account_no:
-                transaction_details = f" {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no}) to {to_account} ({to_account_no})\n"
+                transaction_details = f" {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no}) to {to_account.capitalize()} ({to_account_no})\n"
             else:
                 transaction_details = f" {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no})\n"
 
@@ -429,7 +429,7 @@ class BankingApplicationGUI(tk.Toplevel):
                 file.write(transaction_details)
 
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to write transaction: {str(e)}",parent=self.canvas)
+            messagebox.showerror("Error", f"Failed to write transaction: {str(e)}",parent=self.LoginMenu)
 
     def update_balance(self, amount,acc_no):
         try:
