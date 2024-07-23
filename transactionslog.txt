@@ -10,3 +10,7 @@
  2024-07-23 20:29:40 | Transfer: R500.00 | From: Abigail [151154048] to Test [151642908]
  2024-07-23 20:29:48 | Withdraw: R200.00 | From: Abigail [151154048]
 2024-07-23 20:34:00 - Withdraw: R100.00 - From: test (151642908)
+ 2024-07-23 21:09:57 | Withdraw: R100.00 | From: Test [151642908]
+ 2024-07-23 21:34:15 | Withdraw: R20.00 | From: Abigail [151154048]
+ 2024-07-23 21:34:19 | Withdraw: R20.00 | From: Abigail [151154048]
+ 2024-07-23 21:34:45 | Withdraw: R20.00 | From: Abigail [151154048]

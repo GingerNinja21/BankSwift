@@ -79,7 +79,7 @@ class BankingApplicationGUI(tk.Toplevel):
     def create_widgets(self):
 
         self.view_balance_loginGUI()
-        login_banner_label=tk.Label(self.LoginMenu_canvas, text=f"{self.display_name.capitalize()} {self.user_surname.capitalize()}",font=("Times New Roman", 30,"bold") ,fg="#a1c8ff" , bg="#0a1627")
+        login_banner_label=tk.Label(self.LoginMenu_canvas, text=f"{self.display_name.capitalize()} {self.user_surname.capitalize()}",font=("Times New Roman", 30,"bold") ,fg="#a1c8ff" , bg="#090f16")
         login_banner_label.place(relx=0.5, rely=0.095 ,anchor="center", width=790)
         login_banner2_label=tk.Label(self.LoginMenu_canvas, text=f"{self.acc_type.capitalize()} : {self.account_no}",font=("Times New Roman", 15,"bold") ,fg="#FFFFFF" , bg="#0a1627")
         login_banner2_label.place(relx=0.5, rely=0.16 ,anchor="center", width=790)
@@ -106,10 +106,15 @@ class BankingApplicationGUI(tk.Toplevel):
     def view_balance_loginGUI(self):
         balance = self.get_balance_from_csv(self.account_no)
         if balance is not None:
-            self.view_balance_button = tk.Button(self.LoginMenu_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
+            self.view_balance_button = tk.Button(self.LoginMenu_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#0a1627", fg="#FFFFFF")
             self.view_balance_button.place(relx=0.5, rely=0.3, anchor="center", width=600 , height=100)
-            login_banner_label=tk.Label(self.LoginMenu_canvas, text=f"Balance:\nR{balance}",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#37B7C3")
-            login_banner_label.place(relx=0.5, rely=0.3 ,anchor="center", width=500)
+
+            login_banner_label=tk.Label(self.LoginMenu_canvas, text=f"Balance:",font=("Times New Roman", 25,"bold"),bg="#0a1627", fg="#2e6b7f")
+            login_banner_label.place(relx=0.5, rely=0.25 ,anchor="center", width=300 ,height=30)
+
+            login_banner_label2=tk.Label(self.LoginMenu_canvas, text=f"R{balance}",font=("Times New Roman", 25,"bold"),bg="#0a1627", fg="#789aa2")
+            login_banner_label2.place(relx=0.5, rely=0.32 ,anchor="center", width=150, height=30)
+
 
         else:
             messagebox.showerror("Error", "Failed to retrieve balance.",parent=self.LoginMenu_canvas)
@@ -117,15 +122,19 @@ class BankingApplicationGUI(tk.Toplevel):
     
     def view_balance_withdrawGUI(self):
         balance = self.get_balance_from_csv(self.account_no)
-        self.view_balance_button = tk.Button(self.withdraw_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
+        self.view_balance_button = tk.Button(self.withdraw_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#0a1627")
         self.view_balance_button.place(relx=0.5, rely=0.1, anchor="center", width=400 , height=100)
-        self.withdraw_banner_label=tk.Label(self.withdraw_canvas, text=f"Current Balance:\nR{balance}",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#37B7C3")
-        self.withdraw_banner_label.place(relx=0.5, rely=0.1 ,anchor="center", width=300)
+
+        self.withdraw_banner_label=tk.Label(self.withdraw_canvas, text="Current Balance:",font=("Times New Roman", 25,"bold"),bg="#0a1627", fg="#2e6b7f")
+        self.withdraw_banner_label.place(relx=0.5, rely=0.075 ,anchor="center", width=300)
+
+        self.withdraw_banner2_label=tk.Label(self.withdraw_canvas, text=f"R{balance}",font=("Times New Roman", 20,"bold"),bg="#0a1627", fg="#789aa2")
+        self.withdraw_banner2_label.place(relx=0.5, rely=0.13 ,anchor="center", width=150 ,height=30)
+        
 
  
 
     def get_balance_from_csv(self,acc_no):
-        global transfer_recipient_user
         try:
             df = pd.read_csv('accounts.csv')
             account_no=int(acc_no)
@@ -196,16 +205,15 @@ class BankingApplicationGUI(tk.Toplevel):
             self.withdraw_canvas.create_image(470,570, image=self.withdraw_logo_photo, anchor=tk.SE)
             
             self.withdraw_amount_background= tk.Button(self.withdraw_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
-            self.withdraw_amount_background.place(relx=0.5, rely=0.4, anchor="center", width=200 , height=50)
+            self.withdraw_amount_background.place(relx=0.5, rely=0.4, anchor="center", width=250 , height=50)
 
-            self.withdraw_amount_label = tk.Label(self.withdraw_canvas, text="Withdraw Amount:", font=("Times New Roman", 18) , fg="#FFFFFF" , bg="#090f16")
+            self.withdraw_amount_label = tk.Label(self.withdraw_canvas, text="Withdraw Amount:", font=("Times New Roman", 17, "bold") , fg="#789aa2" , bg="#090f16")
             self.withdraw_amount_label.place(relx=0.5, rely=0.4,anchor="center")
             self.withdraw_amount_entry = tk.Entry(self.withdraw_canvas,font=("Times New Roman", 30))
             self.withdraw_amount_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
             self.withdraw_amount_entry.place(relx=0.5, rely=0.5 , anchor="center" , width=200 , height=50)
 
             
-            #amount 
             self.view_balance_withdrawGUI()
         
 
@@ -213,9 +221,9 @@ class BankingApplicationGUI(tk.Toplevel):
 
             self.withdraw_window.protocol("WM_DELETE_WINDOW",self.on_withdraw_close)
 
-        except :
-            # messagebox.showerror("Error", f"Failed to Withdraw: {str(e)}",parent=self.LoginMenu)
-            print()
+        except Exception as e :
+            messagebox.showerror("Error", f"Failed to Withdraw: {str(e)}",parent=self.withdraw_window)
+            
 
 
     def withdraw_function(self):
@@ -300,7 +308,7 @@ class BankingApplicationGUI(tk.Toplevel):
             self.transfer_name_background= tk.Button(self.transfer_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
             self.transfer_name_background.place(relx=0.5, rely=0.1, anchor="center", width=200 , height=50)
 
-            self.transfer_name_label = tk.Label(self.transfer_canvas, text="Recipient's Name:", font=("Times New Roman", 18) , fg="#FFFFFF" , bg="#090f16")
+            self.transfer_name_label = tk.Label(self.transfer_canvas, text="Recipient's Name:", font=("Times New Roman", 18) , fg="#789aa2" , bg="#090f16")
             self.transfer_name_label.place(relx=0.5, rely=0.1,anchor="center")
             self.transfer_name_entry = tk.Entry(self.transfer_canvas,font=("Times New Roman", 20))
             self.transfer_name_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
@@ -309,7 +317,7 @@ class BankingApplicationGUI(tk.Toplevel):
             self.transfer_acc_background= tk.Button(self.transfer_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
             self.transfer_acc_background.place(relx=0.5, rely=0.3, anchor="center", width=350 , height=50)
 
-            self.transfer_acc_label = tk.Label(self.transfer_canvas, text="Recipient's Account Number:", font=("Times New Roman", 18) , fg="#FFFFFF" , bg="#090f16")
+            self.transfer_acc_label = tk.Label(self.transfer_canvas, text="Recipient's Account Number:", font=("Times New Roman", 18) , fg="#789aa2" , bg="#090f16")
             self.transfer_acc_label.place(relx=0.5, rely=0.3,anchor="center")
             self.transfer_acc_entry = tk.Entry(self.transfer_canvas,font=("Times New Roman", 20))
             self.transfer_acc_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
@@ -318,7 +326,7 @@ class BankingApplicationGUI(tk.Toplevel):
             self.transfer_amount_background= tk.Button(self.transfer_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
             self.transfer_amount_background.place(relx=0.5, rely=0.58, anchor="center", width=200 , height=50)
 
-            self.transfer_amount_label = tk.Label(self.transfer_canvas, text="Transfer Amount:", font=("Times New Roman", 18) , fg="#FFFFFF" , bg="#090f16")
+            self.transfer_amount_label = tk.Label(self.transfer_canvas, text="Transfer Amount:", font=("Times New Roman", 18) , fg="#789aa2" , bg="#090f16")
             self.transfer_amount_label.place(relx=0.5, rely=0.58,anchor="center")
             self.transfer_amount_entry = tk.Entry(self.transfer_canvas,font=("Times New Roman", 30))
             self.transfer_amount_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
