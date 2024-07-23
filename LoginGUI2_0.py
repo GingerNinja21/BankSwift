@@ -76,14 +76,11 @@ class BankingApplicationGUI(tk.Toplevel):
 
     def create_widgets(self):
 
-        self.view_balance()
+        self.view_balance_loginGUI()
         login_banner_label=tk.Label(self.LoginMenu_canvas, text=f"Welcome\n{self.display_name}",font=("Times New Roman", 30,"bold") ,fg="#a1c8ff" , bg="#0a1627")
         login_banner_label.place(relx=0.5, rely=0.1 ,anchor="center", width=790)
 
-        # self.view_balance_button = tk.Button(self.LoginMenu_canvas, text="View Balance", command=self.view_balance ,font=("Times New Roman", 17,"bold"),bg="#090f16", fg="#FFFFFF")
-        # self.view_balance_button.place(relx=0.3, rely=0.3, anchor="center", width=150 , height=100)
-
-        self.withdraw_button = tk.Button(self.LoginMenu_canvas, text="Withdraw", command=self.withdraw,font=("Times New Roman", 17,"bold"),bg="#090f16", fg="#FFFFFF")
+        self.withdraw_button = tk.Button(self.LoginMenu_canvas, text="Withdraw", command=self.withdraw_GUI , font=("Times New Roman", 17,"bold"),bg="#090f16", fg="#FFFFFF")
         self.withdraw_button.place(relx=0.7, rely=0.5, anchor="center", width=150 , height=100)
 
         self.transfer_button = tk.Button(self.LoginMenu_canvas, text="Transfer", command=self.transfer,font=("Times New Roman", 17,"bold"), bg="#090f16", fg="#FFFFFF")
@@ -101,7 +98,7 @@ class BankingApplicationGUI(tk.Toplevel):
      
         
 
-    def view_balance(self):
+    def view_balance_loginGUI(self):
         balance = self.get_balance_from_csv(self.account_no)
         if balance is not None:
             self.view_balance_button = tk.Button(self.LoginMenu_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
@@ -109,10 +106,17 @@ class BankingApplicationGUI(tk.Toplevel):
             login_banner_label=tk.Label(self.LoginMenu_canvas, text=f"Balance:\nR{balance}",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#37B7C3")
             login_banner_label.place(relx=0.5, rely=0.3 ,anchor="center", width=500)
 
-
-
         else:
             messagebox.showerror("Error", "Failed to retrieve balance.",parent=self.LoginMenu_canvas)
+
+    
+    def view_balance_withdrawGUI(self):
+        balance = self.get_balance_from_csv(self.account_no)
+        self.view_balance_button = tk.Button(self.withdraw_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
+        self.view_balance_button.place(relx=0.5, rely=0.1, anchor="center", width=400 , height=100)
+        self.withdraw_banner_label=tk.Label(self.withdraw_canvas, text=f"Current Balance:\nR{balance}",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#37B7C3")
+        self.withdraw_banner_label.place(relx=0.5, rely=0.1 ,anchor="center", width=300)
+
  
 
     def get_balance_from_csv(self,acc_no):
@@ -148,34 +152,109 @@ class BankingApplicationGUI(tk.Toplevel):
             messagebox.showerror("Error", f"Error retrieving account number: {str(e)}",parent=self.LoginMenu_canvas)
             return None
         
-    def withdraw(self):
-        amount = int(simpledialog.askfloat("Withdraw", "Enter amount to withdraw:",parent=self.LoginMenu_canvas))
+    def withdraw_GUI(self):
         try:
-            if amount is None or amount <= 0:
-                messagebox.showerror("Error", "Invalid amount.",parent=self.LoginMenu_canvas)
-                return
+            self.LoginMenu.iconify()
+            account_no =self.account_no
+            self.withdraw_window = tk.Toplevel()
+            self.withdraw_window.title("Withdraw")
+            self.withdraw_window.resizable(False, False)
+            window_width = 500
+            window_height = 600
 
-            if isinstance(amount,float):
-                messagebox.showerror("Error!","You cannot Withdraw cents!")
-                return
+            screen_width = self.winfo_screenwidth()
+            screen_height = self.winfo_screenheight()
+
+            center_x = int(screen_width / 2 - window_width / 2)
+            center_y = int(screen_height / 2 - window_height / 2)
+
+            self.withdraw_window.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+
+            self.withdraw_canvas = tk.Canvas(self.withdraw_window, width=800, height=600)
+            self.withdraw_canvas.pack(fill="both", expand=True)
             
-            if isinstance(amount,int) and not amount %10 == 0:
-                messagebox.showerror("Error!","Please enter a valid amount.\n(Only enter Note values , No coin values.)" )
-                return
-            current_balance = int(self.get_balance_from_csv(self.account_no))
-            if current_balance is None:
-                return  
+            self.withdraw_background_image = Image.open("background.png")
+            self.withdraw_logo_image = Image.open("logo_transparent.png")
+           
+    
+            self.withdraw_background_photo = ImageTk.PhotoImage(self.withdraw_background_image.resize((2000, 2000)))
+            self.withdraw_logo_photo = ImageTk.PhotoImage(self.withdraw_logo_image.resize((100,100)))
 
-            if amount > current_balance:
-                messagebox.showerror("Error", "Insufficient funds.",parent=self.LoginMenu_canvas)
-                return
+            self.withdraw_back_button = tk.Button(self.withdraw_canvas, text="Back", command = self.on_withdraw_close ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
+            self.withdraw_back_button.place(relx=0.5, rely=0.7, anchor="center", width=80 , height=50)
 
-            self.update_balance(-amount,self.account_no)
-            self.write_transaction("Withdraw", amount)
-            messagebox.showinfo("Withdraw", f"R{amount:.2f} successfully withdrawn.",parent=self.LoginMenu_canvas)
-        except ValueError:
-            messagebox.showerror("Error", "Invalid amount.")
+            self.withdraw_confirm_button = tk.Button(self.withdraw_canvas, text="Withdraw", command = self.withdraw_function ,font =("Times New Roman", 15,"bold"),bg="#8a9099", fg="#FFFFFF")
+            self.withdraw_confirm_button.place(relx=0.5, rely=0.6, anchor="center", width=100 , height=50)
+
+
+            self.withdraw_canvas.create_image(0, 0, image=self.withdraw_background_photo, anchor=tk.NW)
+            self.withdraw_canvas.create_image(470,570, image=self.withdraw_logo_photo, anchor=tk.SE)
             
+            self.withdraw_amount_background= tk.Button(self.withdraw_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
+            self.withdraw_amount_background.place(relx=0.5, rely=0.4, anchor="center", width=200 , height=50)
+
+            self.withdraw_amount_label = tk.Label(self.withdraw_canvas, text="Withdraw Amount:", font=("Times New Roman", 18) , fg="#FFFFFF" , bg="#090f16")
+            self.withdraw_amount_label.place(relx=0.5, rely=0.4,anchor="center")
+            self.withdraw_amount_entry = tk.Entry(self.withdraw_canvas,font=("Times New Roman", 30))
+            self.withdraw_amount_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
+            self.withdraw_amount_entry.place(relx=0.5, rely=0.5 , anchor="center" , width=200 , height=50)
+
+            
+            #amount 
+            self.view_balance_withdrawGUI()
+        
+
+
+
+            self.withdraw_window.protocol("WM_DELETE_WINDOW",self.on_withdraw_close)
+
+        except :
+            # messagebox.showerror("Error", f"Failed to Withdraw: {str(e)}",parent=self.LoginMenu)
+            print()
+
+
+    def withdraw_function(self):
+            try: 
+                amount= int(self.withdraw_amount_entry.get())
+                if amount is None or amount <= 0:
+                    messagebox.showerror("Error", "Invalid amount.",parent=self.withdraw_canvas)
+                    return
+
+                if isinstance(amount,float):
+                    messagebox.showerror("Error!","You cannot Withdraw cents!")
+                    return
+                
+                if isinstance(amount,int) and not amount %10 == 0:
+                    messagebox.showerror("Error!","Please enter a valid amount.\n(Only enter Note values , No coin values.)" )
+                    return
+                current_balance = int(self.get_balance_from_csv(self.account_no))
+                if current_balance is None:
+                    return  
+                
+                if amount > current_balance:
+                    messagebox.showerror("Error", "Insufficient funds.",parent=self.LoginMenu_canvas)
+                    return
+
+                confirmation=messagebox.askyesno("Confirm Withdrawal",f"Are you sure you would like to withdraw R{amount}")
+                if confirmation:
+                    self.update_balance(-amount,self.account_no)
+                    self.write_transaction("Withdraw", amount)
+
+                    self.event_label=tk.Label(self.withdraw_canvas, text=f"Successfully withdrew\nR{amount:.2f} ", font=("Arial", 17) , fg="#aee6e6" , bg="#142133")
+                    self.event_label.place(relx=0.5, rely=0.25,anchor="center")
+                    self.withdraw_window.after(10000, self.event_label.destroy)
+                
+                self.withdraw_amount_entry.delete(0,tk.END)
+                self.view_balance_withdrawGUI()
+
+            except ValueError:
+                messagebox.showerror("Error", "Invalid amount.")
+                
+
+    def on_withdraw_close(self):
+        self.withdraw_window.destroy()
+        self.LoginMenu.deiconify()
+        self.LoginMenu.create_widgets()
 
     def transfer(self):
         valid_account=False
@@ -245,8 +324,8 @@ class BankingApplicationGUI(tk.Toplevel):
             self.transaction_background_photo = ImageTk.PhotoImage(self.transaction_background_image.resize((2000, 2000)))
             self.transaction_logo_photo = ImageTk.PhotoImage(self.transaction_logo_image.resize((100,100)))
 
-            self.view_balance_button = tk.Button(self.transaction_canvas, text="Back", command = self.on_transaction_close ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
-            self.view_balance_button.place(relx=0.5, rely=0.8, anchor="center", width=80 , height=50)
+            self.transcation_back_button = tk.Button(self.transaction_canvas, text="Back", command = self.on_transaction_close ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
+            self.transcation_back_button.place(relx=0.5, rely=0.8, anchor="center", width=80 , height=50)
 
             self.transaction_canvas.create_image(0, 0, image=self.transaction_background_photo, anchor=tk.NW)
             self.transaction_canvas.create_image(850,650, image=self.transaction_logo_photo, anchor=tk.SE)
