@@ -158,7 +158,6 @@ class CreateAccountWindow:
         # Load images and other resources
         self.background_image = Image.open("background.png")
         self.logo_image = Image.open("logo_transparent.png")
-        self.banner_image = Image.open("Create_Account_Banner.png")
 
         self.canvas = tk.Canvas(self.create_account, width=800, height=600)
         self.canvas.pack(fill="both", expand=True)
@@ -166,7 +165,6 @@ class CreateAccountWindow:
         # Create image photo objects
         self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
         self.logo_photo = ImageTk.PhotoImage(self.logo_image.resize((100, 100)))
-        self.banner_photo = ImageTk.PhotoImage(self.banner_image.resize((600, 100)))
 
         # Display images on canvas
         self.canvas.create_image(0, 0, image=self.background_photo, anchor=tk.NW)
