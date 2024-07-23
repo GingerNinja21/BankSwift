@@ -20,8 +20,8 @@ class BankingApplicationGUI(tk.Toplevel):
         self.display_name = self.current_user.capitalize()
         
         self.account_no=""
-        
-                
+        self.user_surname=""
+        self.acc_type=""
         
         
         self.account_validator()
@@ -67,6 +67,8 @@ class BankingApplicationGUI(tk.Toplevel):
                 parts = line.strip().split(",")
                 if len(parts) > 6 and self.current_user == parts[1]:
                     self.account_no = parts[3]
+                    self.user_surname= parts[2]
+                    self.acc_type=parts[5]
                     valid_acc= True
                     print(self.account_no)
                     return valid_acc
@@ -77,13 +79,16 @@ class BankingApplicationGUI(tk.Toplevel):
     def create_widgets(self):
 
         self.view_balance_loginGUI()
-        login_banner_label=tk.Label(self.LoginMenu_canvas, text=f"Welcome\n{self.display_name}",font=("Times New Roman", 30,"bold") ,fg="#a1c8ff" , bg="#0a1627")
-        login_banner_label.place(relx=0.5, rely=0.1 ,anchor="center", width=790)
+        login_banner_label=tk.Label(self.LoginMenu_canvas, text=f"{self.display_name.capitalize()} {self.user_surname.capitalize()}",font=("Times New Roman", 30,"bold") ,fg="#a1c8ff" , bg="#0a1627")
+        login_banner_label.place(relx=0.5, rely=0.095 ,anchor="center", width=790)
+        login_banner2_label=tk.Label(self.LoginMenu_canvas, text=f"{self.acc_type.capitalize()} : {self.account_no}",font=("Times New Roman", 15,"bold") ,fg="#FFFFFF" , bg="#0a1627")
+        login_banner2_label.place(relx=0.5, rely=0.16 ,anchor="center", width=790)
+
 
         self.withdraw_button = tk.Button(self.LoginMenu_canvas, text="Withdraw", command=self.withdraw_GUI , font=("Times New Roman", 17,"bold"),bg="#090f16", fg="#FFFFFF")
         self.withdraw_button.place(relx=0.7, rely=0.5, anchor="center", width=150 , height=100)
 
-        self.transfer_button = tk.Button(self.LoginMenu_canvas, text="Transfer", command=self.transfer,font=("Times New Roman", 17,"bold"), bg="#090f16", fg="#FFFFFF")
+        self.transfer_button = tk.Button(self.LoginMenu_canvas, text="Transfer", command=self.transfer_GUI,font=("Times New Roman", 17,"bold"), bg="#090f16", fg="#FFFFFF")
         self.transfer_button.place(relx=0.3, rely=0.5, anchor="center", width=150 , height=100)
 
         self.view_transactions_button = tk.Button(self.LoginMenu_canvas, text="View\nTransactions", command=self.view_transactions ,font=("Times New Roman", 15,"bold"),bg="#090f16", fg="#FFFFFF")
@@ -256,14 +261,81 @@ class BankingApplicationGUI(tk.Toplevel):
         self.LoginMenu.deiconify()
         self.LoginMenu.create_widgets()
 
-    def transfer(self):
-        valid_account=False
-        global transfer_recipient_user
-        transfer_recipient_user = simpledialog.askstring("Transfer", "Enter recipient account name:")
-        recipient_account_no = simpledialog.askstring("Transfer", "Enter recipient account number:")
-        amount = simpledialog.askfloat("Transfer", "Enter amount to transfer:")
-
+    def transfer_GUI(self):
         try:
+            self.LoginMenu.iconify()
+            account_no =self.account_no
+            self.transfer_window = tk.Toplevel()
+            self.transfer_window.title("Transfer")
+            self.transfer_window.resizable(False, False)
+            window_width = 500
+            window_height = 600
+
+            screen_width = self.winfo_screenwidth()
+            screen_height = self.winfo_screenheight()
+
+            center_x = int(screen_width / 2 - window_width / 2)
+            center_y = int(screen_height / 2 - window_height / 2)
+
+            self.transfer_window.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+
+            self.transfer_canvas = tk.Canvas(self.transfer_window, width=800, height=600)
+            self.transfer_canvas.pack(fill="both", expand=True)
+            
+            self.transfer_background_image = Image.open("background.png")
+            self.transfer_logo_image = Image.open("logo_transparent.png")
+           
+    
+            self.transfer_background_photo = ImageTk.PhotoImage(self.transfer_background_image.resize((2000, 2000)))
+            self.transfer_logo_photo = ImageTk.PhotoImage(self.transfer_logo_image.resize((100,100)))
+
+            self.transfer_back_button = tk.Button(self.transfer_canvas, text="Back", command = self.on_transfer_close ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
+            self.transfer_back_button.place(relx=0.5, rely=0.9, anchor="center", width=80 , height=50)
+
+            self.transfer_confirm_button = tk.Button(self.transfer_canvas, text="Transfer", command = self.transfer_function ,font =("Times New Roman", 15,"bold"),bg="#8a9099", fg="#FFFFFF")
+            self.transfer_confirm_button.place(relx=0.5, rely=0.8, anchor="center", width=100 , height=50)
+
+            
+            
+            self.transfer_name_background= tk.Button(self.transfer_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
+            self.transfer_name_background.place(relx=0.5, rely=0.1, anchor="center", width=200 , height=50)
+
+            self.transfer_name_label = tk.Label(self.transfer_canvas, text="Recipient's Name:", font=("Times New Roman", 18) , fg="#FFFFFF" , bg="#090f16")
+            self.transfer_name_label.place(relx=0.5, rely=0.1,anchor="center")
+            self.transfer_name_entry = tk.Entry(self.transfer_canvas,font=("Times New Roman", 20))
+            self.transfer_name_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
+            self.transfer_name_entry.place(relx=0.5, rely=0.2 , anchor="center" , width=200 , height=30)
+
+            self.transfer_acc_background= tk.Button(self.transfer_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
+            self.transfer_acc_background.place(relx=0.5, rely=0.3, anchor="center", width=350 , height=50)
+
+            self.transfer_acc_label = tk.Label(self.transfer_canvas, text="Recipient's Account Number:", font=("Times New Roman", 18) , fg="#FFFFFF" , bg="#090f16")
+            self.transfer_acc_label.place(relx=0.5, rely=0.3,anchor="center")
+            self.transfer_acc_entry = tk.Entry(self.transfer_canvas,font=("Times New Roman", 20))
+            self.transfer_acc_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
+            self.transfer_acc_entry.place(relx=0.5, rely=0.4 , anchor="center" , width=200 , height=30)
+
+            self.transfer_amount_background= tk.Button(self.transfer_canvas, state="disabled",font=("Times New Roman", 25,"bold"),bg="#090f16", fg="#FFFFFF")
+            self.transfer_amount_background.place(relx=0.5, rely=0.58, anchor="center", width=200 , height=50)
+
+            self.transfer_amount_label = tk.Label(self.transfer_canvas, text="Transfer Amount:", font=("Times New Roman", 18) , fg="#FFFFFF" , bg="#090f16")
+            self.transfer_amount_label.place(relx=0.5, rely=0.58,anchor="center")
+            self.transfer_amount_entry = tk.Entry(self.transfer_canvas,font=("Times New Roman", 30))
+            self.transfer_amount_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
+            self.transfer_amount_entry.place(relx=0.5, rely=0.68 , anchor="center" , width=200 , height=50)
+
+
+            self.transfer_canvas.create_image(0, 0, image=self.transfer_background_photo, anchor=tk.NW)
+            self.transfer_canvas.create_image(470,570, image=self.transfer_logo_photo, anchor=tk.SE)
+        except:
+            print()
+
+    def transfer_function(self):
+        try:
+            transfer_recipient_user = self.transfer_name_entry.get().strip().lower()
+            recipient_account_no = self.transfer_acc_entry.get().strip().lower()
+            amount = int(self.transfer_amount_entry.get().strip().lower())
+            valid_account=False
             if not transfer_recipient_user or not recipient_account_no or not amount or amount <= 0:
                 messagebox.showerror("Error", "Invalid input.",parent=self.LoginMenu_canvas)
                 return
@@ -289,12 +361,25 @@ class BankingApplicationGUI(tk.Toplevel):
                     self.write_transaction("Transfer", amount , transfer_recipient_user.lower(), recipient_account_no)
                     self.update_balance(amount,recipient_account_no)
                     messagebox.showinfo("Transfer", f"R{amount:.2f} successfully transferred to {transfer_recipient_user}.", parent=self.LoginMenu_canvas)
-                    return
+                    extra_transfer=messagebox.askyesno("Perfrom Another Transfer?","Would you like to perform another transfer?",parent=self.transfer_window)
+                    if extra_transfer:
+                        self.transfer_name_entry.delete(0, tk.END)
+                        self.transfer_acc_entry.delete(0, tk.END)
+                        self.transfer_amount_entry.delete(0, tk.END)
+                    else:
+                        self.transfer_window.destroy()
+                        self.LoginMenu.deiconify()
+                        return
             else:
                 messagebox.showerror("Error","The account number provided does not match any account in our database!\nPlease try again.")
                 return
         except ValueError:
             messagebox.showerror("Error", "Invalid amount.",parent=self.LoginMenu_canvas)
+
+    def on_transfer_close(self):
+        self.transfer_window.destroy()
+        self.LoginMenu.deiconify()
+        self.LoginMenu.create_widgets()
 
     def view_transactions(self):
         try:
@@ -421,9 +506,9 @@ class BankingApplicationGUI(tk.Toplevel):
             from_account_no = self.account_no
 
             if transaction_type == "Transfer" and to_account and to_account_no:
-                transaction_details = f" {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no}) to {to_account.capitalize()} ({to_account_no})\n"
+                transaction_details = f" {transaction_time} | {transaction_type}: R{amount:.2f} | From: {from_account_name} [{from_account_no}] to {to_account.capitalize()} [{to_account_no}]\n"
             else:
-                transaction_details = f" {transaction_time} - {transaction_type}: R{amount:.2f} - From: {from_account_name} ({from_account_no})\n"
+                transaction_details = f" {transaction_time} | {transaction_type}: R{amount:.2f} | From: {from_account_name} [{from_account_no}]\n"
 
             with open(self.transactions_log, "a") as file:
                 file.write(transaction_details)
