@@ -1,5 +1,5 @@
 uid,name,surname,account_no,balance,account_type,id_number,mobile_number,Unnamed: 8
 0,john,doe,151023100,600.0,cheque,0,,
 1,abigail,doe,151154048,31470.0,cheque,210085197080,,
-3,abu-bakr,adamson,151739351,199050.0,cheque,210085197087,,
-4,test,account,151642908,3939.0,cheque,210085179088,,
+3,abu-bakr,adamson,151739351,198830.0,cheque,210085197087,,
+4,test,account,151642908,4139.0,cheque,210085179088,,

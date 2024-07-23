@@ -14,3 +14,5 @@
  2024-07-23 21:34:15 | Withdraw: R20.00 | From: Abigail [151154048]
  2024-07-23 21:34:19 | Withdraw: R20.00 | From: Abigail [151154048]
  2024-07-23 21:34:45 | Withdraw: R20.00 | From: Abigail [151154048]
+ 2024-07-23 21:44:29 | Withdraw: R20.00 | From: Abu-bakr [151739351]
+ 2024-07-23 21:45:09 | Transfer: R200.00 | From: Abu-bakr [151739351] to Test [151642908]
