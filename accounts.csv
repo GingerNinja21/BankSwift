@@ -1,6 +1,6 @@
-uid,name,surname,account_no,balance,account_type,id_number,linked_accounts
+uid,name,surname,account_no,balance,account_type,id_number,mobile_number,
 0,john,doe,151023100,600.0,cheque,0,
-1,abigail,doe,151154048,47400.0,cheque,0210085197080,
+1,abigail,doe,151154048,47200.0,cheque,0210085197080,
 2,test,dummy,151062422,523.0,cheque,0210085197081,
 3,abu-bakr,adamson,151739351,199000.0,cheque,0210085197087,
-4,test,account,151642908,3099.0,cheque,0210085179088,
+4,test,account,151642908,3299.0,cheque,0210085179088,
