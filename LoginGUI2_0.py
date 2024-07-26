@@ -461,52 +461,6 @@ class BankingApplicationGUI(tk.Toplevel):
         self.LoginMenu.deiconify()
         self.LoginMenu.create_widgets()
         
-    # def get_account_type(self, account_name):
-    #     try:
-    #         df = pd.read_csv(self.accounts_file)
-    #         account = df[df['name'].str.lower() == account_name.lower() and df["id_no"]]
-    #         if not account.empty:
-    #             return account['account_type'].values[0]
-    #         else:
-    #             messagebox.showinfo("New Account", f"Account '{account_name}' not found. Creating new account...",parent=self.canvas)
-    #             self.create_new_account(account_name)
-    #             return ""  # Handle new account creation
-    #     except FileNotFoundError:
-    #         messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
-    #         return 
-
-    # def create_new_account(self, account_name):
-    #     new_account_id = simpledialog.askstring("New Account", "Enter your ID number:")
-    #     acc_type = simpledialog.askstring("New Account", "Enter account type (Savings/Cheque):")
-
-    #     creation = account_creation(account_name, "unknown", new_account_id, acc_type)
-    #     if creation.get_error_mnssage():
-    #         messagebox.showerror("Error", creation.get_error_message(), parent=self.canvas)
-    #     else:
-    #         new_account_no = creation.acc_no_generator()
-
-    #         new_account_data = {
-    #             'uid': [0],  # Assign UID appropriately
-    #             'name': [account_name],
-    #             'surname': ['unknown'],
-    #             'account_no': [new_account_no],
-    #             'balance': [100],  # Initial balance
-    #             'account_type': [acc_type],
-    #             'id_number': [new_account_id],
-    #             'linked_accounts': ['']
-    #         }
-
-    #         new_account_data_df = pd.DataFrame(new_account_data)
-
-    #         try:
-    #             df = pd.read_csv(self.accounts_file)
-    #             df = pd.concat([df, new_account_data_df], ignore_index=True)
-    #             df.to_csv(self.accounts_file, index=False)
-    #             messagebox.showinfo("New Account", f"New account created for {account_name} with account number {new_account_no}.",parent=self.canvas)
-    #         except FileNotFoundError:
-    #             messagebox.showerror("Error", "Accounts file not found.",parent=self.canvas)
-
-
     def write_transaction(self, transaction_type, amount, to_account=None, to_account_no=None):
         try:
             transaction_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
