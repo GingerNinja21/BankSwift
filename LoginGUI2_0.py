@@ -6,20 +6,22 @@ from file import DataValidation, account_creation
 from PIL import Image, ImageTk
 
 class BankingApplicationGUI(tk.Toplevel):
-    def __init__(self, parent,current_user_name,id_no,banks_file,transactions_log):
+    def __init__(self, parent,current_user_name,id_no,banks_file,transactions_log,account_no, multi_acc = False):
         super().__init__()
         self.parent= parent
         self.LoginMenu=self
         self.LoginMenu.title("Banking GUI")
+
     
         self.current_user = current_user_name
+        self.multi_acc = multi_acc
         self.id_no= id_no
         self.accounts_file = "accounts.csv"
         self.banks_file = banks_file
         self.transactions_log = transactions_log
         self.display_name = self.current_user.capitalize()
         
-        self.account_no=""
+        self.account_no=account_no
         self.user_surname=""
         self.acc_type=""
         
@@ -65,8 +67,7 @@ class BankingApplicationGUI(tk.Toplevel):
         with open("accounts.csv", "r") as file:
             for line in file:
                 parts = line.strip().split(",")
-                if len(parts) > 6 and self.current_user == parts[1]:
-                    self.account_no = parts[3]
+                if len(parts) > 6 and self.account_no == parts[3]:
                     self.user_surname= parts[2]
                     self.acc_type=parts[5]
                     valid_acc= True
@@ -99,8 +100,10 @@ class BankingApplicationGUI(tk.Toplevel):
     
     def go_back(self):
         self.destroy()
-        self.parent.deiconify()
-     
+        if self.multi_acc:
+            self.parent.deiconify()
+        else:
+            self.parent.deiconify()
         
 
     def view_balance_loginGUI(self):

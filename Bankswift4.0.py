@@ -15,6 +15,7 @@ logo_gif="BANKSWIFT.gif"
 logo_static = "logo.png"
 
 
+
 class app():
     def __init__(self):
         self.root = tk.Tk()
@@ -359,7 +360,7 @@ class app():
         self.login.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
         self.login.resizable(False, False)
-        self.login.grab_set()
+        
 
         self.canvas = tk.Canvas(self.login, width=800, height=600)
         self.canvas.pack(fill="both", expand=True)
@@ -481,7 +482,8 @@ class app():
                                 return
                             else:
                                 messagebox.showinfo("Success", "Login successful.",parent=self.login)
-                                self.login.destroy()
+                                self.del_login_details()
+                                self.login.iconify()
                                 self.root.iconify()
                                 self.DashboardWindow()
                                 
@@ -499,22 +501,37 @@ class app():
         except Exception as e:
                 messagebox.showerror("Error", f"Error: {str(e)}",parent=self.login)
 
+
+    def del_login_details(self):
+        self.login_email_entry.delete(0, tk.END)
+        self.login_id_entry.delete(0, tk.END)
+        self.login_name_entry.delete(0, tk.END)
+        self.login_pin_entry.delete(0, tk.END)
+        
+        
+        
+        
+        
+
     def acc_selector(self):
         try:
+            self.account_no=""
             acc_sel_id_no = self.login_id_entry.get().strip()
             accounts=[]
-            multiple_accounts= False
+            self.multiple_accounts = False
+            
             with open("accounts.csv", "r") as file:
                     for line in file:
                         parts = line.strip().split(",")
                         print(f"{acc_sel_id_no} : {parts[6]}")
                         if len(parts) > 6  and acc_sel_id_no == parts[6] :
                             accounts.append(parts[3])
+                            self.account_no = parts[3]
                             if len(accounts)>1:
-                                multiple_accounts= True
+                                self.multiple_accounts= True
 
-            
-            if multiple_accounts:
+
+            if self.multiple_accounts:
                             self.login.destroy()
                             self.acc_sel_window = tk.Toplevel()
                             self.acc_sel_window.title("Account Selector")
@@ -540,12 +557,20 @@ class app():
                             self.acc_sel_background_photo = ImageTk.PhotoImage(self.acc_sel_background_image.resize((2000, 2000)))
                             self.acc_sel_logo_photo = ImageTk.PhotoImage(self.acc_sel_logo_image.resize((100,100)))
 
-                            self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Back" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
+                            self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
                             self.acc_sel_back_button.place(relx=0.5, rely=0.7, anchor="center", width=80 , height=50)
 
                             self.acc_sel_canvas.create_image(0, 0, image=self.acc_sel_background_photo, anchor=tk.NW)
                             self.acc_sel_canvas.create_image(750, 550, image=self.acc_sel_logo_photo, anchor=tk.SE)
 
+                            for index, account in enumerate(accounts):
+                                button = tk.Button(self.acc_sel_canvas , text = account)
+                                button.configure(font=("Times New Roman", 17, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
+                                button.config(command=lambda acc= account : self.set_account_number(acc))
+                                rel_y = 0.2 + (index+1) * (0.10)
+                                button.place(relx=0.5, rely= rel_y , anchor="center")
+
+                           
                             return True
         
                            
@@ -555,6 +580,11 @@ class app():
         except Exception as e:
             print(f"smth when wrong : {str(e)}")
 
+    def set_account_number(self,account):
+        self.account_no = account 
+        self.acc_sel_window.iconify()
+        self.DashboardWindow()
+    
     def DashboardWindow(self):
         global login_id_no
         global login_name
@@ -562,16 +592,22 @@ class app():
         accounts_file = "accounts.csv"
         banks_file = "banks.csv"
         transactions_log = "transactionslog.txt"
-            
-        BankingApplicationGUI(self.root,login_name, login_id_no,banks_file, transactions_log)
 
-        self.create_widgets()
-        self.root.iconify()
+        if self.multiple_accounts:
+            BankingApplicationGUI(self.acc_sel_window,login_name, login_id_no,banks_file, transactions_log ,self.account_no,self.multiple_accounts)
+
+            
+        else:
+            BankingApplicationGUI(self.login,login_name, login_id_no,banks_file, transactions_log ,self.account_no)
+
+        # if self.multiple_accounts:
+        #     self.acc_sel_window.deiconify()
+        #     print("here")
+        # else:
+        #     self.LoginWindow()
+        #     print("bad")
+        #     self.create_widgets()
         
-    def on_dashboard_close(self):
-        self.dashboard.destroy()
-        self.root.deiconify() 
-        self.create_widgets()
 
 class AnimatedGIF(tk.Label):
     def __init__(self, master, gif_path, static_image_path, width, height, delay=100):
