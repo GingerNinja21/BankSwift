@@ -30,7 +30,7 @@ class BankingApplicationGUI(tk.Toplevel):
        
         window_width = 800
         window_height = 600
-
+        
         screen_width = self.LoginMenu.winfo_screenwidth()
         screen_height = self.LoginMenu.winfo_screenheight()
 
@@ -56,6 +56,8 @@ class BankingApplicationGUI(tk.Toplevel):
 
         self.LoginMenu_canvas.create_image(0, 0, image=self.LoginMenu_background_photo, anchor=tk.NW)
         self.LoginMenu_canvas.create_image(750, 550, image=self.LoginMenu_logo_photo, anchor=tk.SE)
+
+        self.LoginMenu.grab_set()
 
         self.LoginMenu.protocol("WM_DELETE_WINDOW", self.go_back)
         
@@ -102,8 +104,10 @@ class BankingApplicationGUI(tk.Toplevel):
         self.destroy()
         if self.multi_acc:
             self.parent.deiconify()
+            self.parent.grab_set()
         else:
             self.parent.deiconify()
+            self.parent.grab_set()
         
 
     def view_balance_loginGUI(self):
@@ -218,7 +222,8 @@ class BankingApplicationGUI(tk.Toplevel):
 
             
             self.view_balance_withdrawGUI()
-        
+            
+            self.withdraw_window.grab_set()
 
 
 
@@ -338,6 +343,8 @@ class BankingApplicationGUI(tk.Toplevel):
 
             self.transfer_canvas.create_image(0, 0, image=self.transfer_background_photo, anchor=tk.NW)
             self.transfer_canvas.create_image(470,570, image=self.transfer_logo_photo, anchor=tk.SE)
+
+            self.transfer_window.grab_set()
         except:
             print()
 
@@ -429,6 +436,9 @@ class BankingApplicationGUI(tk.Toplevel):
             transactions_text = scrolledtext.ScrolledText(self.transaction_canvas, width=100, height=30, wrap = tk.WORD)
             transactions_text.configure(fg="#FFFFFF", bg="#142133")
             transactions_text.pack(padx=20, pady=20)
+
+            self.transactions_window.grab_set()
+
             self.transactions_window.protocol("WM_DELETE_WINDOW",self.on_transaction_close)
 
             

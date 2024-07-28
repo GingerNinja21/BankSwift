@@ -36,6 +36,8 @@ class app():
         self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
         self.create_widgets()
+
+        self.root.grab_set()
         
     def initialize_logo(self):
         self.canvas = tk.Canvas(self.root, width=800, height=600)
@@ -76,7 +78,7 @@ class app():
 
         login_btn = tk.Button(self.root, text="Login", command=self.open_login,  font=("Times New Roman", 15,"bold"), bg="#8a9099", fg="#142133", padx=20, pady=10)
         login_btn.place(relx=0.5, rely=0.65, anchor="center")
-    
+
         # menubar = tk.Menu(self.root)
         # self.root.config(menu=menubar)
         # about_menu = tk.Menu(menubar)
@@ -376,6 +378,7 @@ class app():
         self.canvas.create_image(750, 550, image=self.logo_photo, anchor=tk.SE)
 
         self.Login_widgets()    
+        self.login.grab_set()
         self.login.protocol("WM_DELETE_WINDOW", self.on_login_close)
  
     def Login_widgets(self):
@@ -477,14 +480,12 @@ class app():
                                 
                         if account_exists:
                             if self.acc_selector():
-                                self.root.iconify()
                                 self.login.destroy()
                                 return
                             else:
                                 messagebox.showinfo("Success", "Login successful.",parent=self.login)
                                 self.del_login_details()
-                                self.login.iconify()
-                                self.root.iconify()
+                                self.login.destroy()
                                 self.DashboardWindow()
                                 
                                 return
@@ -557,7 +558,7 @@ class app():
                             self.acc_sel_background_photo = ImageTk.PhotoImage(self.acc_sel_background_image.resize((2000, 2000)))
                             self.acc_sel_logo_photo = ImageTk.PhotoImage(self.acc_sel_logo_image.resize((100,100)))
 
-                            self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
+                            self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF" , command=self.on_acc_sel_close)
                             self.acc_sel_back_button.place(relx=0.5, rely=0.7, anchor="center", width=80 , height=50)
 
                             self.acc_sel_canvas.create_image(0, 0, image=self.acc_sel_background_photo, anchor=tk.NW)
@@ -569,6 +570,8 @@ class app():
                                 button.config(command=lambda acc= account : self.set_account_number(acc))
                                 rel_y = 0.2 + (index+1) * (0.10)
                                 button.place(relx=0.5, rely= rel_y , anchor="center")
+                            
+                            self.acc_sel_window.grab_set()
 
                            
                             return True
@@ -579,6 +582,10 @@ class app():
             
         except Exception as e:
             print(f"smth when wrong : {str(e)}")
+    
+    def on_acc_sel_close(self):
+        self.acc_sel_window.destroy()
+        self.LoginWindow()
 
     def set_account_number(self,account):
         self.account_no = account 
@@ -598,7 +605,7 @@ class app():
 
             
         else:
-            BankingApplicationGUI(self.login,login_name, login_id_no,banks_file, transactions_log ,self.account_no)
+            BankingApplicationGUI(self.root,login_name, login_id_no,banks_file, transactions_log ,self.account_no)
 
         # if self.multiple_accounts:
         #     self.acc_sel_window.deiconify()
