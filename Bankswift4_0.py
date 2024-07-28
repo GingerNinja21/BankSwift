@@ -485,7 +485,7 @@ class app():
                             else:
                                 messagebox.showinfo("Success", "Login successful.",parent=self.login)
                                 self.del_login_details()
-                                self.login.destroy()
+                                self.login.iconify()
                                 self.DashboardWindow()
                                 
                                 return
@@ -517,6 +517,7 @@ class app():
     def acc_selector(self):
         try:
             self.account_no=""
+            self.acc_type=""
             acc_sel_id_no = self.login_id_entry.get().strip()
             accounts=[]
             self.multiple_accounts = False
@@ -528,6 +529,8 @@ class app():
                         if len(parts) > 6  and acc_sel_id_no == parts[6] :
                             accounts.append(parts[3])
                             self.account_no = parts[3]
+                            self.acc_type = parts[5]
+
                             if len(accounts)>1:
                                 self.multiple_accounts= True
 
@@ -565,8 +568,8 @@ class app():
                             self.acc_sel_canvas.create_image(750, 550, image=self.acc_sel_logo_photo, anchor=tk.SE)
 
                             for index, account in enumerate(accounts):
-                                button = tk.Button(self.acc_sel_canvas , text = account)
-                                button.configure(font=("Times New Roman", 17, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
+                                button = tk.Button(self.acc_sel_canvas , text = f"{account}")
+                                button.configure(font=("Times New Roman", 15, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
                                 button.config(command=lambda acc= account : self.set_account_number(acc))
                                 rel_y = 0.2 + (index+1) * (0.10)
                                 button.place(relx=0.5, rely= rel_y , anchor="center")
@@ -605,7 +608,7 @@ class app():
 
             
         else:
-            BankingApplicationGUI(self.root,login_name, login_id_no,banks_file, transactions_log ,self.account_no)
+            BankingApplicationGUI(self.login,login_name, login_id_no,banks_file, transactions_log ,self.account_no)
 
         # if self.multiple_accounts:
         #     self.acc_sel_window.deiconify()
