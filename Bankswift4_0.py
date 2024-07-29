@@ -34,6 +34,7 @@ class app():
         center_y = int(screen_height / 2 - window_height / 2)
 
         self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        self.root.resizable(False, False)
 
         self.create_widgets()
 
@@ -222,9 +223,11 @@ class app():
                 self.go_back_create_account()
             
     def create_account_widgets(self):
+
         
-        account_banner_label=tk.Label(self.create_account, text="CREATE ACCOUNT:",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#142133")
-        account_banner_label.place(relx=0.5, rely=0.1 ,anchor="center")
+        
+        account_banner_label=tk.Label(self.create_account, text="CREATE ACCOUNT:",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#090f16")
+        account_banner_label.place(relx=0.5, rely=0.1 ,anchor="center" , width=780)
 
         name_label = tk.Label(self.create_account, text="Name:",font=("Times New Roman", 16) ,fg="#FFFFFF" , bg="#142133")
         name_label.place(relx=0.3, rely=0.2, anchor="center")
@@ -383,44 +386,49 @@ class app():
  
     def Login_widgets(self):
 
-        banner_label=tk.Label(self.login, text="LOG IN:",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#142133")
-        banner_label.place(relx=0.5, rely=0.1 ,anchor="center")
+
+        log_banner_label=tk.Label(self.login, text="LOG IN",font=("Times New Roman", 30 , "bold") ,fg="#37B7C3" , bg="#090f16")
+        log_banner_label.place(relx=0.5, rely=0.095 ,anchor="center" , width=790)
+        log_banner2_label=tk.Label(self.login, text=f"Enter Your Details Below:",font=("Times New Roman", 15,"bold") ,fg="#FFFFFF" , bg="#0a1627")
+        log_banner2_label.place(relx=0.5, rely=0.16 ,anchor="center", width=790)
+
+
 
         login_name_label = tk.Label(self.login, text="Name:",font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
-        login_name_label.place(relx=0.5, rely=0.2,anchor="center")
+        login_name_label.place(relx=0.5, rely=0.23,anchor="center")
         self.login_name_entry = tk.Entry(self.login)
         self.login_name_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
-        self.login_name_entry.place(relx=0.5, rely=0.25 , width=400, anchor="center")
+        self.login_name_entry.place(relx=0.5, rely=0.27 , width=400, anchor="center")
 
         login_email_label = tk.Label(self.login, text="Email:",font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
-        login_email_label.place(relx=0.5, rely=0.3,anchor="center")
+        login_email_label.place(relx=0.5, rely=0.33,anchor="center")
         self.login_email_entry = tk.Entry(self.login)
         self.login_email_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
-        self.login_email_entry.place(relx=0.5, rely=0.35,anchor="center",width=400)
+        self.login_email_entry.place(relx=0.5, rely=0.38,anchor="center",width=400)
 
         id_label = tk.Label(self.login, text="ID Number:", font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
-        id_label.place(relx=0.5, rely=0.4,anchor="center")
+        id_label.place(relx=0.5, rely=0.43,anchor="center")
         self.login_id_entry = tk.Entry(self.login)
         self.login_id_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
-        self.login_id_entry.place(relx=0.5, rely=0.45,anchor="center",width=400)
+        self.login_id_entry.place(relx=0.5, rely=0.48,anchor="center",width=400)
 
         login_pin_label = tk.Label(self.login, text="Pin:", font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
-        login_pin_label.place(relx=0.5, rely=0.5,anchor="center")
+        login_pin_label.place(relx=0.5, rely=0.53,anchor="center")
         self.login_pin_entry = tk.Entry(self.login, show="*",font=("Times New Roman", 30))
         self.login_pin_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
-        self.login_pin_entry.place(relx=0.5, rely=0.6 , anchor="center",width=150,height=50)
+        self.login_pin_entry.place(relx=0.5, rely=0.63 , anchor="center",width=150,height=50)
 
         
 
         login_btn = tk.Button(self.login, text="Login", command=self.login_function,font=("Times New Roman", 14 ,"bold") ,bg="#8a9099", fg="#142133",padx=25, pady=20)
-        login_btn.place(relx=0.55, rely=0.85, anchor="center")
+        login_btn.place(relx=0.57, rely=0.88, anchor="center")
 
         forgot_pin_link = tk.Label(self.login, text="Forgot Pin?",font=("Times New Roman", 10) ,fg="#EBF4F6" , bg="#052944", cursor="hand2")
-        forgot_pin_link.place(relx=0.6, rely=0.55)
+        forgot_pin_link.place(relx=0.6, rely=0.58)
         forgot_pin_link.bind("<Button-1>", lambda event: self.forgot_pin())
 
         login_back_btn = tk.Button(self.login, text="Back", command=self.go_back_login,font=("Times New Roman", 14,"bold"), bg="#230e11", fg="white", padx=25, pady=20)
-        login_back_btn.place(relx=0.4, rely=0.85, anchor="center")
+        login_back_btn.place(relx=0.4, rely=0.88, anchor="center")
 
         self.login.protocol("WM_DELETE_WINDOW", self.on_login_close)
 
