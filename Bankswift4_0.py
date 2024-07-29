@@ -387,9 +387,9 @@ class app():
     def Login_widgets(self):
 
 
-        log_banner_label=tk.Label(self.login, text="LOG IN",font=("Times New Roman", 30 , "bold") ,fg="#37B7C3" , bg="#090f16")
+        log_banner_label=tk.Label(self.login, text="LOG IN",font=("Times New Roman", 30 ) ,fg="#0897f3" , bg="#090f16")
         log_banner_label.place(relx=0.5, rely=0.095 ,anchor="center" , width=790)
-        log_banner2_label=tk.Label(self.login, text=f"Enter Your Details Below:",font=("Times New Roman", 15,"bold") ,fg="#FFFFFF" , bg="#0a1627")
+        log_banner2_label=tk.Label(self.login, text=f"Enter Your Details Below:",font=("Times New Roman", 15) ,fg="#37B7C3" , bg="#0a1627")
         log_banner2_label.place(relx=0.5, rely=0.16 ,anchor="center", width=790)
 
 
@@ -528,6 +528,7 @@ class app():
             self.acc_type=""
             acc_sel_id_no = self.login_id_entry.get().strip()
             accounts=[]
+            account_type=[]
             self.multiple_accounts = False
             
             with open("accounts.csv", "r") as file:
@@ -536,6 +537,7 @@ class app():
                         print(f"{acc_sel_id_no} : {parts[6]}")
                         if len(parts) > 6  and acc_sel_id_no == parts[6] :
                             accounts.append(parts[3])
+                            account_type.append(parts[5])
                             self.account_no = parts[3]
                             self.acc_type = parts[5]
 
@@ -569,24 +571,34 @@ class app():
                             self.acc_sel_background_photo = ImageTk.PhotoImage(self.acc_sel_background_image.resize((2000, 2000)))
                             self.acc_sel_logo_photo = ImageTk.PhotoImage(self.acc_sel_logo_image.resize((100,100)))
 
-                            self.acc_sel_banner_label=tk.Label(self.acc_sel_window, text="Select An Account:",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#090f16")
-                            self.acc_sel_banner_label.place(relx=0.5, rely=0.1 ,anchor="center" , width=780)
+                            self.acc_sel_banner_label1=tk.Label(self.acc_sel_window, text="Accounts",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#090f16")
+                            self.acc_sel_banner_label1.place(relx=0.5, rely=0.1 ,anchor="center" , width=495)
 
-                            self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF" , command=self.on_acc_sel_close)
-                            self.acc_sel_back_button.place(relx=0.5, rely=0.7, anchor="center", width=80 , height=50)
+                            self.acc_sel_banner_label2=tk.Label(self.acc_sel_window , text="Select An Account:",font=("Times New Roman", 15) ,fg="#FFFFFF", bg="#0a1627")
+                            self.acc_sel_banner_label2.place(relx=0.5, rely=0.16 ,anchor="center", width=495)
 
+
+
+                           
                             self.acc_sel_canvas.create_image(0, 0, image=self.acc_sel_background_photo, anchor=tk.NW)
                             self.acc_sel_canvas.create_image(750, 550, image=self.acc_sel_logo_photo, anchor=tk.SE)
 
                             for index, account in enumerate(accounts):
-                                button = tk.Button(self.acc_sel_canvas , text = f"{account}")
-                                button.configure(font=("Times New Roman", 15, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
-                                button.config(command=lambda acc= account : self.set_account_number(acc))
-                                rel_y = 0.2 + (index+1) * (0.10)
-                                button.place(relx=0.5, rely= rel_y , anchor="center")
+                                for index , acc_type in enumerate(account_type):
+                                    button = tk.Button(self.acc_sel_canvas , text = f"{account}\n{acc_type}")
+                                    button.configure(font=("Times New Roman", 15, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
+                                    button.config(command=lambda acc= account , ac_ty = acc_type: self.set_account_number(acc,ac_ty))
+                                    rel_y = 0.2 + (index+1) * (0.13)
+                                    button.place(relx=0.5, rely= rel_y , anchor="center")
+                            
+                            self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF" , command=self.on_acc_sel_close)
+                            self.acc_sel_back_button.place(relx=0.5, rely=rel_y + 0.2, anchor="center", width=100 , height=50)
+
+
                             
                             self.acc_sel_window.grab_set()
 
+                            self.acc_sel_window.protocol("WM_DELETE_WINDOW" , self.on_acc_sel_close )
                            
                             return True
         
@@ -598,11 +610,15 @@ class app():
             print(f"smth when wrong : {str(e)}")
     
     def on_acc_sel_close(self):
-        self.acc_sel_window.destroy()
-        self.LoginWindow()
+        if messagebox.askyesno("LOG OUT?", "Are you sure you want to log out?"):
+            self.acc_sel_window.destroy()
+            self.LoginWindow()
+        else:
+            return
 
-    def set_account_number(self,account):
+    def set_account_number(self,account,acc_type):
         self.account_no = account 
+        self.acc_type = acc_type
         self.acc_sel_window.iconify()
         self.DashboardWindow()
     
@@ -678,5 +694,6 @@ class AnimatedGIF(tk.Label):
  
 if __name__ == "__main__":
     x= app()
+    # x.LoginWindow
     x.root.mainloop()
  

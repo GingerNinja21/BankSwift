@@ -516,6 +516,6 @@ class BankingApplicationGUI(tk.Toplevel):
 
 if __name__ == "__main__":
     window= tk.Tk()
-    x= BankingApplicationGUI(window,"abigail","0210085197080","banks.csv","transactionslog.txt",)
+    x= BankingApplicationGUI(window,"abigail","0210085197080","banks.csv","transactionslog.txt",True)
     x.mainloop()
  
