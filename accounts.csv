@@ -6,3 +6,6 @@ uid,name,surname,account_no,balance,account_type,id_number,Unnamed: 7
 1,abigail,doe,151530697,1900.0,savings,0210085197080,
 1,abigail,doe,151335390,2366,savings,0210085197080,
 5,new,account,151583603,12345,cheque,0210085197088,
+1,abigail,doe,151335396,2366,savings,0210085197080,
+1,abigail,doe,151335356,2366,cheque,0210085197080,
+5,new,account,151583609,12345,cheque,0210085197088,
