@@ -569,6 +569,9 @@ class app():
                             self.acc_sel_background_photo = ImageTk.PhotoImage(self.acc_sel_background_image.resize((2000, 2000)))
                             self.acc_sel_logo_photo = ImageTk.PhotoImage(self.acc_sel_logo_image.resize((100,100)))
 
+                            self.acc_sel_banner_label=tk.Label(self.acc_sel_window, text="Select An Account:",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#090f16")
+                            self.acc_sel_banner_label.place(relx=0.5, rely=0.1 ,anchor="center" , width=780)
+
                             self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF" , command=self.on_acc_sel_close)
                             self.acc_sel_back_button.place(relx=0.5, rely=0.7, anchor="center", width=80 , height=50)
 
