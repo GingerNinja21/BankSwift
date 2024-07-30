@@ -577,20 +577,22 @@ class app():
                 self.acc_sel_canvas.create_image(0, 0, image=self.acc_sel_background_photo, anchor=tk.NW)
                 self.acc_sel_canvas.create_image(750, 550, image=self.acc_sel_logo_photo, anchor=tk.SE)
 
-                savings_row = 0
-                cheque_row = 0
-                for index, (account, acc_type) in enumerate(zip(accounts, account_type)):
-                    button = tk.Button(self.acc_sel_canvas, text=f"{account}\n{acc_type}")
-                    button.configure(font=("Times New Roman", 15, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
-                    button.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
 
-                    if acc_type == "savings":
-                        button.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
-                        savings_row += 1
-                    else:
-                        button.grid(row=cheque_row, column=1, padx=20, pady=10, sticky="nsew")
-                        cheque_row += 1
 
+                for index, (account, acc_type) in enumerate(zip(accounts, account_type)):                                    
+                        if acc_type == "savings":
+                                button_savings = tk.Button(self.button_frame_savings, text=f"{account}\n{acc_type}")
+                                button_savings.configure(font=("Times New Roman", 15, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
+                                button_savings.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
+                                button_savings.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
+                                savings_row += 1
+                        else:   
+                                button_cheque = tk.Button(self.button_frame_cheque, text=f"{account}\n{acc_type}")
+                                button_cheque.configure(font=("Times New Roman", 15, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
+                                button_cheque.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
+                                button_cheque.grid(row=cheque_row, column=0, padx=20, pady=10, sticky="nsew")
+                                cheque_row += 1
+                                    
                 self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out", font=("Times New Roman", 17, "bold"), bg="#230e11", fg="#FFFFFF", command=self.on_acc_sel_close)
                 self.acc_sel_back_button.place(relx=0.5, rely=0.8, anchor="center", width=100, height=50)
 
