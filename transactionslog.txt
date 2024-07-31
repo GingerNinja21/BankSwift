@@ -22,3 +22,5 @@
  2024-07-28 21:45:27 | Withdraw: R800.00 | From: Abu-bakr [151739351]
  2024-07-31 14:26:52 | Transfer: R200.00 | From: Abigail [151335398] to Abigail [151085831]
 2024-07-31 14:31:25 - Withdraw: R100.00 - From: abigail (151154048)
+ 2024-07-31 21:30:13 | Withdraw: R100.00 | From: Abigail [151335356]
+ 2024-07-31 21:30:34 | Withdraw: R60.00 | From: Abigail [151335356]

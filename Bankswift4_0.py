@@ -67,8 +67,29 @@ class app():
         except Exception as e:
             pass  
 
-        slogan_label= tk.Label(self.root, text="Bank Smart , Bank Efficient , BankSwift.",font=("Lucida Sans Unicode", 12 ,), fg="#0897f3" , bg="#18283b")  
-        slogan_label.place(relx=0.5 , rely=0.95 , anchor="center")   
+        
+
+        home_banner_label1=tk.Label(self.root, fg="#37B7C3" , bg="#090f16")
+        home_banner_label1.place(relx=0.5, rely=0.95 ,anchor="center" , width=799 , height=60)
+
+        home_banner_label2=tk.Label(self.root,fg="#FFFFFF", bg="#0a1627")
+        home_banner_label2.place(relx=0.5, rely=0.995 ,anchor="center", width=799, height=5)  
+
+        home_banner_label3=tk.Label(self.root,fg="#FFFFFF", bg="#0a1627")
+        home_banner_label3.place(relx=0.5, rely=0.90 ,anchor="center", width=799 , height=5)  
+
+        slogan_label1= tk.Label(self.root, text="Bank Smart , Bank Efficient , ",font=("Lucida Sans Unicode", 12 ), fg="#2e6b7f" , bg="#090f16")  
+        slogan_label1.place(relx=0.45 , rely=0.95 , anchor="center" , height=20) 
+        
+        slogan_label2= tk.Label(self.root, text="BankSwift.",font=("Times New Roman", 14,), fg="#0897f3" , bg="#090f16")  
+        slogan_label2.place(relx=0.64 , rely=0.951 , anchor="center" ,width=85 , height=20) 
+
+        # home_banner_label4=tk.Label(self.root,fg="#FFFFFF", bg="#2e6b7f")
+        # home_banner_label4.place(relx=0.95, rely=0.95 ,anchor="center", width=150, height=20)
+
+        # home_banner_label4=tk.Label(self.root,fg="#FFFFFF", bg="#2e6b7f")
+        # home_banner_label4.place(relx=0.05, rely=0.95 ,anchor="center", width=150, height=20)
+        
         
         message_label = tk.Label(self.root, text="Dont have an Account?",font=("Times New Roman", 15), fg="#37B7C3" , bg="#142133")
         message_label.place(relx=0.5 , rely=0.75 , anchor="center")    
@@ -80,29 +101,10 @@ class app():
         login_btn = tk.Button(self.root, text="Login", command=self.open_login,  font=("Times New Roman", 15,"bold"), bg="#8a9099", fg="#142133", padx=20, pady=10)
         login_btn.place(relx=0.5, rely=0.65, anchor="center")
 
-        # menubar = tk.Menu(self.root)
-        # self.root.config(menu=menubar)
-        # about_menu = tk.Menu(menubar)
-        # menubar.add_cascade(label="About Us", menu=about_menu)
-        # about_menu.add_command(label="About Us")
-    
-        # contact_menu = tk.Menu(menubar)
-        # menubar.add_cascade(label="Contact Us", menu=contact_menu)
-        # contact_menu.add_command(label="Contact Us")
-
-    def about_us(self):
-        # self.about_image = Image.open("csslay team.png")  
-        # self.about_image = ImageTk.PhotoImage(self.about_image)
-        
-        self.aboutus = tk.Canvas(self, width=800, height=600)
-        self.aboutus.pack(fill="both", expand=True)
-        
-        self.aboutus_image = Image.open("csslay team.png") 
-        self.aboutus = ImageTk.PhotoImage(self.aboutus_image.resize((800, 600)))
         
 
-        self.aboutus.create_image(0, 0, image=self.about_us, anchor=tk.NW)
-        # self.canvas.create_image(750, 550, image=self.logo_photo, anchor=tk.SE)
+
+
     
     def on_close(self):
         self.root.destroy()
@@ -199,7 +201,7 @@ class app():
                         return
                     
                     else:  
-                        messagebox.showerror("Validation Error", "Account Already Exists!",parent=self.create_account)
+                        messagebox.showerror("Existing Account", "Account Already Exists!",parent=self.create_account)
                         return
 
     
@@ -648,7 +650,7 @@ class app():
 
 class AnimatedGIF(tk.Label):
     def __init__(self, master, gif_path, static_image_path, width, height, delay=100):
-        super().__init__(master)
+        super().__init__(master,borderwidth=0,highlightbackground="#212b52",highlightthickness=3 )
         self.master = master
         self.delay = delay
         self.gif_path = gif_path
@@ -675,7 +677,7 @@ class AnimatedGIF(tk.Label):
 
     def load_static_image(self):
         image = Image.open(self.static_image_path)
-        image = image.resize((self.width, self.height), Image.Resampling.LANCZOS)
+        image = image.resize((self.width, self.height), Image.Resampling.LANCZOS )
         return ImageTk.PhotoImage(image)
 
     def animate(self):

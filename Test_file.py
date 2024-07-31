@@ -629,13 +629,13 @@ class app():
                                         button_savings = tk.Button(self.button_frame_savings, text=savings_text)
 
                                         if savings_expand:
-                                            button_savings.configure(font=("Times New Roman", 12), bg="#090f16", fg="#FFFFFF", pady=5)
+                                            button_savings.configure(font=("Times New Roman", 12,"bold"), bg="#090f16", fg="#FFFFFF", pady=5)
                                             button_savings.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
                                             button_savings.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
                                             savings_row += 1
                                         
                                         else:
-                                            button_savings.configure(font=("Times New Roman", 12), bg="#090f16", fg="#FFFFFF", pady=5)
+                                            button_savings.configure(font=("Times New Roman", 12,"bold"), bg="#090f16", fg="#FFFFFF", pady=5)
                                             button_savings.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
                                             button_savings.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
                                             savings_row += 1
