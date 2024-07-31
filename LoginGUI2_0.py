@@ -120,7 +120,7 @@ class BankingApplicationGUI(tk.Toplevel):
             login_banner_label.place(relx=0.5, rely=0.25 ,anchor="center", width=300 ,height=30)
 
             login_banner_label2=tk.Label(self.LoginMenu_canvas, text=f"R{balance}",font=("Times New Roman", 25,"bold"),bg="#0a1627", fg="#789aa2")
-            login_banner_label2.place(relx=0.5, rely=0.32 ,anchor="center", width=150, height=30)
+            login_banner_label2.place(relx=0.5, rely=0.32 ,anchor="center", width=500, height=30)
 
 
         else:
