@@ -528,7 +528,7 @@ class app():
             self.acc_type=""
             acc_sel_id_no = self.login_id_entry.get().strip()
             accounts=[]
-            account_type=[]
+            account_types=[]
             self.multiple_accounts = False
             
             with open("accounts.csv", "r") as file:
@@ -537,7 +537,7 @@ class app():
                         print(f"{acc_sel_id_no} : {parts[6]}")
                         if len(parts) > 6  and acc_sel_id_no == parts[6] :
                             accounts.append(parts[3])
-                            account_type.append(parts[5])
+                            account_types.append(parts[5])
                             self.account_no = parts[3]
                             self.acc_type = parts[5]
 
@@ -592,6 +592,8 @@ class app():
                             num_buttons_savings = 0
                             num_buttons_cheque = 0
                             self.button_frame_savings = tk.Frame(self.acc_sel_canvas, bg="#0a1627")
+                            self.scrollbar_savings = tk.Scrollbar(self.button_frame_savings, orient="vertical", command=self.acc_sel_canvas.yview)
+
                             self.button_frame_cheque = tk.Frame(self.acc_sel_canvas, bg="#0a1627")
                             self.acc_sel_canvas.create_window(50, offset_y * 600, anchor=tk.NW, window=self.button_frame_savings)
                             self.acc_sel_canvas.create_window(300, offset_y * 600, anchor=tk.NW, window=self.button_frame_cheque)
@@ -601,18 +603,44 @@ class app():
                             self.cheque_label= tk.Label(self.button_frame_cheque ,text="Cheque" ,font=("Times New Roman" , 15 ,"bold"))
                             self.cheque_label.grid(row=0 ,sticky="nsew")
 
-                            for index, (account, acc_type) in enumerate(zip(accounts, account_type)):
+                            self.no_savings_accounts=0
+                            self.no_cheque_accounts=0
+
+                            savings_expand= False
+                            for acc_ty in account_types:
+                                if acc_ty == "savings":
+                                    self.no_savings_accounts += 1
+                                elif acc_ty =="cheque":
+                                    self.no_cheque_accounts +=1
                                 
+
+                            for index, (account, acc_type) in enumerate(zip(accounts, account_types)):
+    
+                                if self.no_savings_accounts>3:
+                                    savings_text=f"Account:\n{account}"
+                                    savings_expand= True
+                                
+                                else:
+                                    savings_text=f"Account:\n{account}"
+                                    savings_expand=False
                                     
+
                                 if acc_type == "savings":
-                                    if num_buttons_savings > 4:
-                                        button_savings = tk.Button(self.button_frame_savings, text=f"{account}\n{acc_type.capitalize()}")
-                                        button_savings.configure(font=("Times New Roman", 12, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
-                                        button_savings.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
-                                        button_savings.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
-                                        savings_row += 1
+                                        button_savings = tk.Button(self.button_frame_savings, text=savings_text)
+
+                                        if savings_expand:
+                                            button_savings.configure(font=("Times New Roman", 12), bg="#090f16", fg="#FFFFFF", pady=5)
+                                            button_savings.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
+                                            button_savings.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
+                                            savings_row += 1
                                         
-                                    num_buttons_savings += 1
+                                        else:
+                                            button_savings.configure(font=("Times New Roman", 12), bg="#090f16", fg="#FFFFFF", pady=5)
+                                            button_savings.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
+                                            button_savings.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
+                                            savings_row += 1
+
+                                        
                                 else:   
                                         button_cheque = tk.Button(self.button_frame_cheque, text=f"{account}\n{acc_type.capitalize()}")
                                         button_cheque.configure(font=("Times New Roman", 12, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
@@ -623,7 +651,6 @@ class app():
                             
                             self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF" , command=self.on_acc_sel_close)
                             self.acc_sel_back_button.place(relx=0.5, rely=0.9, anchor="center", width=100 , height=50)
-
 
                             
                             self.acc_sel_window.grab_set()

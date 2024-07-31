@@ -56,20 +56,23 @@ class DataValidation:
         self.invalid_username_id_pair = ""
         try:
             with open("accounts.csv", "r") as file:
+
                 for line in file:
                     parts = line.strip().split(",")
 
                     if len(parts) < 7:
                         continue  
-
+                    
                     stored_username = parts[1].strip().lower()
                     stored_usersurname = parts[2].strip().lower()
                     stored_account_type = parts[5].strip().lower()
                     stored_id = parts[6].strip().lower()
 
 
+
+
                     if  (self.id_no.lower() == stored_id) and (not (self.Username.lower()== stored_username) or not(self.Usersurname.lower() == stored_usersurname)):
-                        self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username} {self.Usersurname} does not match the Name and Surname linked to the provided ID number in our database!"
+                        self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username.capitalize()} {self.Usersurname.capitalize()} does not match the Name and Surname linked to the provided ID number in our database!"
                        
 
                 

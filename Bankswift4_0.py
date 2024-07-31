@@ -577,6 +577,7 @@ class app():
                 self.acc_sel_canvas.create_image(0, 0, image=self.acc_sel_background_photo, anchor=tk.NW)
                 self.acc_sel_canvas.create_image(750, 550, image=self.acc_sel_logo_photo, anchor=tk.SE)
 
+                
 
 
                 for index, (account, acc_type) in enumerate(zip(accounts, account_type)):                                    
@@ -600,62 +601,7 @@ class app():
                 self.acc_sel_window.protocol("WM_DELETE_WINDOW", self.on_acc_sel_close)
 
 
-            # if self.multiple_accounts:
-            #                 self.login.destroy()
-            #                 self.acc_sel_window = tk.Toplevel()
-            #                 self.acc_sel_window.title("Account Selector")
-            #                 self.acc_sel_window.resizable(False, False)
-            #                 window_width = 500
-            #                 window_height = 600
-
-            #                 screen_width = self.root.winfo_screenwidth()
-            #                 screen_height = self.root.winfo_screenheight()
-
-            #                 center_x = int(screen_width / 2 - window_width / 2)
-            #                 center_y = int(screen_height / 2 - window_height / 2)
-
-            #                 self.acc_sel_window.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
-
-            #                 self.acc_sel_canvas = tk.Canvas(self.acc_sel_window, width=800, height=600)
-            #                 self.acc_sel_canvas.pack(fill="both", expand=True)
-                            
-            #                 self.acc_sel_background_image = Image.open("background.png")
-            #                 self.acc_sel_logo_image = Image.open("logo_transparent.png")
-                        
-                    
-            #                 self.acc_sel_background_photo = ImageTk.PhotoImage(self.acc_sel_background_image.resize((2000, 2000)))
-            #                 self.acc_sel_logo_photo = ImageTk.PhotoImage(self.acc_sel_logo_image.resize((100,100)))
-
-            #                 self.acc_sel_banner_label1=tk.Label(self.acc_sel_window, text="Accounts",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#090f16")
-            #                 self.acc_sel_banner_label1.place(relx=0.5, rely=0.1 ,anchor="center" , width=495)
-
-            #                 self.acc_sel_banner_label2=tk.Label(self.acc_sel_window , text="Select An Account:",font=("Times New Roman", 15) ,fg="#FFFFFF", bg="#0a1627")
-            #                 self.acc_sel_banner_label2.place(relx=0.5, rely=0.16 ,anchor="center", width=495)
-
-
-
-                           
-            #                 self.acc_sel_canvas.create_image(0, 0, image=self.acc_sel_background_photo, anchor=tk.NW)
-            #                 self.acc_sel_canvas.create_image(750, 550, image=self.acc_sel_logo_photo, anchor=tk.SE)
-
-            #                 for index, (account,acc_type) in enumerate(zip(accounts,account_type)):
-            #                         button = tk.Button(self.acc_sel_canvas , text = f"{account}\n{acc_type}")
-            #                         button.configure(font=("Times New Roman", 15, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
-            #                         button.config(command=lambda acc= account , ac_ty = acc_type: self.set_account_number(acc,ac_ty))
-            #                         rel_y = 0.2 + (index+1) * (0.13)
-            #                         button.place(relx=0.5, rely= rel_y , anchor="center")
-                            
-            #                 self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF" , command=self.on_acc_sel_close)
-            #                 self.acc_sel_back_button.place(relx=0.5, rely=rel_y + 0.2, anchor="center", width=100 , height=50)
-
-
-                            
-            #                 self.acc_sel_window.grab_set()
-
-            #                 self.acc_sel_window.protocol("WM_DELETE_WINDOW" , self.on_acc_sel_close )
-                           
-            #                 return True
-        
+           
                            
             return False
                             
