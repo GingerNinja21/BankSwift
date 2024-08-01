@@ -89,9 +89,13 @@ class DataValidation:
 
                         else:
                              account_exists= True
-                             self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
-                    
-                
+                             if self.account_tally(self.account_type):
+                                self.error_message = f"You are only allowed to have 5 registered {self.account_type.capitalize()} accounts!\nRefer to Bankswifts User policy for more information."
+
+                             else:
+                                self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
+                          
+                                 
                 return account_exists
         
             
@@ -104,8 +108,35 @@ class DataValidation:
             return self.error_message
 
 
+    def account_tally(self,acc_type):
+        try:
+            self.acc_tally = 0
+            with open("accounts.csv", "r") as file:
 
-    
+                for line in file:
+                    parts = line.strip().split(",")
+                    # print(f"{self.id_no} : {parts[6]}")
+
+                    if self.id_no == parts[6]:
+                        print("made it here")
+                        if acc_type.lower() == parts[5] :
+                             self.acc_tally += 1
+                        
+                        
+
+            
+            if self.acc_tally >= 5:
+                    return True
+                    
+            else:
+                    return False
+                         
+
+        except:
+             print()
+
+         
+
     def valid_acc_no(self):  
         global stored_account_no
         global account_bank
@@ -343,7 +374,7 @@ class LoginValidation:
                         username = row['name']
                         subject = "Password Recovery"
                         message_text = (
-                            f"Dear {username},\n\n"
+                            f"Dear {username.capitalize()},\n\n"
                             f"We have received a request to recover your password for your account registered with us.\n\n"
                             f"Your account details are as follows:\n"
                             f"Email: {self.email}\n"
