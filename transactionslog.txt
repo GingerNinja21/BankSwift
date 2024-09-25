@@ -24,3 +24,5 @@
 2024-07-31 14:31:25 - Withdraw: R100.00 - From: abigail (151154048)
  2024-07-31 21:30:13 | Withdraw: R100.00 | From: Abigail [151335356]
  2024-07-31 21:30:34 | Withdraw: R60.00 | From: Abigail [151335356]
+ 2024-09-25 20:47:51 | Transfer: R500.00 | From: Abigail [151335356] to Abigail [151715720]
+ 2024-09-25 20:48:06 | Transfer: R500.00 | From: Abigail [151335356] to Abigail [151715720]

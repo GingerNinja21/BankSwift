@@ -67,6 +67,10 @@ class DataValidation:
                     stored_usersurname = parts[2].strip().lower()
                     stored_account_type = parts[5].strip().lower()
                     stored_id = parts[6].strip().lower()
+        
+                        
+                    if self.account_tally(self.account_type):
+                        self.error_message = f"You already have existing accounts for the provided ID number!\nYou are only allowed to have 5 registered {self.account_type.capitalize()} accounts!\nRefer to Bankswifts User policy for more information."
 
 
 
@@ -74,11 +78,11 @@ class DataValidation:
                     if  (self.id_no.lower() == stored_id) and (not (self.Username.lower()== stored_username) or not(self.Usersurname.lower() == stored_usersurname)):
                         self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username.capitalize()} {self.Usersurname.capitalize()} does not match the Name and Surname linked to the provided ID number in our database!"
                        
-
+                       
                 
                     if self.id_no.lower() == stored_id and self.Username.lower()== stored_username and self.Usersurname.lower() == stored_usersurname :
                         account_exists= True
-                        self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
+                        self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\nWould you like to create a new account? "   
 
                     
                         if (self.Username.lower() == stored_username and 
@@ -88,12 +92,7 @@ class DataValidation:
                                 account_exists= True
 
                         else:
-                             account_exists= True
-                             if self.account_tally(self.account_type):
-                                self.error_message = f"You are only allowed to have 5 registered {self.account_type.capitalize()} accounts!\nRefer to Bankswifts User policy for more information."
-
-                             else:
-                                self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
+                            self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\n""Would you like to create a new account? "   
                           
                                  
                 return account_exists
@@ -115,10 +114,8 @@ class DataValidation:
 
                 for line in file:
                     parts = line.strip().split(",")
-                    # print(f"{self.id_no} : {parts[6]}")
 
                     if self.id_no == parts[6]:
-                        print("made it here")
                         if acc_type.lower() == parts[5] :
                              self.acc_tally += 1
                         
@@ -372,9 +369,10 @@ class LoginValidation:
                         password = row['password']
                         pin = row['pin']
                         username = row['name']
+                        surname=row['surname']
                         subject = "Password Recovery"
                         message_text = (
-                            f"Dear {username.capitalize()},\n\n"
+                            f"Dear {username.capitalize()} {surname.capitalize()},\n\n"
                             f"We have received a request to recover your password for your account registered with us.\n\n"
                             f"Your account details are as follows:\n"
                             f"Email: {self.email}\n"

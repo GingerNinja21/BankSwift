@@ -2,11 +2,11 @@ import tkinter as tk
 from tkinter import ttk , messagebox ,scrolledtext, messagebox, simpledialog
 import random
 import string
-import file
+import file2_0
 import pandas as pd
 import csv
 from PIL import Image, ImageTk
-from file import LoginValidation,DataValidation, account_creation
+from file2_0 import LoginValidation,DataValidation, account_creation
 from LoginGUI2_0 import BankingApplicationGUI
 import subprocess
 import sys
@@ -80,29 +80,8 @@ class app():
         login_btn = tk.Button(self.root, text="Login", command=self.open_login,  font=("Times New Roman", 15,"bold"), bg="#8a9099", fg="#142133", padx=20, pady=10)
         login_btn.place(relx=0.5, rely=0.65, anchor="center")
 
-        # menubar = tk.Menu(self.root)
-        # self.root.config(menu=menubar)
-        # about_menu = tk.Menu(menubar)
-        # menubar.add_cascade(label="About Us", menu=about_menu)
-        # about_menu.add_command(label="About Us")
+  
     
-        # contact_menu = tk.Menu(menubar)
-        # menubar.add_cascade(label="Contact Us", menu=contact_menu)
-        # contact_menu.add_command(label="Contact Us")
-
-    def about_us(self):
-        # self.about_image = Image.open("csslay team.png")  
-        # self.about_image = ImageTk.PhotoImage(self.about_image)
-        
-        self.aboutus = tk.Canvas(self, width=800, height=600)
-        self.aboutus.pack(fill="both", expand=True)
-        
-        self.aboutus_image = Image.open("csslay team.png") 
-        self.aboutus = ImageTk.PhotoImage(self.aboutus_image.resize((800, 600)))
-        
-
-        self.aboutus.create_image(0, 0, image=self.about_us, anchor=tk.NW)
-        # self.canvas.create_image(750, 550, image=self.logo_photo, anchor=tk.SE)
     
     def on_close(self):
         self.root.destroy()
@@ -161,7 +140,7 @@ class app():
         pin = self.pin_entry.get().strip()
         balance = self.balance_entry.get().strip()
         account_type= self.account_type.get().strip().lower()
-        validator = file.DataValidation(name, surname, id_no, email,phone_number,pin,balance,account_type)
+        validator = file2_0.DataValidation(name, surname, id_no, email,phone_number,pin,balance,account_type)
         validator.account_existence()
 
         if not name or not surname or not id_no or not email or not pin or not password or not account_type:
@@ -180,7 +159,7 @@ class app():
             if validator.account_existence() and validator.existing_user_id_acc_creation_message:
                 response = messagebox.askyesno("ID number already exists in database", validator.existing_user_id_acc_creation_message,parent=self.create_account) 
                 if response:
-                    file_writer = file.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
+                    file_writer = file2_0.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
                     file_writer.store_account()
                     
                     login_question = messagebox.askyesno("Log in?", "Would you like to log in?",parent=self.create_account)
@@ -210,7 +189,7 @@ class app():
         
         else:
 
-            file_writer = file.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,str(account_type))
+            file_writer = file2_0.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,str(account_type))
             file_writer.store_account()
             file_writer.store_passwords()
             messagebox.showinfo("Success", "Account created successfully.",parent=self.create_account)
