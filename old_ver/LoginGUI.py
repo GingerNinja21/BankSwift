@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox, simpledialog,filedialog
 import datetime
 import pandas as pd
-from file import DataValidation, account_creation
+from old_ver.file import DataValidation, account_creation
 from PIL import Image, ImageTk
 
 class BankingApplicationGUI(tk.Toplevel):

@@ -1,4 +1,5 @@
 import email
+import os
 from emails_utils import main
 import pandas as pd
 import requests
@@ -7,8 +8,8 @@ import random
 import re
 from io import StringIO
 import pandas as pd
-from email_validator import validate_email, EmailNotValidError
-from file import validate_email, EmailNotValidError  
+from email_validator import validate_email
+
 
 stored_account_no=""
 account_bank=""
@@ -55,7 +56,7 @@ class DataValidation:
         account_exists = False
         self.invalid_username_id_pair = ""
         try:
-            with open("accounts.csv", "r") as file:
+            with open("userdata/accounts.csv", "r") as file:
 
                 for line in file:
                     parts = line.strip().split(",")
@@ -110,7 +111,7 @@ class DataValidation:
     def account_tally(self,acc_type):
         try:
             self.acc_tally = 0
-            with open("accounts.csv", "r") as file:
+            with open("userdata/accounts.csv", "r") as file:
 
                 for line in file:
                     parts = line.strip().split(",")
@@ -139,7 +140,7 @@ class DataValidation:
         global account_bank
 
         try :
-             with open("accounts.csv", "r") as file:
+             with open("userdata/accounts.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
                     
@@ -193,14 +194,14 @@ class DataValidation:
                 email = valid.email
                 return True
         
-        except EmailNotValidError as e:
-                self.error_message += "\n" + str((e))
+        except :
+                self.error_message += "\nInvalid Email"
                 return False
 
     def bank(self):
         global account_bank
         try:
-            with open("accounts.csv", "r") as file:
+            with open("userdata/accounts.csv", "r") as file:
                     
                     for line in file:
                         parts = line.strip().split(",")
@@ -237,7 +238,7 @@ class DataValidation:
     def get_uid(self):
         try:
             uid = ""
-            with open("accounts.csv", "r") as file:
+            with open("userdata/accounts.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
 
@@ -327,14 +328,14 @@ class LoginValidation:
             email = valid.email
             return True
         
-        except EmailNotValidError as e:
-            self.error_message += "\n" + str((e))
+        except:
+            self.error_message += "\nInvalid Email"
             return False
 
     def account_existence(self):
         account_exists = False
         try:
-            with open("password_records.csv", "r") as file:
+            with open("userdata/passwordrecords.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
 
@@ -359,36 +360,85 @@ class LoginValidation:
             self.error_message += f"Something went wrong! \nContact Administrator\n(Error location: account_existence)\n{str(e)}"
             return False     
         
+    # def password_recovery(self):
+    #     try:
+    #         with open("userdata/passwordrecords.csv", "r") as file:
+    #             for line in file:
+    #                 parts = line.strip().split(",")
+                    
+    #                 if (self.email == parts[3] and self.id_no == parts[2] and len(parts)>6):
+    #                     print(f'{self.email} : {parts[3]}\n{self.id_no} : {parts[2]}')
+    #                     password = parts[4]
+    #                     pin = parts[5]
+    #                     username = parts[0]
+    #                     surname=parts[1]
+    #                     subject = "Password Recovery"
+    #                     message_text = (
+    #                         f"Dear {username.capitalize()} {surname.capitalize()},\n\n"
+    #                         f"We have received a request to recover your password for your account registered with us.\n\n"
+    #                         f"Your account details are as follows:\n"
+    #                         f"Email: {self.email}\n"
+    #                         f"PIN: {pin}\n"
+    #                         f"Password: {password}\n\n"
+    #                         f"Please make sure to keep your account information secure and do not share it with anyone.\n\n"
+    #                         f"If you did not request a password recovery, please contact our support team immediately.\n\n"
+    #                         "Best regards,\nBankSwift Team"
+    #                     )
+    #                     main("bankswift05@gmail.com", self.email, subject, message_text)
+    #                     return f"Password sent to {self.email}"
+
+    #         return "Password not found. Please check your details and try again.1"
+
+    #     except FileNotFoundError:
+    #         return "Password records file not found!"
+    #     except Exception as e:
+    #         return f"Error retrieving password: {str(e)}"
     def password_recovery(self):
         try:
-            with open("password_records.csv", "r") as csvfile:
-                reader = csv.DictReader(csvfile)
-                for row in reader:
-                    if (self.email.lower() == row['email'].lower() and 
-                        self.id_no == row['id']):
-                        password = row['password']
-                        pin = row['pin']
-                        username = row['name']
-                        surname=row['surname']
-                        subject = "Password Recovery"
-                        message_text = (
-                            f"Dear {username.capitalize()} {surname.capitalize()},\n\n"
-                            f"We have received a request to recover your password for your account registered with us.\n\n"
-                            f"Your account details are as follows:\n"
-                            f"Email: {self.email}\n"
-                            f"PIN: {pin}\n"
-                            f"Password: {password}\n\n"
-                            f"Please make sure to keep your account information secure and do not share it with anyone.\n\n"
-                            f"If you did not request a password recovery, please contact our support team immediately.\n\n"
-                            "Best regards,\nBankSwift Team"
-                        )
-                        main("bankswift05@gmail.com", self.email, subject, message_text)
-                        return f"Password sent to {self.email}"
+            # Check if the file exists before attempting to open it
+            if not os.path.exists("userdata/passwordrecords.csv"):
+                return "Password records file not found!"
 
-            return "Password not found. Please check your details and try again."
+            with open("userdata/passwordrecords.csv", "r") as file:
+                for line in file:
+                    # Split the line by commas
+                    parts = line.strip().split(",")
+                    
+                    # Ensure there are exactly 6 parts in each line\
+                    record_length= len(parts)
+                    
+                    if record_length == 6:
+                        print("len works")
+                        name = parts[0]
+                        surname = parts[1]
+                        id_no = parts[2]
+                        password = parts[2]
+                        email = parts[4]
+                        pin = parts[5]
+                        
+                        print(f"{self.email} : {email} \n {self.id_no} : {id_no}")
+                        if (self.email == email and self.id_no == id_no):
+                            print(f'Email: {email}\nID: {id_no}')
+                            
+                            # Prepare and send the password recovery email
+                            subject = "Password Recovery"
+                            message_text = (
+                                f"Dear {name.capitalize()} {surname.capitalize()},\n\n"
+                                f"We have received a request to recover your password.\n\n"
+                                f"Account details:\n"
+                                f"Email: {email}\n"
+                                f"PIN: {pin}\n"
+                                f"Password: {password}\n\n"
+                                f"Please keep your account information secure.\n\n"
+                                "Best regards,\nBankSwift Team"
+                            )
+                            main("bankswift05@gmail.com", self.email, subject, message_text)
+                            return f"Password sent to {self.email}"
+
+                return "Password not found. Please check your details and try again."
 
         except FileNotFoundError:
-            return "Password records file not found."
+            return "Password records file not found!"
         except Exception as e:
             return f"Error retrieving password: {str(e)}"
 
@@ -419,14 +469,14 @@ class account_creation:
             stored_data = []
             
             validator = DataValidation(self.Username,self.Usersurname,self.id_no,self.email,self.phone_number,self.pin,self.balance,self.account_type)
-            df = pd.read_csv("accounts.csv")
+            df = pd.read_csv("userdata/accounts.csv")
             if validator.account_existence():
                 Uid = validator.get_uid()
             else:
                 Uid = df['uid'].max() + 1 if not df.empty else 0
             stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": self.account_type, "Id_no": self.id_no, "Linked_accounts": ""})
 
-            file_name = "accounts.csv"
+            file_name = "userdata/accounts.csv"
             fields = ["uid", "Name", "Surname", "Account_no", "Balance", "Account_type", "Id_no", "Linked_accounts"]
 
             with open(file_name, "a", newline="") as csvfile:
@@ -447,7 +497,7 @@ class account_creation:
             while len(gen_acc_no) != 9 :
                     gen_acc_no += random.choice(valid_char)
             stored_account_no = gen_acc_no
-            with open("accounts.csv", "r") as file:
+            with open("userdata/accounts.csv", "r") as file:
                 while valid_acc == False:    
                     for line in file:
                         parts = line.strip().split(",")
@@ -467,7 +517,7 @@ class account_creation:
             stored_passwords=[]
             stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"id":self.id_no ,"email":self.email ,"Password" : self.password ,"Pin":self.pin})
                         
-            file_name = "password_records.csv"
+            file_name = "userdata/passwordrecords.csv"
             fields= ["Name" ,"Surname","id","email", "Password","Pin"]
                         
             with open(file_name , "a" , newline="") as csvfile:

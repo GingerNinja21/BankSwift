@@ -2,12 +2,12 @@ import tkinter as tk
 from tkinter import ttk , messagebox ,scrolledtext, messagebox, simpledialog
 import random
 import string
-import file
+import old_ver.file as file
 import pandas as pd
 import csv
 from PIL import Image, ImageTk
-from file import LoginValidation,DataValidation, account_creation
-from LoginGUI import BankingApplicationGUI
+from old_ver.file import LoginValidation,DataValidation, account_creation
+from old_ver.LoginGUI import BankingApplicationGUI
 import subprocess
 import sys
 
@@ -473,7 +473,7 @@ class app():
 
         if self.validate_entries():
             try:
-                with open('password_records.csv', mode='r') as csvfile:
+                with open('userdata/password_records.csv', mode='r') as csvfile:
                     reader = csv.DictReader(csvfile)
                     for row in reader:
                         if (email == row['email'].strip().lower() and

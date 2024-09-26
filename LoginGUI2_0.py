@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox, simpledialog,filedialog
 import datetime
 import pandas as pd
-from file import DataValidation, account_creation
+from file2_0 import DataValidation, account_creation
 from PIL import Image, ImageTk
 
 class BankingApplicationGUI(tk.Toplevel):
@@ -16,7 +16,7 @@ class BankingApplicationGUI(tk.Toplevel):
         self.current_user = current_user_name
         self.multi_acc = multi_acc
         self.id_no= id_no
-        self.accounts_file = "accounts.csv"
+        self.accounts_file = "userdata/accounts.csv"
         self.banks_file = banks_file
         self.transactions_log = transactions_log
         self.display_name = self.current_user.capitalize()
@@ -45,8 +45,8 @@ class BankingApplicationGUI(tk.Toplevel):
         self.LoginMenu_canvas = tk.Canvas(self.LoginMenu, width=800, height=600)
         self.LoginMenu_canvas.pack(fill="both", expand=True)
         
-        self.LoginMenu_background_image = Image.open("background.png")
-        self.LoginMenu_logo_image = Image.open("logo_transparent.png")
+        self.LoginMenu_background_image = Image.open("images/background.png")
+        self.LoginMenu_logo_image = Image.open("images/logo_transparent.png")
     
         
         self.LoginMenu_background_photo = ImageTk.PhotoImage(self.LoginMenu_background_image.resize((2000, 2000)))
@@ -66,7 +66,7 @@ class BankingApplicationGUI(tk.Toplevel):
         
     def account_validator(self):
         valid_acc= False
-        with open("accounts.csv", "r") as file:
+        with open("userdata/accounts.csv", "r") as file:
             for line in file:
                 parts = line.strip().split(",")
                 if len(parts) > 6 and self.account_no == parts[3]:
@@ -143,7 +143,7 @@ class BankingApplicationGUI(tk.Toplevel):
 
     def get_balance_from_csv(self,acc_no):
         try:
-            df = pd.read_csv('accounts.csv')
+            df = pd.read_csv('userdata/accounts.csv')
             account_no=int(acc_no)
             if account_no in df['account_no'].values:
                 row = df[df['account_no'] == account_no]
@@ -194,8 +194,8 @@ class BankingApplicationGUI(tk.Toplevel):
             self.withdraw_canvas = tk.Canvas(self.withdraw_window, width=800, height=600)
             self.withdraw_canvas.pack(fill="both", expand=True)
             
-            self.withdraw_background_image = Image.open("background.png")
-            self.withdraw_logo_image = Image.open("logo_transparent.png")
+            self.withdraw_background_image = Image.open("images/background.png")
+            self.withdraw_logo_image = Image.open("images/logo_transparent.png")
            
     
             self.withdraw_background_photo = ImageTk.PhotoImage(self.withdraw_background_image.resize((2000, 2000)))
@@ -298,8 +298,8 @@ class BankingApplicationGUI(tk.Toplevel):
             self.transfer_canvas = tk.Canvas(self.transfer_window, width=800, height=600)
             self.transfer_canvas.pack(fill="both", expand=True)
             
-            self.transfer_background_image = Image.open("background.png")
-            self.transfer_logo_image = Image.open("logo_transparent.png")
+            self.transfer_background_image = Image.open("images/background.png")
+            self.transfer_logo_image = Image.open("images/logo_transparent.png")
            
     
             self.transfer_background_photo = ImageTk.PhotoImage(self.transfer_background_image.resize((2000, 2000)))
@@ -358,7 +358,7 @@ class BankingApplicationGUI(tk.Toplevel):
                 messagebox.showerror("Error", "Invalid input.",parent=self.LoginMenu_canvas)
                 return
             
-            with open("accounts.csv", "r") as file:
+            with open("userdata/accounts.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
                     if len(parts) > 6 and transfer_recipient_user == parts[1] and recipient_account_no == parts[3]:
@@ -420,8 +420,8 @@ class BankingApplicationGUI(tk.Toplevel):
             self.transaction_canvas = tk.Canvas(self.transactions_window, width=800, height=600)
             self.transaction_canvas.pack(fill="both", expand=True)
             
-            self.transaction_background_image = Image.open("background.png")
-            self.transaction_logo_image = Image.open("logo_transparent.png")
+            self.transaction_background_image = Image.open("images/background.png")
+            self.transaction_logo_image = Image.open("images/logo_transparent.png")
            
             
             self.transaction_background_photo = ImageTk.PhotoImage(self.transaction_background_image.resize((2000, 2000)))

@@ -2,11 +2,11 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import random
 import string
-import file
+import old_ver.file as file
 import csv
 from PIL import Image, ImageTk
-from file import LoginValidation
-import LoginGUI
+from old_ver.file import LoginValidation
+import old_ver.LoginGUI as LoginGUI
 
 recipient_name=""
 accounts_file=""
@@ -468,7 +468,7 @@ class LoginWindow:
 
         if self.validate_entries():
             try:
-                with open('password_records.csv', mode='r') as csvfile:
+                with open('userdata/password_records.csv', mode='r') as csvfile:
                     reader = csv.DictReader(csvfile)
                     for row in reader:
                         if (email == row['email'].strip().lower() and

@@ -10,19 +10,24 @@ from file2_0 import LoginValidation,DataValidation, account_creation
 from LoginGUI2_0 import BankingApplicationGUI
 import subprocess
 import sys
+import os
 
-logo_gif="BANKSWIFT.gif"
-logo_static = "logo.png"
+
+
+
+logo_gif="images/BANKSWIFT.gif"
+logo_static = "images/logo.png"
 
 
 
 class app():
+    # home screen
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("BankSwift")
         self.root.configure(bg="#052944")
-        self.logo_gif="BANKSWIFT.gif"
-        self.logo_static = "logo.png"
+        self.logo_gif="images/BANKSWIFT.gif"
+        self.logo_static = "images/logo.png"
        
         window_width = 800
         window_height = 600
@@ -45,7 +50,7 @@ class app():
         self.canvas.pack(fill="both", expand=True)
         
 
-        self.background_image = Image.open("background.png")   
+        self.background_image = Image.open("images/background.png")   
         self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
         background_photo = tk.Label(image=self.background_photo)
         
@@ -53,6 +58,8 @@ class app():
         self.animated_gif = AnimatedGIF(self.root, logo_gif, logo_static, 200, 200, 100)
         self.animated_gif.place(relx=0.5, rely=0.3 , anchor="center")
         background_photo.place(relx=0,rely=0,anchor="nw")
+
+       
        
     def create_widgets(self):
 
@@ -95,7 +102,8 @@ class app():
         login_btn.place(relx=0.5, rely=0.65, anchor="center")
 
 
-    
+        
+
     def on_close(self):
         self.root.destroy()
  
@@ -107,6 +115,12 @@ class app():
         self.root.iconify()
         self.LoginWindow()
 
+
+
+
+
+
+    # create account window
     def CreateAccountWindow(self):
         self.create_account = tk.Toplevel()
         self.create_account.title("Create Account")
@@ -129,8 +143,8 @@ class app():
         self.canvas = tk.Canvas(self.create_account, width=800, height=600)
         self.canvas.pack(fill="both", expand=True)
         
-        self.background_image = Image.open("background.png")
-        self.logo_image = Image.open("logo_transparent.png")
+        self.background_image = Image.open("images/background.png")
+        self.logo_image = Image.open("images/logo_transparent.png")
         
         
         self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
@@ -143,77 +157,6 @@ class app():
         self.create_account_widgets()
         self.create_account.protocol("WM_DELETE_WINDOW", self.on_create_account_close)
 
-    def create_account_function(self):
-        name = self.name_entry.get().strip()
-        surname = self.surname_entry.get().strip()
-        id_no = str(self.id_entry.get().strip())
-        phone_number = self.phone_entry.get().strip()
-        email = self.email_entry.get().strip().lower()
-        password = self.account_password_entry.get()
-        pin = self.pin_entry.get().strip()
-        balance = self.balance_entry.get().strip()
-        account_type= self.account_type.get().strip().lower()
-        validator = file2_0.DataValidation(name, surname, id_no, email,phone_number,pin,balance,account_type)
-        validator.account_existence()
-
-        if not name or not surname or not id_no or not email or not pin or not password or not account_type:
-            messagebox.showerror("Validation Error", "All fields are required!",parent=self.create_account)
-            return
-        
-        if validator.error_message :
-            messagebox.showerror("Validation Error", validator.error_message, parent=self.create_account)
-            return
-        
-        if validator.invalid_username_id_pair:
-            messagebox.showerror("Validation Error", validator.invalid_username_id_pair,parent=self.create_account)
-            return
-        
-        if validator.account_existence():
-            if validator.account_existence() and validator.existing_user_id_acc_creation_message:
-                response = messagebox.askyesno("ID number already exists in database", validator.existing_user_id_acc_creation_message,parent=self.create_account) 
-                if response:
-                    file_writer = file2_0.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
-                    file_writer.store_account()
-                    
-                    login_question = messagebox.askyesno("Log in?", "Would you like to log in?",parent=self.create_account)
-                    if login_question:
-                        self.create_account.destroy()
-                        self.LoginWindow()
-                        return
-                    else:
-                        self.go_back_create_account()
-                        return
-                else:
-                    login_question = messagebox.askyesno("Log in?", "Would you like to log in instead?",parent=self.create_account)
-                    if login_question:
-                        self.create_account.destroy()
-                        self.LoginWindow()
-                        return
-                    
-                    else:  
-                        messagebox.showerror("Validation Error", "Account Already Exists!",parent=self.create_account)
-                        return
-
-    
-        
-            else:
-                messagebox.showerror("Validation Error", "Account Already Exists!",parent=self.create_account)
-                return
-        
-        else:
-
-            file_writer = file2_0.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,str(account_type))
-            file_writer.store_account()
-            file_writer.store_passwords()
-            messagebox.showinfo("Success", "Account created successfully.",parent=self.create_account)
-            response = messagebox.askyesno("Login", "Would you like to log in?",parent=self.create_account) 
-            if response:
-                self.create_account.destroy()
-                self.LoginWindow()
-            
-            else:
-                self.go_back_create_account()
-            
     def create_account_widgets(self):
         account_banner_label=tk.Label(self.create_account, text="CREATE ACCOUNT:",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#090f16")
         account_banner_label.place(relx=0.5, rely=0.1 ,anchor="center" , width=780)
@@ -300,13 +243,79 @@ class app():
         create_back_btn.place(relx=0.5, rely=0.9, anchor="center")
  
         self.create_account.protocol("WM_DELETE_WINDOW", self.on_close)
- 
-    def on_create_account_close(self):
-        self.create_account.destroy()
-        self.root.deiconify()
-        self.create_widgets()
+
+    def create_account_function(self):
+        name = self.name_entry.get().strip()
+        surname = self.surname_entry.get().strip()
+        id_no = str(self.id_entry.get().strip())
+        phone_number = self.phone_entry.get().strip()
+        email = self.email_entry.get().strip().lower()
+        password = self.account_password_entry.get()
+        pin = self.pin_entry.get().strip()
+        balance = self.balance_entry.get().strip()
+        account_type= self.account_type.get().strip().lower()
+        validator = file2_0.DataValidation(name, surname, id_no, email,phone_number,pin,balance,account_type)
+        validator.account_existence()
+
+        if not name or not surname or not id_no or not email or not pin or not password or not account_type:
+            messagebox.showerror("Validation Error", "All fields are required!",parent=self.create_account)
+            return
         
-    def go_back_create_account(self):
+        if validator.error_message :
+            messagebox.showerror("Validation Error", validator.error_message, parent=self.create_account)
+            return
+        
+        if validator.invalid_username_id_pair:
+            messagebox.showerror("Validation Error", validator.invalid_username_id_pair,parent=self.create_account)
+            return
+        
+        if validator.account_existence():
+            if validator.account_existence() and validator.existing_user_id_acc_creation_message:
+                response = messagebox.askyesno("ID number already exists in database", validator.existing_user_id_acc_creation_message,parent=self.create_account) 
+                if response:
+                    file_writer = file2_0.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
+                    file_writer.store_account()
+                    
+                    login_question = messagebox.askyesno("Log in?", "Would you like to log in?",parent=self.create_account)
+                    if login_question:
+                        self.create_account.destroy()
+                        self.LoginWindow()
+                        return
+                    else:
+                        self.go_back_create_account()
+                        return
+                else:
+                    login_question = messagebox.askyesno("Log in?", "Would you like to log in instead?",parent=self.create_account)
+                    if login_question:
+                        self.create_account.destroy()
+                        self.LoginWindow()
+                        return
+                    
+                    else:  
+                        messagebox.showerror("Validation Error", "Account Already Exists!",parent=self.create_account)
+                        return
+
+    
+        
+            else:
+                messagebox.showerror("Validation Error", "Account Already Exists!",parent=self.create_account)
+                return
+        
+        else:
+
+            file_writer = file2_0.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,str(account_type))
+            file_writer.store_account()
+            file_writer.store_passwords()
+            messagebox.showinfo("Success", "Account created successfully.",parent=self.create_account)
+            response = messagebox.askyesno("Login", "Would you like to log in?",parent=self.create_account) 
+            if response:
+                self.create_account.destroy()
+                self.LoginWindow()
+            
+            else:
+                self.go_back_create_account()
+   
+    def on_create_account_close(self):
         self.create_account.destroy()
         self.root.deiconify()
         self.create_widgets()
@@ -337,6 +346,16 @@ class app():
             strength += 20
         return strength
        
+    def go_back_create_account(self):
+        self.create_account.destroy()
+        self.root.deiconify()
+        self.create_widgets()
+        
+
+
+
+
+    # login window
     def LoginWindow(self):
         self.login = tk.Toplevel()
         self.login.title("Login")
@@ -360,8 +379,8 @@ class app():
         self.canvas = tk.Canvas(self.login, width=800, height=600)
         self.canvas.pack(fill="both", expand=True)
         
-        self.background_image = Image.open("background.png")
-        self.logo_image = Image.open("logo_transparent.png")
+        self.background_image = Image.open("images/background.png")
+        self.logo_image = Image.open("images/logo_transparent.png")
         
         self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
         self.logo_photo = ImageTk.PhotoImage(self.logo_image.resize((100,100)))
@@ -421,16 +440,6 @@ class app():
         login_back_btn.place(relx=0.4, rely=0.88, anchor="center")
 
         self.login.protocol("WM_DELETE_WINDOW", self.on_login_close)
-
-    def on_login_close(self):
-        self.login.destroy()
-        self.root.deiconify()
-        self.create_widgets()
-        
-    def go_back_login(self):
-        self.login.destroy()
-        self.root.deiconify()
-        self.create_widgets()
         
     def validate__entries(self):
         name=self.login_name_entry.get().strip().lower()
@@ -443,19 +452,6 @@ class app():
             return False
         return True
 
-    def forgot_pin(self):
-        email = self.login_email_entry.get().strip().lower()
-        id_no = self.login_id_entry.get().strip()
-
-        if not email or not id_no:
-            messagebox.showerror("Error", "Email and ID Number are required to recover pin.",parent=self.login)
-            return
-
-        validator = LoginValidation(email, id_no, "")
-
-        recovery_result = validator.password_recovery()
-        messagebox.showinfo("Password Recovery", recovery_result, parent= self.login)
-
     def login_function(self):
         email = self.login_email_entry.get().strip().lower()
         pin = self.login_pin_entry.get().strip()
@@ -465,9 +461,13 @@ class app():
         login_name = self.login_name_entry.get().strip().lower()
         account_exists= False
         
-        try:
+        try:    
+                
+                    
                 if self.validate__entries():
-                    with open('password_records.csv', mode='r') as csvfile:
+                    with open("userdata/passwordrecords.csv", mode='r') as csvfile:
+
+                        
                         reader = csv.DictReader(csvfile)
                         for row in reader:
                             if (email == row['email'].strip().lower() and
@@ -496,22 +496,45 @@ class app():
                 else:                                                       
                      return                  
         except FileNotFoundError:
-                messagebox.showerror("Error", "Password records file not found.",parent=self.login)
+                messagebox.showerror("Error", "why1.",parent=self.login)
         except Exception as e:
                 messagebox.showerror("Error", f"Error: {str(e)}",parent=self.login)
 
+    def forgot_pin(self):
+        email = self.login_email_entry.get().strip().lower()
+        id_no = self.login_id_entry.get().strip()
+
+        if not email or not id_no:
+            messagebox.showerror("Error", "Email and ID Number are required to recover pin.",parent=self.login)
+            return
+
+        validator = LoginValidation(email, id_no, "")
+
+        recovery_result = validator.password_recovery()
+        messagebox.showinfo("Password Recovery", recovery_result, parent= self.login)
 
     def del_login_details(self):
         self.login_email_entry.delete(0, tk.END)
         self.login_id_entry.delete(0, tk.END)
         self.login_name_entry.delete(0, tk.END)
         self.login_pin_entry.delete(0, tk.END)
+           
+    def on_login_close(self):
+        self.login.destroy()
+        self.root.deiconify()
+        self.create_widgets()
         
-        
-        
+    def go_back_login(self):
+        self.login.destroy()
+        self.root.deiconify()
+        self.create_widgets()   
         
         
 
+
+
+
+    # account select window
     def acc_selector(self):
         try:
             self.account_no=""
@@ -521,10 +544,9 @@ class app():
             account_types=[]
             self.multiple_accounts = False
             
-            with open("accounts.csv", "r") as file:
+            with open("userdata/accounts.csv", "r") as file:
                     for line in file:
                         parts = line.strip().split(",")
-                        print(f"{acc_sel_id_no} : {parts[6]}")
                         if len(parts) > 6  and acc_sel_id_no == parts[6] :
                             accounts.append(parts[3])
                             account_types.append(parts[5])
@@ -554,8 +576,8 @@ class app():
                             self.acc_sel_canvas = tk.Canvas(self.acc_sel_window, width=800, height=600)
                             self.acc_sel_canvas.pack(fill="both", expand=True)
                             
-                            self.acc_sel_background_image = Image.open("background.png")
-                            self.acc_sel_logo_image = Image.open("logo_transparent.png")
+                            self.acc_sel_background_image = Image.open("images/background.png")
+                            self.acc_sel_logo_image = Image.open("images/logo_transparent.png")
                         
                     
                             self.acc_sel_background_photo = ImageTk.PhotoImage(self.acc_sel_background_image.resize((2000, 2000)))
@@ -656,6 +678,12 @@ class app():
         except Exception as e:
             print(f"smth when wrong : {str(e)}")
     
+    def set_account_number(self,account,acc_type):
+        self.account_no = account 
+        self.acc_type = acc_type
+        self.acc_sel_window.iconify()
+        self.DashboardWindow()
+   
     def on_acc_sel_close(self):
         if messagebox.askyesno("LOG OUT?", "Are you sure you want to log out?"):
             self.acc_sel_window.destroy()
@@ -663,17 +691,18 @@ class app():
         else:
             return
 
-    def set_account_number(self,account,acc_type):
-        self.account_no = account 
-        self.acc_type = acc_type
-        self.acc_sel_window.iconify()
-        self.DashboardWindow()
     
+
+
+
+
+
+    # dashboard
     def DashboardWindow(self):
         global login_id_no
         global login_name
             
-        accounts_file = "accounts.csv"
+        accounts_file = "userdata/accounts.csv"
         banks_file = "banks.csv"
         transactions_log = "transactionslog.txt"
 
@@ -683,9 +712,12 @@ class app():
             
         else:
             BankingApplicationGUI(self.login,login_name, login_id_no,banks_file, transactions_log ,self.account_no)
+      
 
-        
 
+
+
+    # home screeen GIF
 class AnimatedGIF(tk.Label):
     def __init__(self, master, gif_path, static_image_path, width, height, delay=100):
         super().__init__(master,borderwidth=0,highlightbackground="#212b52",highlightthickness=3 )

@@ -7,13 +7,12 @@ import random
 import re
 from io import StringIO
 import pandas as pd
-from email_validator import validate_email, EmailNotValidError
-from file import validate_email, EmailNotValidError  
+from email_validator import validate_email
 
 stored_account_no=""
 account_bank=""
-### Initialization ###
 
+### Initialization ###
 class DataValidation:
 
     def __init__(self, User_name, User_surname,id_no,email,phone_number,pin ,balance, account_type):
@@ -306,7 +305,7 @@ class LoginValidation:
     def account_existence(self):
         account_exists = False
         try:
-            with open("password_records.csv", "r") as file:
+            with open("userdata/passwordrecords.csv", "r") as file:
                 for line in file:
                     parts = line.strip().split(",")
 
@@ -333,7 +332,8 @@ class LoginValidation:
         
     def password_recovery(self):
         try:
-            with open("password_records.csv", "r") as csvfile:
+
+            with open("userdata/passwordrecords.csv", "r") as csvfile:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     if (self.email.lower() == row['email'].lower() and 
@@ -359,7 +359,7 @@ class LoginValidation:
             return "Password not found. Please check your details and try again."
 
         except FileNotFoundError:
-            return "Password records file not found."
+            return "why3."
         except Exception as e:
             return f"Error retrieving password: {str(e)}"
 
@@ -438,7 +438,7 @@ class account_creation:
             stored_passwords=[]
             stored_passwords.append({"Name" : self.Username ,"Surname" : self.Usersurname ,"id":self.id_no ,"email":self.email ,"Password" : self.password ,"Pin":self.pin})
                         
-            file_name = "password_records.csv"
+            file_name = "userdata/passwordrecords.csv"
             fields= ["Name" ,"Surname","id","email", "Password","Pin"]
                         
             with open(file_name , "a" , newline="") as csvfile:
