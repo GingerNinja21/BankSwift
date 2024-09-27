@@ -1,6 +1,6 @@
 import datetime
 import pandas as pd
-from /file2_0 import DataValidation,account_creation
+from file2_0 import DataValidation,account_creation
 
 class BankingApplication:
     def __init__(self, recipient_name):

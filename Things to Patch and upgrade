@@ -1,0 +1,23 @@
+))))Fix transactionlog to only show the transactions relevant to the logged in account
+))))patch loginGUI2.0 update balance
+
+Store All details correctly -)))) Change order of the details stored
+                            - Store Phone number
+                            - ))))Bug test Extra account feature
+
+Create a delete account function
+
+Find use case for generated password- Soloutions:
+                                      * Login functionality?
+                                      * Recovery password?
+                                      * Reset pin function?
+))))Add window for Withdraw function
+))))Add window for Transfer function
+
+))))Design windows for the different user choices in the LoginGUI2.0
+                            - )))Add feature to BankingGUI that allows user to select which account they will
+                                  be using if they have multiple accounts.
+
+Migrate GUI to CustomTkinter - Make use of "frames"
+                             - Put labels inside of the entry box instead of next to it
+                             
