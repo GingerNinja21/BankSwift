@@ -1,6 +1,6 @@
-('C:\\Users\\Abu-bakr.Adamson\\Desktop\\BankSwift\\build\\Bankswift4_0\\PYZ-00.pyz',
+('C:\\Users\\Abu-bakr.Adamson\\Documents\\python\\BankSwift\\build\\Bankswift4_0\\PYZ-00.pyz',
  [('LoginGUI2_0',
-   'C:\\Users\\Abu-bakr.Adamson\\Desktop\\BankSwift\\LoginGUI2_0.py',
+   'C:\\Users\\Abu-bakr.Adamson\\Documents\\python\\BankSwift\\LoginGUI2_0.py',
    'PYMODULE'),
   ('PIL',
    'C:\\Users\\Abu-bakr.Adamson\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python311\\site-packages\\PIL\\__init__.py',
@@ -1114,7 +1114,7 @@
    'C:\\Users\\Abu-bakr.Adamson\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python311\\site-packages\\email_validator\\version.py',
    'PYMODULE'),
   ('file2_0',
-   'C:\\Users\\Abu-bakr.Adamson\\Desktop\\BankSwift\\file2_0.py',
+   'C:\\Users\\Abu-bakr.Adamson\\Documents\\python\\BankSwift\\file2_0.py',
    'PYMODULE'),
   ('fileinput',
    'C:\\Program '

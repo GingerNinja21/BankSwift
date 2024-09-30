@@ -406,19 +406,19 @@ class app():
         login_name_label = tk.Label(self.login, text="Name:",font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
         login_name_label.place(relx=0.5, rely=0.23,anchor="center")
         self.login_name_entry = tk.Entry(self.login)
-        self.login_name_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
+        self.login_name_entry.configure(bg="#2c3747",font=("Lucida Sans", 13),fg="#FFFFFF", justify="center")
         self.login_name_entry.place(relx=0.5, rely=0.27 , width=400, anchor="center")
 
         login_email_label = tk.Label(self.login, text="Email:",font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
         login_email_label.place(relx=0.5, rely=0.33,anchor="center")
         self.login_email_entry = tk.Entry(self.login)
-        self.login_email_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
+        self.login_email_entry.configure(bg="#2c3747",font=("Lucida Sans", 13),fg="#FFFFFF", justify="center")
         self.login_email_entry.place(relx=0.5, rely=0.38,anchor="center",width=400)
 
         id_label = tk.Label(self.login, text="ID Number:", font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
         id_label.place(relx=0.5, rely=0.43,anchor="center")
         self.login_id_entry = tk.Entry(self.login)
-        self.login_id_entry.configure(bg="#2c3747",fg="#FFFFFF", justify="center")
+        self.login_id_entry.configure(bg="#2c3747",font=("Lucida Sans", 13),fg="#FFFFFF", justify="center")
         self.login_id_entry.place(relx=0.5, rely=0.48,anchor="center",width=400)
 
         login_pin_label = tk.Label(self.login, text="Pin:", font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
@@ -436,6 +436,7 @@ class app():
         login_back_btn.place(relx=0.4, rely=0.88, anchor="center")
 
         self.login.protocol("WM_DELETE_WINDOW", self.on_login_close)
+
         
     def validate__entries(self):
         name=self.login_name_entry.get().strip().lower()
@@ -477,7 +478,7 @@ class app():
                                 self.login.destroy()
                                 return
                             else:
-                                messagebox.showinfo("Success", "Login successful.",parent=self.acc_sel_window)
+                                messagebox.showinfo("Success", "Login successful.",parent=self.login)
                                 self.del_login_details()
                                 self.login.iconify()
                                 self.DashboardWindow()
