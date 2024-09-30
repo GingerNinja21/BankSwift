@@ -99,15 +99,21 @@ class BankingApplicationGUI(tk.Toplevel):
         
         self.back_btn= tk.Button(self.LoginMenu_canvas, text="Close", command=self.go_back,font=("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF")
         self.back_btn.place(relx=0.5, rely=0.8, anchor="center", width=100 , height=60)
+
     
     def go_back(self):
-        self.destroy()
         if self.multi_acc:
+            self.destroy()
             self.parent.deiconify()
             self.parent.grab_set()
         else:
-            self.parent.deiconify()
-            self.parent.grab_set()
+            if messagebox.askyesno("LOG OUT?", "Are you sure you want to log out?",parent=self.parent):
+                self.parent.deiconify()
+                self.parent.grab_set()
+                self.destroy()
+            
+            else:
+                return
         
 
     def view_balance_loginGUI(self):

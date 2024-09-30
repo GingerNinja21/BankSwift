@@ -638,7 +638,7 @@ class app():
 
                                         
                                 else:   
-                                        button_cheque = tk.Button(self.button_frame_cheque, text=f"{account}\n{acc_type.capitalize()}")
+                                        button_cheque = tk.Button(self.button_frame_cheque, text=f"Account:\n{account}")
                                         button_cheque.configure(font=("Times New Roman", 12, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
                                         button_cheque.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
                                         button_cheque.grid(row=cheque_row, column=0, padx=20, pady=10, sticky="nsew")
