@@ -332,7 +332,6 @@ class account_creation:
         self.balance= balance.strip()
         self.account_type= account_type.strip().lower()
         self.phone_number = phone_number.strip()
-
         self.special_chars = ["-", "^" ,"\'"]  
         self.error_message = ""  
     
@@ -352,10 +351,10 @@ class account_creation:
                 Uid = validator.get_uid()
             else:
                 Uid = df['uid'].max() + 1 if not df.empty else 0
-            stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": self.account_type, "Id_no": self.id_no, "Linked_accounts": ""})
+            stored_data.append({"uid": Uid, "Name": self.Username, "Surname": self.Usersurname, "Account_no": new_account_no, "Balance": self.balance, "Account_type": self.account_type, "Id_no": self.id_no, "Email": self.email})
 
             file_name = "userdata/accounts.csv"
-            fields = ["uid", "Name", "Surname", "Account_no", "Balance", "Account_type", "Id_no", "Linked_accounts"]
+            fields = ["uid", "Name", "Surname", "Account_no", "Balance", "Account_type", "Id_no", "Email"]
 
             with open(file_name, "a", newline="") as csvfile:
                 scribe = csv.DictWriter(csvfile, fieldnames=fields)

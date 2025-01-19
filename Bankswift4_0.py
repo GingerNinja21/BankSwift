@@ -7,7 +7,7 @@ import pandas as pd
 import csv
 from PIL import Image, ImageTk
 from system.validation import DataValidation, account_creation
-from system.LoginGUI2_0 import BankingApplicationGUI
+from system.LoginGUI import BankingApplicationGUI
 
 
 
@@ -82,13 +82,13 @@ class app():
         slogan_label1= tk.Label(self.root, text="Bank Smart , Bank Efficient , ",font=("Lucida Sans Unicode", 12 ), fg="#2e6b7f" , bg="#090f16")  
         slogan_label1.place(relx=0.45 , rely=0.95 , anchor="center" , height=20) 
         
-        slogan_label2= tk.Label(self.root, text="BankSwift.",font=("Times New Roman", 14,), fg="#0897f3" , bg="#090f16")  
+        slogan_label2= tk.Label(self.root, text="BankSwift.",font=("Times New Roman", 14,), fg="#a1c8ff" , bg="#090f16")  
         slogan_label2.place(relx=0.64 , rely=0.951 , anchor="center" ,width=85 , height=20) 
        
-        message_label = tk.Label(self.root, text="Dont have an Account?",font=("Times New Roman", 15), fg="#37B7C3" , bg="#142133")
+        message_label = tk.Label(self.root, text="Don't have an account?",font=("Lucida Sans-serif", 15), fg="#a1c8ff" , bg="#142133")
         message_label.place(relx=0.5 , rely=0.75 , anchor="center")    
             
-        register_link = tk.Label(self.root, text="Register here.", font=("Times New Roman", 12),fg="white", bg = "#142133" ,cursor="hand2")
+        register_link = tk.Label(self.root, text="Register here.", font=("Lucida Sans", 12),fg="white", bg = "#142133" ,cursor="hand2")
         register_link.place(relx=0.5, rely=0.8,anchor="center")
         register_link.bind("<Button-1>", lambda event: self.open_create_account())
 
@@ -152,40 +152,40 @@ class app():
         self.create_account.protocol("WM_DELETE_WINDOW", self.on_create_account_close)
 
     def create_account_widgets(self):
-        account_banner_label=tk.Label(self.create_account, text="CREATE ACCOUNT:",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#090f16")
+        account_banner_label=tk.Label(self.create_account, text="CREATE ACCOUNT:",font=("Times New Roman", 30) ,fg="#a1c8ff" , bg="#090f16")
         account_banner_label.place(relx=0.5, rely=0.1 ,anchor="center" , width=780)
 
         name_label = tk.Label(self.create_account, text="Name:",font=("Times New Roman", 16) ,fg="#FFFFFF" , bg="#142133")
         name_label.place(relx=0.3, rely=0.2, anchor="center")
-        self.name_entry = tk.Entry(self.create_account,width=40)
+        self.name_entry = tk.Entry(self.create_account,width=40 ,font=("Lucida Sans",9))
         self.name_entry.configure(bg="#2c3747")
         self.name_entry.configure(fg="#FFFFFF")
         self.name_entry.place(relx=0.6, rely=0.2,anchor="center")
  
         surname_label = tk.Label(self.create_account,text="Surname:", fg="#FFFFFF",font=("Times New Roman", 16)  , bg="#142133")
         surname_label.place(relx=0.3, rely=0.25,anchor="center")
-        self.surname_entry = tk.Entry(self.create_account,width=40)
+        self.surname_entry = tk.Entry(self.create_account,width=40,font=("Lucida Sans",9))
         self.surname_entry.configure(bg="#2c3747")
         self.surname_entry.configure(fg="#FFFFFF")
         self.surname_entry.place(relx=0.6, rely=0.25,anchor="center")
  
         id_label = tk.Label(self.create_account, text="ID No.:", fg="#FFFFFF",font=("Times New Roman", 16)  , bg="#142133")
         id_label.place(relx=0.3, rely=0.3,anchor="center")
-        self.id_entry = tk.Entry(self.create_account,width=40)
+        self.id_entry = tk.Entry(self.create_account,width=40,font=("Lucida Sans",9))
         self.id_entry.configure(bg="#2c3747")
         self.id_entry.configure(fg="#FFFFFF")
         self.id_entry.place(relx=0.6, rely=0.3,anchor="center")
  
         phone_label = tk.Label(self.create_account, text="Phone:", fg="#FFFFFF" ,font=("Times New Roman", 16) , bg="#142133")
         phone_label.place(relx=0.3, rely=0.35,anchor="center")
-        self.phone_entry = tk.Entry(self.create_account,width=40)
+        self.phone_entry = tk.Entry(self.create_account,width=40,font=("Lucida Sans",9))
         self.phone_entry.configure(bg="#2c3747")
         self.phone_entry.configure(fg="#FFFFFF")
         self.phone_entry.place(relx=0.6, rely=0.35,anchor="center")
  
         email_label = tk.Label(self.create_account, text="Email:",font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
         email_label.place(relx=0.3, rely=0.4,anchor="center")
-        self.email_entry = tk.Entry(self.create_account,width=40)
+        self.email_entry = tk.Entry(self.create_account,width=40,font=("Lucida Sans",9))
         self.email_entry.configure(bg="#2c3747")
         self.email_entry.configure(fg="#FFFFFF")
         self.email_entry.place(relx=0.6, rely=0.4,anchor="center")
@@ -202,14 +202,14 @@ class app():
 
         balance_label = tk.Label(self.create_account, text="Opening Balance:",font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
         balance_label.place(relx=0.3, rely=0.5,anchor="center")
-        self.balance_entry = tk.Entry(self.create_account,width=40)
+        self.balance_entry = tk.Entry(self.create_account,width=40,font=("Lucida Sans",9))
         self.balance_entry.configure(bg="#2c3747")
         self.balance_entry.configure(fg="#FFFFFF")
         self.balance_entry.place(relx=0.6, rely=0.5,anchor="center")
  
         pin_label = tk.Label(self.create_account, text="Pin Number:",font=("Times New Roman", 16) , fg="#FFFFFF" , bg="#142133")
         pin_label.place(relx=0.3, rely=0.55,anchor="center")
-        self.pin_entry = tk.Entry(self.create_account, show="*",width=40)
+        self.pin_entry = tk.Entry(self.create_account, show="*",width=40,font=("Lucida Sans",9))
         self.pin_entry.configure(bg="#2c3747")
         self.pin_entry.configure(fg="#FFFFFF")
         self.pin_entry.place(relx=0.6, rely=0.55,anchor="center")
@@ -390,9 +390,9 @@ class app():
     def Login_widgets(self):
 
 
-        log_banner_label=tk.Label(self.login, text="LOG IN",font=("Times New Roman", 30 ) ,fg="#0897f3" , bg="#090f16")
+        log_banner_label=tk.Label(self.login, text="LOG IN",font=("Times New Roman", 30 ) ,fg="#a1c8ff" , bg="#090f16")
         log_banner_label.place(relx=0.5, rely=0.095 ,anchor="center" , width=790)
-        log_banner2_label=tk.Label(self.login, text=f"Enter Your Details Below:",font=("Times New Roman", 15) ,fg="#37B7C3" , bg="#0a1627")
+        log_banner2_label=tk.Label(self.login, text=f"Enter Your Details Below:",font=("Times New Roman", 15) ,fg="#000000" , bg="#0a1627")
         log_banner2_label.place(relx=0.5, rely=0.16 ,anchor="center", width=790)
 
 

@@ -1,3 +1,4 @@
-uid,name,surname,account_no,balance,account_type,id_number,Unnamed: 7
-0,test,account,151262830,99740,cheque,0215565497080,
-0,test,account,151262831,99600,savings,0215565497080,
+uid,name,surname,account_no,balance,account_type,id_number,email
+0,test,account,151262830,99740,cheque,0215565497080,test@gmail.com
+0,test,account,151262831,100826,savings,0215565497080,test@gmail.com
+0,test,account,151336847,8,cheque,0215565497080,test@gmail.com

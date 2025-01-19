@@ -389,6 +389,7 @@ class BankingApplicationGUI(tk.Toplevel):
                     else:
                         self.transfer_window.destroy()
                         self.LoginMenu.deiconify()
+                        self.LoginMenu.create_widgets()
                         return
             else:
                 messagebox.showerror("Error","The account number provided does not match any account in our database!\nPlease try again.")
@@ -516,8 +517,3 @@ class BankingApplicationGUI(tk.Toplevel):
             messagebox.showerror("Error", f"Failed to update balance: {str(e)}",parent=self.canvas)
             return False
 
-if __name__ == "__main__":
-    window= tk.Tk()
-    x= BankingApplicationGUI(window,"abigail","0210085197080","banks.csv","transactionslog.txt",True)
-    x.mainloop()
- 
