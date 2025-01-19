@@ -1,17 +1,13 @@
-import email
-import os
 import pandas as pd
-import requests
 import csv
 import random
 import re
-from io import StringIO
-import pandas as pd
 from email_validator import validate_email
 
 
 stored_account_no=""
 account_bank=""
+
 ### Initialization ###
 
 class DataValidation:
@@ -73,13 +69,10 @@ class DataValidation:
                         self.error_message = f"You already have existing accounts for the provided ID number!\nYou are only allowed to have 5 registered {self.account_type.capitalize()} accounts!\nRefer to Bankswifts User policy for more information."
 
 
-
-
                     if  (self.id_no.lower() == stored_id) and (not (self.Username.lower()== stored_username) or not(self.Usersurname.lower() == stored_usersurname)):
                         self.invalid_username_id_pair = f"\nThe ID number provided already exists in our database! \n{self.Username.capitalize()} {self.Usersurname.capitalize()} does not match the Name and Surname linked to the provided ID number in our database!"
                        
                        
-                
                     if self.id_no.lower() == stored_id and self.Username.lower()== stored_username and self.Usersurname.lower() == stored_usersurname :
                         account_exists= True
                         self.existing_user_id_acc_creation_message ="\nAn account already exists for the provided ID number!\nWould you like to create a new account? "   
@@ -196,39 +189,6 @@ class DataValidation:
         except :
                 self.error_message += "\nInvalid Email"
                 return False
-
-    def bank(self):
-        global account_bank
-        try:
-            with open("userdata/accounts.csv", "r") as file:
-                    
-                    for line in file:
-                        parts = line.strip().split(",")
-
-                        if stored_account_no[:3] == "151" :
-                                account_bank = "Bankswift"
-
-                        elif stored_account_no[:1] == "4" :
-                                if stored_account_no[:3] =="470" or stored_account_no[:4] =="4700":
-                                    account_bank = "Capitec"
-                                else:
-                                    account_bank = "ABSA"       
-                                    
-                        elif stored_account_no[:1] == "6" :
-                                account_bank = "FNB"
-                        
-                        elif stored_account_no[:1] == "1" or "0" :
-                                if stored_account_no[:2] == "15":
-                                    account_bank = "Nedbank"
-                                else: 
-                                    account_bank = "Standard Bank"
-            
-                        
-                        elif stored_account_no[:1] == "5" or "2" :
-                                account_bank = "Nedbank"
-                    return account_bank
-        except:
-                self.error_message+="Something went wrong! \nContact Administrator\n(Error location: bank() function)"
 
     def get_error_message(self):
         error_message= self.error_message
@@ -425,7 +385,6 @@ class account_creation:
                             valid_acc = True 
                             return gen_acc_no
             
-                            
     
         except:
              self.error_message += "\nSomething went wrong! Contact Administration!\n(Error location: acc_no_generator)"
@@ -440,7 +399,6 @@ class account_creation:
                         
             with open(file_name , "a" , newline="") as csvfile:
                     scribe = csv.DictWriter(csvfile , fieldnames = fields )
-                        ## Checks if file is empty ###
                     if csvfile.tell () == 0:
                         scribe.writeheader()
                         

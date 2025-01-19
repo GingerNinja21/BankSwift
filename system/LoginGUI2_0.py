@@ -1,8 +1,7 @@
 import tkinter as tk
-from tkinter import ttk, scrolledtext, messagebox, simpledialog,filedialog
+from tkinter import scrolledtext, messagebox
 import datetime
 import pandas as pd
-from file2_0 import DataValidation, account_creation
 from PIL import Image, ImageTk
 
 class BankingApplicationGUI(tk.Toplevel):
@@ -11,8 +10,6 @@ class BankingApplicationGUI(tk.Toplevel):
         self.parent= parent
         self.LoginMenu=self
         self.LoginMenu.title("Banking GUI")
-
-    
         self.current_user = current_user_name
         self.multi_acc = multi_acc
         self.id_no= id_no
@@ -20,7 +17,6 @@ class BankingApplicationGUI(tk.Toplevel):
         self.banks_file = banks_file
         self.transactions_log = "userdata/transactionslog.txt"
         self.display_name = self.current_user.capitalize()
-        
         self.account_no=account_no
         self.user_surname=""
         self.acc_type=""

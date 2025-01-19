@@ -1,16 +1,14 @@
 import tkinter as tk
-from tkinter import ttk , messagebox ,scrolledtext, messagebox, simpledialog
+from tkinter import ttk , messagebox , messagebox
 import random
 import string
-import file2_0
+import system.validation as validation
 import pandas as pd
 import csv
 from PIL import Image, ImageTk
-from file2_0 import LoginValidation,DataValidation, account_creation
-from LoginGUI2_0 import BankingApplicationGUI
-import subprocess
-import sys
-import os
+from system.validation import DataValidation, account_creation
+from system.LoginGUI2_0 import BankingApplicationGUI
+
 
 
 
@@ -31,10 +29,8 @@ class app():
        
         window_width = 800
         window_height = 600
-
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
-
         center_x = int(screen_width / 2 - window_width / 2)
         center_y = int(screen_height / 2 - window_height / 2)
 
@@ -42,21 +38,19 @@ class app():
         self.root.resizable(False, False)
 
         self.create_widgets()
-
         self.root.grab_set()
         
     def initialize_logo(self):
         self.canvas = tk.Canvas(self.root, width=800, height=600)
         self.canvas.pack(fill="both", expand=True)
-        
-
         self.background_image = Image.open("images/background.png")   
         self.background_photo = ImageTk.PhotoImage(self.background_image.resize((2000, 2000)))
+
         background_photo = tk.Label(image=self.background_photo)
         
-
         self.animated_gif = AnimatedGIF(self.root, logo_gif, logo_static, 200, 200, 100)
         self.animated_gif.place(relx=0.5, rely=0.3 , anchor="center")
+        
         background_photo.place(relx=0,rely=0,anchor="nw")
 
        
@@ -254,7 +248,7 @@ class app():
         pin = self.pin_entry.get().strip()
         balance = self.balance_entry.get().strip()
         account_type= self.account_type.get().strip().lower()
-        validator = file2_0.DataValidation(name, surname, id_no, email,phone_number,pin,balance,account_type)
+        validator = DataValidation(name, surname, id_no, email,phone_number,pin,balance,account_type)
         validator.account_existence()
 
         if not name or not surname or not id_no or not email or not pin or not password or not account_type:
@@ -273,7 +267,7 @@ class app():
             if validator.account_existence() and validator.existing_user_id_acc_creation_message:
                 response = messagebox.askyesno("ID number already exists in database", validator.existing_user_id_acc_creation_message,parent=self.create_account) 
                 if response:
-                    file_writer = file2_0.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
+                    file_writer = account_creation(name,surname,id_no,pin,phone_number,password,email,balance,account_type)
                     file_writer.store_account()
                     
                     login_question = messagebox.askyesno("Log in?", "Would you like to log in?",parent=self.create_account)
@@ -303,7 +297,7 @@ class app():
         
         else:
 
-            file_writer = file2_0.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,str(account_type))
+            file_writer = validation.account_creation(name,surname,id_no,pin,phone_number,password,email,balance,str(account_type))
             file_writer.store_account()
             file_writer.store_passwords()
             messagebox.showinfo("Success", "Account created successfully.",parent=self.create_account)
@@ -542,118 +536,118 @@ class app():
 
 
             if self.multiple_accounts:
-                            self.login.destroy()
-                            self.acc_sel_window = tk.Toplevel()
-                            self.acc_sel_window.title("Account Selector")
-                            self.acc_sel_window.resizable(False, False)
-                            window_width = 500
-                            window_height = 600
+                        self.login.destroy()
+                        self.acc_sel_window = tk.Toplevel()
+                        self.acc_sel_window.title("Account Selector")
+                        self.acc_sel_window.resizable(False, False)
+                        window_width = 500
+                        window_height = 600
 
-                            screen_width = self.root.winfo_screenwidth()
-                            screen_height = self.root.winfo_screenheight()
+                        screen_width = self.root.winfo_screenwidth()
+                        screen_height = self.root.winfo_screenheight()
 
-                            center_x = int(screen_width / 2 - window_width / 2)
-                            center_y = int(screen_height / 2 - window_height / 2)
+                        center_x = int(screen_width / 2 - window_width / 2)
+                        center_y = int(screen_height / 2 - window_height / 2)
 
-                            self.acc_sel_window.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+                        self.acc_sel_window.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
-                            self.acc_sel_canvas = tk.Canvas(self.acc_sel_window, width=800, height=600)
-                            self.acc_sel_canvas.pack(fill="both", expand=True)
-                            
-                            self.acc_sel_background_image = Image.open("images/background.png")
-                            self.acc_sel_logo_image = Image.open("images/logo_transparent.png")
+                        self.acc_sel_canvas = tk.Canvas(self.acc_sel_window, width=800, height=600)
+                        self.acc_sel_canvas.pack(fill="both", expand=True)
                         
+                        self.acc_sel_background_image = Image.open("images/background.png")
+                        self.acc_sel_logo_image = Image.open("images/logo_transparent.png")
                     
-                            self.acc_sel_background_photo = ImageTk.PhotoImage(self.acc_sel_background_image.resize((2000, 2000)))
-                            self.acc_sel_logo_photo = ImageTk.PhotoImage(self.acc_sel_logo_image.resize((100,100)))
+                
+                        self.acc_sel_background_photo = ImageTk.PhotoImage(self.acc_sel_background_image.resize((2000, 2000)))
+                        self.acc_sel_logo_photo = ImageTk.PhotoImage(self.acc_sel_logo_image.resize((100,100)))
 
-                            self.acc_sel_banner_label1=tk.Label(self.acc_sel_window, text="Accounts",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#090f16")
-                            self.acc_sel_banner_label1.place(relx=0.5, rely=0.1 ,anchor="center" , width=495)
+                        self.acc_sel_banner_label1=tk.Label(self.acc_sel_window, text="Accounts",font=("Times New Roman", 30) ,fg="#37B7C3" , bg="#090f16")
+                        self.acc_sel_banner_label1.place(relx=0.5, rely=0.1 ,anchor="center" , width=495)
 
-                            self.acc_sel_banner_label2=tk.Label(self.acc_sel_window , text="Select An Account:",font=("Times New Roman", 15) ,fg="#FFFFFF", bg="#0a1627")
-                            self.acc_sel_banner_label2.place(relx=0.5, rely=0.16 ,anchor="center", width=495)
+                        self.acc_sel_banner_label2=tk.Label(self.acc_sel_window , text="Select An Account:",font=("Times New Roman", 15) ,fg="#FFFFFF", bg="#0a1627")
+                        self.acc_sel_banner_label2.place(relx=0.5, rely=0.16 ,anchor="center", width=495)
 
 
 
-                           
-                            self.acc_sel_canvas.create_image(0, 0, image=self.acc_sel_background_photo, anchor=tk.NW)
-                            self.acc_sel_canvas.create_image(750, 550, image=self.acc_sel_logo_photo, anchor=tk.SE)
+                        
+                        self.acc_sel_canvas.create_image(0, 0, image=self.acc_sel_background_photo, anchor=tk.NW)
+                        self.acc_sel_canvas.create_image(750, 550, image=self.acc_sel_logo_photo, anchor=tk.SE)
+                        
+                        
+
+                        offset_y = 0.25  
+                        
+                        savings_row = 1
+                        cheque_row = 1
+                        num_buttons_savings = 0
+                        num_buttons_cheque = 0
+                        self.button_frame_savings = tk.Frame(self.acc_sel_canvas, bg="#0a1627")
+                        self.scrollbar_savings = tk.Scrollbar(self.button_frame_savings, orient="vertical", command=self.acc_sel_canvas.yview)
+
+                        self.button_frame_cheque = tk.Frame(self.acc_sel_canvas, bg="#0a1627")
+                        self.acc_sel_canvas.create_window(50, offset_y * 600, anchor=tk.NW, window=self.button_frame_savings)
+                        self.acc_sel_canvas.create_window(300, offset_y * 600, anchor=tk.NW, window=self.button_frame_cheque)
+
+                        self.savings_label= tk.Label(self.button_frame_savings ,text="Savings" ,font=("Times New Roman" , 15 ,"bold"))
+                        self.savings_label.grid(row=0 ,sticky="nsew")
+                        self.cheque_label= tk.Label(self.button_frame_cheque ,text="Cheque" ,font=("Times New Roman" , 15 ,"bold"))
+                        self.cheque_label.grid(row=0 ,sticky="nsew")
+
+                        self.no_savings_accounts=0
+                        self.no_cheque_accounts=0
+
+                        savings_expand= False
+                        for acc_ty in account_types:
+                            if acc_ty == "savings":
+                                self.no_savings_accounts += 1
+                            elif acc_ty =="cheque":
+                                self.no_cheque_accounts +=1
                             
-                           
 
-                            offset_y = 0.25  
+                        for index, (account, acc_type) in enumerate(zip(accounts, account_types)):
+
+                            if self.no_savings_accounts>3:
+                                savings_text=f"Account:\n{account}"
+                                savings_expand= True
                             
-                            savings_row = 1
-                            cheque_row = 1
-                            num_buttons_savings = 0
-                            num_buttons_cheque = 0
-                            self.button_frame_savings = tk.Frame(self.acc_sel_canvas, bg="#0a1627")
-                            self.scrollbar_savings = tk.Scrollbar(self.button_frame_savings, orient="vertical", command=self.acc_sel_canvas.yview)
-
-                            self.button_frame_cheque = tk.Frame(self.acc_sel_canvas, bg="#0a1627")
-                            self.acc_sel_canvas.create_window(50, offset_y * 600, anchor=tk.NW, window=self.button_frame_savings)
-                            self.acc_sel_canvas.create_window(300, offset_y * 600, anchor=tk.NW, window=self.button_frame_cheque)
-
-                            self.savings_label= tk.Label(self.button_frame_savings ,text="Savings" ,font=("Times New Roman" , 15 ,"bold"))
-                            self.savings_label.grid(row=0 ,sticky="nsew")
-                            self.cheque_label= tk.Label(self.button_frame_cheque ,text="Cheque" ,font=("Times New Roman" , 15 ,"bold"))
-                            self.cheque_label.grid(row=0 ,sticky="nsew")
-
-                            self.no_savings_accounts=0
-                            self.no_cheque_accounts=0
-
-                            savings_expand= False
-                            for acc_ty in account_types:
-                                if acc_ty == "savings":
-                                    self.no_savings_accounts += 1
-                                elif acc_ty =="cheque":
-                                    self.no_cheque_accounts +=1
+                            else:
+                                savings_text=f"Account:\n{account}"
+                                savings_expand=False
                                 
 
-                            for index, (account, acc_type) in enumerate(zip(accounts, account_types)):
-    
-                                if self.no_savings_accounts>3:
-                                    savings_text=f"Account:\n{account}"
-                                    savings_expand= True
+                            if acc_type == "savings":
+                                    button_savings = tk.Button(self.button_frame_savings, text=savings_text)
+
+                                    if savings_expand:
+                                        button_savings.configure(font=("Times New Roman", 12,"bold"), bg="#090f16", fg="#FFFFFF", pady=5)
+                                        button_savings.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
+                                        button_savings.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
+                                        savings_row += 1
+                                    
+                                    else:
+                                        button_savings.configure(font=("Times New Roman", 12,"bold"), bg="#090f16", fg="#FFFFFF", pady=5)
+                                        button_savings.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
+                                        button_savings.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
+                                        savings_row += 1
+
+                                    
+                            else:   
+                                    button_cheque = tk.Button(self.button_frame_cheque, text=f"Account:\n{account}")
+                                    button_cheque.configure(font=("Times New Roman", 12, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
+                                    button_cheque.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
+                                    button_cheque.grid(row=cheque_row, column=0, padx=20, pady=10, sticky="nsew")
+                                    cheque_row += 1
                                 
-                                else:
-                                    savings_text=f"Account:\n{account}"
-                                    savings_expand=False
-                                    
+                        
+                        self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF" , command=self.on_acc_sel_close)
+                        self.acc_sel_back_button.place(relx=0.5, rely=0.9, anchor="center", width=100 , height=50)
 
-                                if acc_type == "savings":
-                                        button_savings = tk.Button(self.button_frame_savings, text=savings_text)
+                        
+                        self.acc_sel_window.grab_set()
 
-                                        if savings_expand:
-                                            button_savings.configure(font=("Times New Roman", 12,"bold"), bg="#090f16", fg="#FFFFFF", pady=5)
-                                            button_savings.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
-                                            button_savings.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
-                                            savings_row += 1
-                                        
-                                        else:
-                                            button_savings.configure(font=("Times New Roman", 12,"bold"), bg="#090f16", fg="#FFFFFF", pady=5)
-                                            button_savings.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
-                                            button_savings.grid(row=savings_row, column=0, padx=20, pady=10, sticky="nsew")
-                                            savings_row += 1
-
-                                        
-                                else:   
-                                        button_cheque = tk.Button(self.button_frame_cheque, text=f"Account:\n{account}")
-                                        button_cheque.configure(font=("Times New Roman", 12, "bold"), bg="#090f16", fg="#FFFFFF", pady=5)
-                                        button_cheque.config(command=lambda acc=account, ac_ty=acc_type: self.set_account_number(acc, ac_ty))
-                                        button_cheque.grid(row=cheque_row, column=0, padx=20, pady=10, sticky="nsew")
-                                        cheque_row += 1
-                                    
-                            
-                            self.acc_sel_back_button = tk.Button(self.acc_sel_canvas, text="Log Out" ,font =("Times New Roman", 17,"bold"),bg="#230e11", fg="#FFFFFF" , command=self.on_acc_sel_close)
-                            self.acc_sel_back_button.place(relx=0.5, rely=0.9, anchor="center", width=100 , height=50)
-
-                            
-                            self.acc_sel_window.grab_set()
-
-                            self.acc_sel_window.protocol("WM_DELETE_WINDOW" , self.on_acc_sel_close )
-                           
-                            return True
+                        self.acc_sel_window.protocol("WM_DELETE_WINDOW" , self.on_acc_sel_close )
+                        
+                        return True
         
                            
             return False
@@ -692,8 +686,6 @@ class app():
 
         if self.multiple_accounts:
             BankingApplicationGUI(self.acc_sel_window,login_name, login_id_no,banks_file, transactions_log ,self.account_no,self.multiple_accounts)
-
-            
         else:
             BankingApplicationGUI(self.login,login_name, login_id_no,banks_file, transactions_log ,self.account_no)
       
